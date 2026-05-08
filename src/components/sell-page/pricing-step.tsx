@@ -62,9 +62,9 @@ export function PricingStep({ onNext, onBack }: PricingStepProps) {
               <SelectTrigger className="rounded-xl h-11 text-sm border-border/60">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-background">
                 {PRODUCT_UNITS.map((u) => (
-                  <SelectItem key={u} value={u}>
+                  <SelectItem key={u} value={u} className="text-foreground">
                     {u}
                   </SelectItem>
                 ))}

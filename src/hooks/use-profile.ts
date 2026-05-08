@@ -1,95 +1,139 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
+  CreateReviewPayload,
   fetchFarmerListings,
   fetchFarmerProfile,
   fetchFarmerReviews,
-  fetchMyOrders,
   fetchMyPayouts,
-  rateFarmer,
+  fetchProfileOrders,
+  ListingOut,
+  postFarmerReview,
+  toggleReviewHelpful,
   updateMyProfile,
-} from "@/api/profile-api";
+  UpdateProfilePayload,
+} from "@/api/profile.api";
 import { useAuthStore } from "@/store/auth-store";
-import { FarmerProfile } from "@/types/profile";
+import { FarmerProfile, FarmerReview, OrderSummaryItem, PayoutRecord } from "@/types/profile";
+// ── Query keys ────────────────────────────────────────────────────────────────
 
-// ───> Public farmer profile
+export const profileKeys = {
+  orders: () => ["profile", "orders"] as const,
+  payouts: () => ["profile", "payouts"] as const,
+  farmerProfile: (id: string) => ["profile", "farmer", id] as const,
+  farmerListings: (id: string) => ["profile", "farmer", id, "listings"] as const,
+  farmerReviews: (id: string) => ["profile", "reviews", id] as const,
+};
 
-export function useFarmerProfile(id: string) {
-  return useQuery({
-    queryKey: ["farmer", id],
-    queryFn: () => fetchFarmerProfile(id),
+// ── useMyOrders ───────────────────────────────────────────────────────────────
+
+export function useMyOrders() {
+  const token = useAuthStore((s) => s.token);
+  return useQuery<OrderSummaryItem[]>({
+    queryKey: profileKeys.orders(),
+    queryFn: () => fetchProfileOrders(token!),
+    enabled: !!token,
+    staleTime: 1000 * 60,
+  });
+}
+
+// ── useMyPayouts ──────────────────────────────────────────────────────────────
+
+export function useMyPayouts() {
+  const token = useAuthStore((s) => s.token);
+  return useQuery<PayoutRecord[]>({
+    queryKey: profileKeys.payouts(),
+    queryFn: () => fetchMyPayouts(token!),
+    enabled: !!token,
+    staleTime: 1000 * 60 * 2,
+  });
+}
+
+// ── useFarmerProfile ──────────────────────────────────────────────────────────
+/**
+ * Fetches a public farmer profile by ID.
+ * Token is optional — unauthenticated users can still view profiles.
+ */
+export function useFarmerProfile(farmerId: string) {
+  const token = useAuthStore((s) => s.token);
+  return useQuery<FarmerProfile>({
+    queryKey: profileKeys.farmerProfile(farmerId),
+    queryFn: () => fetchFarmerProfile(farmerId, token),
+    enabled: !!farmerId,
     staleTime: 1000 * 60 * 5,
   });
 }
 
+// ── useFarmerListings ─────────────────────────────────────────────────────────
+/**
+ * Fetches all active listings for a farmer — shown on the farmer profile page.
+ */
 export function useFarmerListings(farmerId: string) {
-  return useQuery({
-    queryKey: ["farmer-listings", farmerId],
-    queryFn: () => fetchFarmerListings(farmerId),
+  const token = useAuthStore((s) => s.token);
+  return useQuery<ListingOut[]>({
+    queryKey: profileKeys.farmerListings(farmerId),
+    queryFn: () => fetchFarmerListings(farmerId, token),
+    enabled: !!farmerId,
+    staleTime: 1000 * 60 * 2,
   });
 }
+
+// ── useFarmerReviews ──────────────────────────────────────────────────────────
 
 export function useFarmerReviews(farmerId: string) {
-  return useQuery({
-    queryKey: ["farmer-reviews", farmerId],
-    queryFn: () => fetchFarmerReviews(farmerId),
+  const token = useAuthStore((s) => s.token);
+  return useQuery<FarmerReview[]>({
+    queryKey: profileKeys.farmerReviews(farmerId),
+    queryFn: () => fetchFarmerReviews(farmerId, token),
+    enabled: !!farmerId,
+    staleTime: 1000 * 60,
   });
 }
 
-// ───> Rate a farmer (optimistic)
+// ── useRateFarmer ─────────────────────────────────────────────────────────────
 
 export function useRateFarmer(farmerId: string) {
-  const queryClient = useQueryClient();
-
+  const token = useAuthStore((s) => s.token);
+  const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ rating, body }: { rating: number; body: string }) =>
-      rateFarmer(farmerId, rating, body),
-
-    onMutate: async ({ rating }) => {
-      await queryClient.cancelQueries({ queryKey: ["farmer", farmerId] });
-      const previous = queryClient.getQueryData<FarmerProfile>(["farmer", farmerId]);
-      queryClient.setQueryData<FarmerProfile>(["farmer", farmerId], (old) =>
-        old ? { ...old, isRatedByMe: rating } : old
-      );
-      return { previous };
+    mutationFn: (payload: CreateReviewPayload) => {
+      if (!token) throw new Error("You must be signed in to rate a farmer");
+      return postFarmerReview(farmerId, payload, token);
     },
-    onError: (_e, _v, ctx) => {
-      if (ctx?.previous) queryClient.setQueryData(["farmer", farmerId], ctx.previous);
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["farmer", farmerId] });
-      queryClient.invalidateQueries({ queryKey: ["farmer-reviews", farmerId] });
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: profileKeys.farmerReviews(farmerId) });
     },
   });
 }
 
-// ───> My orders (buyer)
+// ── useToggleHelpful ──────────────────────────────────────────────────────────
 
-export function useMyOrders() {
-  return useQuery({
-    queryKey: ["my-orders"],
-    queryFn: fetchMyOrders,
+export function useToggleHelpful(farmerId: string) {
+  const token = useAuthStore((s) => s.token);
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (reviewId: string) => {
+      if (!token) throw new Error("Sign in to mark reviews as helpful");
+      return toggleReviewHelpful(reviewId, token);
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: profileKeys.farmerReviews(farmerId) });
+    },
   });
 }
 
-// ───> My payouts (farmer)
-
-export function useMyPayouts() {
-  return useQuery({
-    queryKey: ["my-payouts"],
-    queryFn: fetchMyPayouts,
-  });
-}
-
-// ───> Update profile
+// ── useUpdateProfile ──────────────────────────────────────────────────────────
 
 export function useUpdateProfile() {
-  const queryClient = useQueryClient();
-  const { updateProfile } = useAuthStore();
-
+  const token = useAuthStore((s) => s.token);
+  const qc = useQueryClient();
   return useMutation({
-    mutationFn: (patch: Record<string, string>) => updateMyProfile(patch),
-    onMutate: (patch) => updateProfile(patch as any), // optimistic
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["me"] }),
+    mutationFn: (payload: UpdateProfilePayload) => {
+      if (!token) throw new Error("Not authenticated");
+      return updateMyProfile(payload, token);
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["auth", "me"] });
+    },
   });
 }

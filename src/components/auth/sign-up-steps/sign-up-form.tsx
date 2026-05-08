@@ -11,10 +11,11 @@ import { useAuthStore } from "@/store/auth-store";
 import { useSignUpStore } from "@/store/useSignUpStore";
 
 import { DistrictSelect } from "../DistrictSelect";
+import { IntrestPicker } from "../IntrestPicker";
 import { SpecialtyPicker } from "../SpecialtyPicker";
 
 const SignUpForm = () => {
-  const { next, back, role, specialties, district } = useSignUpStore();
+  const { next, back, role, specialties, district, intrests } = useSignUpStore();
   const { register, isLoading, error, clearError, handleGoogleLogin } = useAuthStore();
 
   const [fields, setFields] = useState({
@@ -36,7 +37,9 @@ const SignUpForm = () => {
     !passwordMismatch &&
     fields.terms &&
     district !== "" &&
-    (role === "buyer" || specialties.length > 0);
+    (role === "buyer" ? intrests.length > 0 : true) &&
+    (role === "farmer" ? specialties.length > 0 : true) &&
+    (role === "both" ? specialties.length > 0 && intrests.length > 0 : true);
 
   function update<K extends keyof typeof fields>(key: K, value: (typeof fields)[K]) {
     if (error) clearError();
@@ -57,7 +60,7 @@ const SignUpForm = () => {
 
     const payload =
       role === "buyer"
-        ? { ...base, role: "buyer" as const }
+        ? { ...base, role: role as "buyer" | "both", intrests }
         : { ...base, role: role as "farmer" | "both", specialties };
 
     try {
@@ -134,6 +137,7 @@ const SignUpForm = () => {
         <DistrictSelect />
 
         {(role === "farmer" || role === "both") && <SpecialtyPicker />}
+        {(role === "buyer" || role === "both") && <IntrestPicker />}
 
         <Field>
           <FieldLabel htmlFor="form-password">

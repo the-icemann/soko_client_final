@@ -1,4 +1,3 @@
-//Mock auth store — replace setUser() calls with your real auth flow.
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -11,68 +10,9 @@ import {
   ThemePreference,
   UserSettings,
 } from "@/types/profile";
+
+import { useMessagesStore } from "./useMessagesStore";
 //  Mock users (swap with real JWT/session)
-
-export const MOCK_BUYER: AuthenticatedUser = {
-  id: "u1",
-  name: "Amina Kasozi",
-  initials: "AK",
-  email: "amina@example.com",
-  phone: "+256 700 123 456",
-  district: "Kampala",
-  village: "Nakasero",
-  role: "buyer",
-  verified: true,
-  verificationStatus: "verified",
-  memberSince: "2024-03-01T00:00:00Z",
-  totalOrders: 12,
-  totalSpent: 480_000,
-  wishlistCount: 8,
-};
-
-export const MOCK_FARMER: AuthenticatedUser = {
-  id: "u2",
-  name: "Okello James",
-  initials: "OJ",
-  email: "okello@example.com",
-  phone: "+256 772 456 789",
-  district: "Gulu",
-  village: "Lacor",
-  role: "farmer",
-  verified: true,
-  verificationStatus: "verified",
-  memberSince: "2023-06-15T00:00:00Z",
-  farmName: "Lacor Green Farm",
-  farmerBio:
-    "Third-generation farmer specialising in sun-dried grains and legumes. Supplying markets across northern Uganda since 2018.",
-  totalListings: 6,
-  totalSales: 18_400,
-  totalEarned: 15_640_000,
-  pendingPayout: 2_125_000,
-  averageRating: 4.7,
-  totalReviews: 142,
-};
-
-export const MOCK_BOTH: AuthenticatedUser = {
-  id: "u3",
-  name: "Sarah Nakato",
-  initials: "SN",
-  email: "sarah@example.com",
-  phone: "+256 754 987 654",
-  district: "Wakiso",
-  role: "both",
-  verified: false,
-  verificationStatus: "pending",
-  memberSince: "2025-01-10T00:00:00Z",
-  totalOrders: 5,
-  totalSpent: 210_000,
-  totalListings: 2,
-  totalSales: 800,
-  totalEarned: 960_000,
-  pendingPayout: 320_000,
-  averageRating: 4.2,
-  totalReviews: 18,
-};
 
 const DEFAULT_SETTINGS: UserSettings = {
   theme: "system",
@@ -83,7 +23,7 @@ const DEFAULT_SETTINGS: UserSettings = {
   currency: "UGX",
 };
 
-// ─── Store ────────────────────────────────────────────────────────────────────
+// Store
 
 interface AuthStore {
   user: AuthenticatedUser | null;
@@ -125,6 +65,7 @@ export const useAuthStore = create<AuthStore>()(
           const user = await api.get<AuthenticatedUser>("/users/me", tokens.access_token);
 
           set({ user, token: tokens.access_token, isLoading: false });
+          useMessagesStore.getState().connectWS();
         } catch (err) {
           set({ error: (err as Error).message, isLoading: false });
           throw err;
@@ -145,7 +86,10 @@ export const useAuthStore = create<AuthStore>()(
       },
 
       //Logout
-      logout: () => set({ user: null, token: null, error: null }),
+      logout: () => {
+        useMessagesStore.getState().disconnectWS();
+        set({ user: null, token: null, error: null });
+      },
 
       //Google Auth
       handleGoogleLogin: () => {
@@ -160,18 +104,15 @@ export const useAuthStore = create<AuthStore>()(
       // Helpers
       isFarmer: () => {
         const role = get().user?.role;
-        return role === "farmer";
+        return role === "farmer" || role === "both";
       },
 
       isBuyer: () => {
         const role = get().user?.role;
-        return role === "buyer";
+        return role === "buyer" || role === "both";
       },
 
-      isBoth: () => {
-        const role = get().user?.role;
-        return role === "both";
-      },
+      isBoth: () => get().user?.role === "both",
 
       isAuthenticated: () => !!get().token && !!get().user,
     }),
