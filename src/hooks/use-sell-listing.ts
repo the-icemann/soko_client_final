@@ -1,96 +1,177 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+// Full sell flow:
+//   1. POST /listings/           → create draft → { id, slug }
+//   2. POST /listings/{id}/images → upload photos (multipart)
+//   3. POST /listings/{id}/publish → go live
+//   4. Reset store + navigate to /sell/success?listingId={id}
+
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 
+import { useAuthStore } from "@/store/auth-store";
 import { useSellStore } from "@/store/sell-store";
-import { AiPriceSuggestion, CreateListingResponse } from "@/types/sell";
 
-const delay = (ms = 1000) => new Promise((r) => setTimeout(r, ms));
+import { listingKeys } from "./useMarketplace";
 
-// ─── Create listing ───────────────────────────────────────────────────────────
-// POST /api/listings  (multipart/form-data)
-// FastAPI receives all fields + image files, stores images, returns URLs
+const BASE_URL = import.meta.env.VITE_API_URL ?? "/";
 
-async function createListing(form: FormData): Promise<CreateListingResponse> {
-  // ── MOCK ──────────────────────────────────────────────────────────────────
-  await delay(1400);
-  return {
-    id: Math.floor(Math.random() * 10000),
-    slug: `product-${Date.now()}`,
-    imageUrls: [], // backend fills this after saving images
-    message: "Listing created successfully",
-  };
+// ── Step 1: Create draft (JSON body) ──────────────────────────────────────────
 
-  // ── REAL (uncomment when FastAPI ready) ───────────────────────────────────
-  // const res = await fetch("/api/listings", {
-  //   method: "POST",
-  //   // DO NOT set Content-Type — browser sets multipart boundary automatically
-  //   // Authorization: `Bearer ${getToken()}`,
-  //   body: form,
-  // });
-  // if (!res.ok) {
-  //   const err = await res.json().catch(() => ({}));
-  //   throw new Error(err?.detail ?? "Failed to create listing");
-  // }
-  // return res.json();
+interface CreateListingPayload {
+  name: string;
+  category: string;
+  district: string;
+  village: string;
+  description: string;
+  price: number;
+  unit: string;
+  totalQty: number;
+  minimumOrder: number;
+  fresh: boolean;
+  tags: string[];
+  priceTiers: { minQty: number; price: number; label: string }[];
 }
 
-export function useCreateListing() {
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
-  const { buildFormData, setPlacedListingId, resetDraft } = useSellStore();
+interface CreateListingResponse {
+  id: string;
+  slug: string;
+  message: string;
+}
 
-  return useMutation({
-    mutationFn: () => createListing(buildFormData()),
+async function createDraftApi(
+  payload: CreateListingPayload,
+  token: string
+): Promise<CreateListingResponse> {
+  const res = await fetch(`${BASE_URL}listings/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
 
-    onSuccess: (data) => {
-      setPlacedListingId(String(data.id));
-      // Invalidate marketplace list so it refetches with the new product
-      queryClient.invalidateQueries({ queryKey: ["products"] });
-      resetDraft();
-      navigate({ to: "/sell/success", search: { listingId: String(data.id) } });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    const detail = err?.detail;
+    if (Array.isArray(detail)) {
+      throw new Error(detail.map((d: { msg: string }) => d.msg).join(", "));
+    }
+    throw new Error(typeof detail === "string" ? detail : "Failed to create listing");
+  }
+  return res.json();
+}
+
+// ── Step 2: Upload images (multipart) ─────────────────────────────────────────
+
+async function uploadImagesApi(listingId: string, files: File[], token: string): Promise<void> {
+  const form = new FormData();
+  files.forEach((f) => form.append("files", f));
+
+  const res = await fetch(`${BASE_URL}listings/${listingId}/images`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body: form,
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err?.detail ?? "Failed to upload images");
+  }
+}
+
+// ── Step 3: Publish draft ─────────────────────────────────────────────────────
+
+async function publishListingApi(listingId: string, token: string): Promise<void> {
+  const res = await fetch(`${BASE_URL}listings/${listingId}/publish`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
     },
   });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err?.detail ?? "Failed to publish listing");
+  }
 }
 
-// ─── AI price suggestion ──────────────────────────────────────────────────────
-// GET /api/ai/price-suggestion?category=Grains&district=Gulu
+// ── Hook ──────────────────────────────────────────────────────────────────────
 
-async function fetchAiPriceSuggestion(
-  category: string,
-  district: string
-): Promise<AiPriceSuggestion> {
-  // ── MOCK ──────────────────────────────────────────────────────────────────
-  await delay(800);
-  const base = { Grains: 850, Vegetables: 1200, Fruits: 2000, Herbs: 5000 }[category] ?? 1000;
-  return {
-    min: Math.round(base * 0.9),
-    max: Math.round(base * 1.1),
-    suggested: base,
-    basis: `Based on ${Math.floor(Math.random() * 60 + 20)} recent listings in ${district || "your region"}`,
-  };
+export function useCreateListing() {
+  const token = useAuthStore((s) => s.token);
+  const draft = useSellStore((s) => s.draft);
+  const resetDraft = useSellStore((s) => s.resetDraft);
+  const setPlacedId = useSellStore((s) => s.setPlacedListingId);
+  const qc = useQueryClient();
+  const navigate = useNavigate();
 
-  // ── REAL ─────────────────────────────────────────────────────────────────
-  // const params = new URLSearchParams({ category, district });
-  // const res = await fetch(`/api/ai/price-suggestion?${params}`);
-  // if (!res.ok) throw new Error("Failed to fetch price suggestion");
-  // return res.json();
-}
+  return useMutation({
+    mutationFn: async () => {
+      if (!token) throw new Error("You must be logged in to list produce");
 
-export function useAiPriceSuggestion(category: string, district: string) {
-  const { setAiSuggestion } = useSellStore();
+      // Build tags array
+      const tags = draft.tags
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean);
 
-  return useQuery({
-    queryKey: ["ai-price", category, district],
-    queryFn: () => fetchAiPriceSuggestion(category, district),
-    enabled: !!(category && district), // only fetch when both are selected
-    staleTime: 1000 * 60 * 10,
-    // select: (data) => {
-    //   setAiSuggestion(data);
-    //   return data;
-    // },
-    // onSuccess: (data)=>{
-    //   setAiSuggestion(data);
+      // Build price tiers
+      const priceTiers: CreateListingPayload["priceTiers"] = [];
+      if (draft.enableTiers) {
+        priceTiers.push({ minQty: 1, price: Number(draft.price), label: "Standard" });
+        if (draft.tier2MinQty && draft.tier2Price) {
+          priceTiers.push({
+            minQty: Number(draft.tier2MinQty),
+            price: Number(draft.tier2Price),
+            label: "Bulk",
+          });
+        }
+        if (draft.tier3MinQty && draft.tier3Price) {
+          priceTiers.push({
+            minQty: Number(draft.tier3MinQty),
+            price: Number(draft.tier3Price),
+            label: "Wholesale",
+          });
+        }
+      }
 
-    // }
+      // ── 1. Create draft ──────────────────────────────────────────────────
+      const created = await createDraftApi(
+        {
+          name: draft.name.trim(),
+          category: draft.category,
+          district: draft.district,
+          village: draft.village.trim(),
+          description: draft.description.trim(),
+          price: Number(draft.price),
+          unit: draft.unit,
+          totalQty: Number(draft.totalQty),
+          minimumOrder: Number(draft.minimumOrder) || 1,
+          fresh: draft.fresh,
+          tags,
+          priceTiers,
+        },
+        token
+      );
+
+      // ── 2. Upload images ─────────────────────────────────────────────────
+      if (draft.photoFiles.length > 0) {
+        await uploadImagesApi(created.id, draft.photoFiles, token);
+      }
+
+      // ── 3. Publish ───────────────────────────────────────────────────────
+      await publishListingApi(created.id, token);
+
+      return created;
+    },
+
+    onSuccess: (data) => {
+      setPlacedId(data.id);
+      resetDraft();
+      // Bust marketplace cache so the new listing appears immediately
+      qc.invalidateQueries({ queryKey: listingKeys.all() });
+      navigate({ to: "/sell/success", search: { listingId: data.id } });
+    },
   });
 }

@@ -136,7 +136,7 @@ export default function Navbar() {
             </Button>
           </Link>
           {/* Notifications — desktop */}
-          <Link to="/" className="hidden md:flex">
+          <Link to="/user/notifications" className="hidden md:flex">
             <Button
               variant="ghost"
               size="icon"
@@ -231,7 +231,7 @@ export default function Navbar() {
               {/* Bottom actions */}
               <div className="px-3 py-3 flex items-center gap-2">
                 {/* Notifications */}
-                <Link to="/" onClick={() => setSheetOpen(false)}>
+                <Link to="/user/notifications" onClick={() => setSheetOpen(false)}>
                   <Button
                     variant="ghost"
                     size="icon"

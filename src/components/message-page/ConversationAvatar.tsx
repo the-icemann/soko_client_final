@@ -1,35 +1,47 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import type { User } from "@/constants/mock-messages-api";
 import { cn } from "@/lib/utils";
-
-const ROLE_COLORS: Record<User["role"], string> = {
-  farmer: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300",
-  buyer: "bg-sky-100 text-sky-700 dark:bg-sky-900 dark:text-sky-300",
-};
+import type { ParticipantOut } from "@/store/useMessagesStore";
 
 interface Props {
-  user: User;
+  user: ParticipantOut;
   showOnline?: boolean;
   size?: "sm" | "md" | "lg";
 }
 
+const SIZE: Record<NonNullable<Props["size"]>, string> = {
+  sm: "size-8 text-[10px]",
+  md: "size-10 text-xs",
+  lg: "size-12 text-sm",
+};
+
+/** Deterministic hue from a string so every participant gets a consistent colour. */
+function hueFromString(str: string) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  return Math.abs(hash) % 360;
+}
+
 export function ConversationAvatar({ user, showOnline = false, size = "md" }: Props) {
-  const initials = user.name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
-  const sizeClass = { sm: "size-8", md: "size-10", lg: "size-12" }[size];
+  const hue = hueFromString(user.id);
 
   return (
     <div className="relative shrink-0">
-      <Avatar className={sizeClass}>
-        <AvatarFallback className={cn("text-xs font-semibold", ROLE_COLORS[user.role])}>
-          {initials}
-        </AvatarFallback>
+      <Avatar className={SIZE[size]}>
+        {user.avatar ? (
+          <img src={user.avatar} alt={user.name} className="object-cover" />
+        ) : (
+          <AvatarFallback
+            className={cn("font-semibold", SIZE[size])}
+            style={{
+              background: `hsl(${hue} 55% 88%)`,
+              color: `hsl(${hue} 55% 30%)`,
+            }}
+          >
+            {user.initials}
+          </AvatarFallback>
+        )}
       </Avatar>
-      {showOnline && user.online && (
+      {showOnline && (
         <span className="absolute bottom-0 right-0 size-2.5 rounded-full bg-emerald-500 ring-2 ring-background" />
       )}
     </div>

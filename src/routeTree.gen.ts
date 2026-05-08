@@ -14,6 +14,7 @@ import { Route as appRouteRouteImport } from './routes/(app)/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthSignUpRouteImport } from './routes/auth/sign-up'
 import { Route as AuthSignInRouteImport } from './routes/auth/sign-in'
+import { Route as AuthCompleteProfileRouteImport } from './routes/auth/complete-profile'
 import { Route as appSellRouteImport } from './routes/(app)/sell'
 import { Route as appSearchRouteImport } from './routes/(app)/search'
 import { Route as appProfileRouteImport } from './routes/(app)/profile'
@@ -28,6 +29,7 @@ import { Route as appMarketplaceIndexRouteImport } from './routes/(app)/marketpl
 import { Route as appCheckoutIndexRouteImport } from './routes/(app)/checkout.index'
 import { Route as appBlogIndexRouteImport } from './routes/(app)/blog.index'
 import { Route as AuthGoogleCallbackRouteImport } from './routes/auth/google/callback'
+import { Route as appUserNotificationsRouteImport } from './routes/(app)/user.notifications'
 import { Route as appSellSuccessRouteImport } from './routes/(app)/sell.success'
 import { Route as appMarketplaceIdRouteImport } from './routes/(app)/marketplace.$id'
 import { Route as appFarmersIdRouteImport } from './routes/(app)/farmers.$id'
@@ -57,6 +59,11 @@ const AuthSignUpRoute = AuthSignUpRouteImport.update({
 const AuthSignInRoute = AuthSignInRouteImport.update({
   id: '/auth/sign-in',
   path: '/auth/sign-in',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthCompleteProfileRoute = AuthCompleteProfileRouteImport.update({
+  id: '/auth/complete-profile',
+  path: '/auth/complete-profile',
   getParentRoute: () => rootRouteImport,
 } as any)
 const appSellRoute = appSellRouteImport.update({
@@ -129,6 +136,11 @@ const AuthGoogleCallbackRoute = AuthGoogleCallbackRouteImport.update({
   path: '/auth/google/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
+const appUserNotificationsRoute = appUserNotificationsRouteImport.update({
+  id: '/user/notifications',
+  path: '/user/notifications',
+  getParentRoute: () => appRouteRoute,
+} as any)
 const appSellSuccessRoute = appSellSuccessRouteImport.update({
   id: '/success',
   path: '/success',
@@ -172,6 +184,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof appProfileRoute
   '/search': typeof appSearchRoute
   '/sell': typeof appSellRouteWithChildren
+  '/auth/complete-profile': typeof AuthCompleteProfileRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/blog/$slug': typeof appBlogSlugRoute
@@ -180,6 +193,7 @@ export interface FileRoutesByFullPath {
   '/farmers/$id': typeof appFarmersIdRoute
   '/marketplace/$id': typeof appMarketplaceIdRoute
   '/sell/success': typeof appSellSuccessRoute
+  '/user/notifications': typeof appUserNotificationsRoute
   '/auth/google/callback': typeof AuthGoogleCallbackRoute
   '/blog/': typeof appBlogIndexRoute
   '/checkout/': typeof appCheckoutIndexRoute
@@ -194,6 +208,7 @@ export interface FileRoutesByTo {
   '/messages': typeof appMessagesRoute
   '/profile': typeof appProfileRoute
   '/search': typeof appSearchRoute
+  '/auth/complete-profile': typeof AuthCompleteProfileRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/blog/$slug': typeof appBlogSlugRoute
@@ -202,6 +217,7 @@ export interface FileRoutesByTo {
   '/farmers/$id': typeof appFarmersIdRoute
   '/marketplace/$id': typeof appMarketplaceIdRoute
   '/sell/success': typeof appSellSuccessRoute
+  '/user/notifications': typeof appUserNotificationsRoute
   '/auth/google/callback': typeof AuthGoogleCallbackRoute
   '/blog': typeof appBlogIndexRoute
   '/checkout': typeof appCheckoutIndexRoute
@@ -222,6 +238,7 @@ export interface FileRoutesById {
   '/(app)/profile': typeof appProfileRoute
   '/(app)/search': typeof appSearchRoute
   '/(app)/sell': typeof appSellRouteWithChildren
+  '/auth/complete-profile': typeof AuthCompleteProfileRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/(app)/blog/$slug': typeof appBlogSlugRoute
@@ -230,6 +247,7 @@ export interface FileRoutesById {
   '/(app)/farmers/$id': typeof appFarmersIdRoute
   '/(app)/marketplace/$id': typeof appMarketplaceIdRoute
   '/(app)/sell/success': typeof appSellSuccessRoute
+  '/(app)/user/notifications': typeof appUserNotificationsRoute
   '/auth/google/callback': typeof AuthGoogleCallbackRoute
   '/(app)/blog/': typeof appBlogIndexRoute
   '/(app)/checkout/': typeof appCheckoutIndexRoute
@@ -250,6 +268,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/search'
     | '/sell'
+    | '/auth/complete-profile'
     | '/auth/sign-in'
     | '/auth/sign-up'
     | '/blog/$slug'
@@ -258,6 +277,7 @@ export interface FileRouteTypes {
     | '/farmers/$id'
     | '/marketplace/$id'
     | '/sell/success'
+    | '/user/notifications'
     | '/auth/google/callback'
     | '/blog/'
     | '/checkout/'
@@ -272,6 +292,7 @@ export interface FileRouteTypes {
     | '/messages'
     | '/profile'
     | '/search'
+    | '/auth/complete-profile'
     | '/auth/sign-in'
     | '/auth/sign-up'
     | '/blog/$slug'
@@ -280,6 +301,7 @@ export interface FileRouteTypes {
     | '/farmers/$id'
     | '/marketplace/$id'
     | '/sell/success'
+    | '/user/notifications'
     | '/auth/google/callback'
     | '/blog'
     | '/checkout'
@@ -299,6 +321,7 @@ export interface FileRouteTypes {
     | '/(app)/profile'
     | '/(app)/search'
     | '/(app)/sell'
+    | '/auth/complete-profile'
     | '/auth/sign-in'
     | '/auth/sign-up'
     | '/(app)/blog/$slug'
@@ -307,6 +330,7 @@ export interface FileRouteTypes {
     | '/(app)/farmers/$id'
     | '/(app)/marketplace/$id'
     | '/(app)/sell/success'
+    | '/(app)/user/notifications'
     | '/auth/google/callback'
     | '/(app)/blog/'
     | '/(app)/checkout/'
@@ -318,6 +342,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   appRouteRoute: typeof appRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
+  AuthCompleteProfileRoute: typeof AuthCompleteProfileRoute
   AuthSignInRoute: typeof AuthSignInRoute
   AuthSignUpRoute: typeof AuthSignUpRoute
   AuthGoogleCallbackRoute: typeof AuthGoogleCallbackRoute
@@ -358,6 +383,13 @@ declare module '@tanstack/react-router' {
       path: '/auth/sign-in'
       fullPath: '/auth/sign-in'
       preLoaderRoute: typeof AuthSignInRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/complete-profile': {
+      id: '/auth/complete-profile'
+      path: '/auth/complete-profile'
+      fullPath: '/auth/complete-profile'
+      preLoaderRoute: typeof AuthCompleteProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(app)/sell': {
@@ -457,6 +489,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/auth/google/callback'
       preLoaderRoute: typeof AuthGoogleCallbackRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/(app)/user/notifications': {
+      id: '/(app)/user/notifications'
+      path: '/user/notifications'
+      fullPath: '/user/notifications'
+      preLoaderRoute: typeof appUserNotificationsRouteImport
+      parentRoute: typeof appRouteRoute
     }
     '/(app)/sell/success': {
       id: '/(app)/sell/success'
@@ -570,6 +609,7 @@ interface appRouteRouteChildren {
   appSearchRoute: typeof appSearchRoute
   appSellRoute: typeof appSellRouteWithChildren
   appFarmersIdRoute: typeof appFarmersIdRoute
+  appUserNotificationsRoute: typeof appUserNotificationsRoute
 }
 
 const appRouteRouteChildren: appRouteRouteChildren = {
@@ -583,6 +623,7 @@ const appRouteRouteChildren: appRouteRouteChildren = {
   appSearchRoute: appSearchRoute,
   appSellRoute: appSellRouteWithChildren,
   appFarmersIdRoute: appFarmersIdRoute,
+  appUserNotificationsRoute: appUserNotificationsRoute,
 }
 
 const appRouteRouteWithChildren = appRouteRoute._addFileChildren(
@@ -593,6 +634,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   appRouteRoute: appRouteRouteWithChildren,
   AboutRoute: AboutRoute,
+  AuthCompleteProfileRoute: AuthCompleteProfileRoute,
   AuthSignInRoute: AuthSignInRoute,
   AuthSignUpRoute: AuthSignUpRoute,
   AuthGoogleCallbackRoute: AuthGoogleCallbackRoute,

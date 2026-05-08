@@ -56,7 +56,7 @@ export function PublishStep({ onBack, onGoToStep }: PublishStepProps) {
         {draft.photoPreviews[0] && (
           <div className="relative h-44 bg-muted overflow-hidden">
             <img src={draft.photoPreviews[0]} alt="Cover" className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent" />
             <div className="absolute bottom-3 left-3 flex gap-1.5 flex-wrap">
               <Badge className="text-[10px] font-semibold">{draft.category}</Badge>
               {draft.fresh && (

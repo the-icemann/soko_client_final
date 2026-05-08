@@ -128,7 +128,8 @@ export interface FarmerRegisterPayload extends BaseRegisterPayload {
 }
 
 export interface BuyerRegisterPayload extends BaseRegisterPayload {
-  role: "buyer";
+  role: "buyer" | "both";
+  intrests: string[];
 }
 
 // Discriminated union — TypeScript enforces specialties only for farmer/both

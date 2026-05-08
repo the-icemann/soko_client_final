@@ -54,9 +54,9 @@ export function ProductInfoStep({ onNext }: ProductInfoStepProps) {
             <SelectTrigger className="rounded-xl h-11 text-sm border-border/60">
               <SelectValue placeholder="Select produce category" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-background">
               {PRODUCT_CATEGORIES.map((c) => (
-                <SelectItem key={c} value={c}>
+                <SelectItem key={c} value={c} className="text-foreground">
                   {c}
                 </SelectItem>
               ))}
@@ -74,9 +74,9 @@ export function ProductInfoStep({ onNext }: ProductInfoStepProps) {
               <SelectTrigger className="rounded-xl h-11 text-sm border-border/60">
                 <SelectValue placeholder="Select district" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-background">
                 {UGANDA_DISTRICTS.map((d) => (
-                  <SelectItem key={d} value={d}>
+                  <SelectItem key={d} value={d} className="text-foreground">
                     {d}
                   </SelectItem>
                 ))}

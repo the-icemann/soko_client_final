@@ -52,9 +52,9 @@ export function PostMeta({
           <SelectTrigger className="rounded-xl h-10 text-sm bg-muted/50 border-border/50">
             <SelectValue placeholder="Select a category" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-background">
             {BLOG_CATEGORIES.filter((c) => c !== "All").map((cat) => (
-              <SelectItem key={cat} value={cat}>
+              <SelectItem key={cat} value={cat} className="text-foreground">
                 {cat}
               </SelectItem>
             ))}

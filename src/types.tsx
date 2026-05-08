@@ -160,6 +160,7 @@ export interface Product {
   posted?: string; // e.g. "3 days ago"
   // Pricing tiers — for bulk discounts
   priceTiers?: { minQty: number; price: number; label: string }[];
+  createdAt: string;
 }
 
 //Cart Types

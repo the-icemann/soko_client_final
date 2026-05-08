@@ -21,23 +21,23 @@ export interface FeaturedPost {
 
 export type BlogCategory =
   | "All"
-  | "Grains"
-  | "Vegetables"
-  | "Fruits"
-  | "Herbs"
+  | "Soil & Crops"
+  | "Sustainability"
   | "Business"
-  | "Technology"
-  | "Climate";
+  | "Irrigation"
+  | "AgriTech"
+  | "Climate"
+  | "Other";
 
 export const BLOG_CATEGORIES: BlogCategory[] = [
   "All",
-  "Grains",
-  "Vegetables",
-  "Fruits",
-  "Herbs",
+  "Soil & Crops",
+  "Sustainability",
   "Business",
-  "Technology",
+  "Irrigation",
+  "AgriTech",
   "Climate",
+  "Other",
 ];
 
 export const TRENDING_TOPICS = ["Climate Smart Farming", "Avocado Exports", "Vanilla Prices"];

@@ -13,31 +13,19 @@ import { ProductTabs } from "@/components/product-detail-page/product-tabs";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { products } from "@/constants/dummy-data";
 import {
   useAddToCart,
   useProduct,
+  useReviews,
   useSubmitRating,
   useToggleReviewHelpful,
   useToggleWishlist,
-} from "@/hooks/use-product-detail";
+} from "@/hooks/useProductDetail";
 import { useCartStore } from "@/store/cart-store";
 import { useProductDetailStore } from "@/store/product-detail-store";
 
 export const Route = createFileRoute("/(app)/marketplace/$id")({
   component: RouteComponent,
-  //   loader: async ({ params }) => {
-  //   const store = useProductDetailStore.getState();
-  //   store.setLoading(true);
-  //   try {
-  //     const product = await fetchProduct(params.id);
-  //     store.setProduct(product);
-  //   } catch (e) {
-  //     store.setError("Product not found.");
-  //   } finally {
-  //     store.setLoading(false);
-  //   }
-  // },
 });
 
 function ProductSkeleton() {
@@ -69,6 +57,9 @@ function RouteComponent() {
   // ── Server state ───────────────────────────────────────────────────────────
   const { data: product, isLoading, error } = useProduct(id);
 
+  // Fetch reviews once we have the listing id (product.id is the UUID)
+  const { data: reviews = [] } = useReviews(product ? String(product.id) : undefined);
+
   // ── Client UI state ────────────────────────────────────────────────────────
   const {
     activeImageIndex,
@@ -86,9 +77,9 @@ function RouteComponent() {
   const { isInCart } = useCartStore();
 
   // ── Mutations ──────────────────────────────────────────────────────────────
-  const submitRatingMutation = useSubmitRating(id);
-  const toggleWishlistMutation = useToggleWishlist(id);
-  const toggleHelpfulMutation = useToggleReviewHelpful(id);
+  const submitRatingMutation = useSubmitRating(product ? String(product.id) : "");
+  const toggleWishlistMutation = useToggleWishlist(product ? String(product.id) : "");
+  const toggleHelpfulMutation = useToggleReviewHelpful(product ? String(product.id) : "");
 
   // ── Derived ────────────────────────────────────────────────────────────────
   const effectivePrice = (() => {
@@ -180,7 +171,6 @@ function RouteComponent() {
 
                 <ProductActions
                   isWishlisted={product.isWishlisted ?? false}
-                  // not a mutation anymore — just a function call
                   isAddingToCart={false}
                   alreadyInCart={alreadyInCart}
                   onAddToCart={() => addToCart(product, quantity, effectivePrice)}
@@ -192,10 +182,15 @@ function RouteComponent() {
 
             <Separator />
 
+            {/*
+              ProductTabs receives the real reviews from the server.
+              The `allProducts` prop for "similar" tab still needs a listing
+              — pass an empty array or wire up a useFarmerListings hook later.
+            */}
             <ProductTabs
-              product={product}
+              product={{ ...product, reviews }}
               activeTab={activeTab}
-              allProducts={products}
+              allProducts={[]}
               onTabChange={(t) => setActiveTab(t as "details" | "reviews" | "similar")}
               onReviewHelpful={(reviewId) => toggleHelpfulMutation.mutate(reviewId)}
               onSubmitRating={(r) => submitRatingMutation.mutate(r)}

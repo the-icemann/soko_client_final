@@ -10,12 +10,14 @@ interface SignUpStore {
   role: UserRole | "";
   district: string;
   specialties: string[]; // max 3, only relevant for farmer / both
+  intrests: string[];
 
   // Setters
   setCanProceed: (valid: boolean) => void;
   setRole: (role: UserRole) => void;
   setSpecialties: (specialties: string[]) => void;
   setDistrict: (district: string) => void;
+  setIntrests: (intrests: string[]) => void;
 
   // Step navigation
   next: () => void;
@@ -31,11 +33,13 @@ export const useSignUpStore = create<SignUpStore>((set, get) => ({
   role: "",
   district: "",
   specialties: [],
+  intrests: [],
 
   setCanProceed: (valid) => set({ canProceed: valid }),
   setRole: (role) => set({ role, canProceed: !!role }),
   setSpecialties: (specialties) => set({ specialties: specialties.slice(0, 3) }), // enforce max 3
   setDistrict: (district) => set({ district }),
+  setIntrests: (intrests) => set({ intrests: intrests.slice(0, 3) }),
 
   next: () => {
     const { current, canProceed } = get();
