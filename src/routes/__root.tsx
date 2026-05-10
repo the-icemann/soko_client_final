@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRootRoute, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 
+import { SokoWebchat } from "@/components/common/soko-webchat";
 import { ThemeProvider } from "@/components/theme-provider";
 
 const queryClient = new QueryClient({
@@ -22,7 +23,8 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
         <Outlet />
-        <TanStackRouterDevtools position="bottom-right" />
+        <SokoWebchat />
+        <TanStackRouterDevtools position="bottom-left" />
       </ThemeProvider>
     </QueryClientProvider>
   );
