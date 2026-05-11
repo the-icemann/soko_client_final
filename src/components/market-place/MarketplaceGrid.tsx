@@ -1,7 +1,7 @@
 import { ProductCard } from "@/components/common/product-card";
 import { ProductListItem } from "@/components/market-place/ProductListItem";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { ViewMode } from "@/store/useMarketplaceStore";
+import type { ViewMode } from "@/store/marketplace-store";
 import type { Product } from "@/types";
 
 interface MarketplaceGridProps {
