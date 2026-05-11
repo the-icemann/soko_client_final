@@ -24,7 +24,7 @@ export function fetchPosts(params: PostListParams = {}, token?: string | null) {
   if (params.limit) qs.set("limit", String(params.limit));
 
   const query = qs.toString();
-  return api.get<Post[]>(`posts${query ? `?${query}` : ""}`, token);
+  return api.get<Post[]>(`posts/${query ? `?${query}` : ""}`, token);
 }
 
 /** GET /posts/{slug}  — single post with full body */
@@ -39,7 +39,7 @@ export function fetchMyPosts(token: string, page = 1, limit = 20) {
 
 /** POST /posts  — create a new draft */
 export function createPost(payload: CreatePostPayload, token: string) {
-  return api.post<Post>("posts", payload, token);
+  return api.post<Post>("posts/", payload, token);
 }
 
 /** PUT /posts/{postId}  — update a draft or published post */

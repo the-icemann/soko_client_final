@@ -96,31 +96,30 @@ export function fetchFarmerListings(farmerId: string, token?: string | null) {
   return api.get<ListingOut[]>(`listings?farmer_id=${farmerId}&limit=50`, token);
 }
 
-// ── Payouts ───────────────────────────────────────────────────────────────────
-
-export interface PayoutOut {
+export interface FarmerOrderSummaryOut {
   id: string;
-  orderId: string;
-  buyerName: string;
-  product: string;
-  amount: number;
-  status: "pending" | "paid" | "failed";
-  paidAt?: string;
+  status: "pending" | "confirmed" | "processing" | "dispatched" | "delivered" | "cancelled";
+  total: number;
+  currency: string;
+  itemCount: number;
   createdAt: string;
+  updatedAt: string;
+  firstItem: string | null;
 }
 
-/** GET /payments/farmer/payouts */
+/** GET /orders/farmer — derived payouts from farmer's incoming orders */
 export async function fetchMyPayouts(token: string, page = 1): Promise<PayoutRecord[]> {
-  const raw = await api.get<PayoutOut[]>(`payments/farmer/payouts?page=${page}&limit=20`, token);
-  return raw.map((p) => ({
-    id: p.id,
-    amount: p.amount,
-    orderId: p.orderId,
-    buyerName: p.buyerName,
-    product: p.product,
-    status: p.status,
-    paidAt: p.paidAt,
-    createdAt: p.createdAt,
+  const raw = await api.get<FarmerOrderSummaryOut[]>(`orders/farmer?page=${page}&limit=20`, token);
+
+  return raw.map((o) => ({
+    id: o.id,
+    orderId: o.id,
+    amount: o.total,
+    buyerName: "Buyer", // not in OrderSummaryOut — backend doesn't expose it
+    product: o.firstItem ?? `${o.itemCount} item${o.itemCount !== 1 ? "s" : ""}`,
+    status: o.status === "delivered" ? "paid" : o.status === "cancelled" ? "failed" : "pending",
+    paidAt: o.status === "delivered" ? o.updatedAt : undefined,
+    createdAt: o.createdAt,
   }));
 }
 
