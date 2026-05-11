@@ -1,13 +1,22 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 import { PhotoUploadStep } from "@/components/sell-page/photo-upload-step";
 import { PricingStep } from "@/components/sell-page/pricing-step";
 import { ProductInfoStep } from "@/components/sell-page/product-info-step";
 import { PublishStep } from "@/components/sell-page/publish-step";
 import { SellStepper } from "@/components/sell-page/sell-stepper";
+import { useAuthStore } from "@/store/auth-store";
 import { useSellStore } from "@/store/sell-store";
 
 export const Route = createFileRoute("/(app)/sell/")({
+  beforeLoad: () => {
+    const { isAuthenticated } = useAuthStore.getState();
+    if (!isAuthenticated()) {
+      throw redirect({
+        to: "/auth/sign-in",
+      });
+    }
+  },
   component: RouteComponent,
 });
 

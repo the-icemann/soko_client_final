@@ -44,16 +44,15 @@ export interface FarmerProfile {
   verified: boolean;
   farmerBio?: string;
   farmName?: string;
-  memberSince: string; // ISO
-  // Stats
+  specialties: string[];
+  memberSince: string;
   totalListings: number;
   totalSales: number;
   averageRating: number;
   totalReviews: number;
-  responseTime?: string; // "Usually replies in 2h"
-  // Relations (populated by API)
+  responseTime?: string;
   isFollowedByMe?: boolean;
-  isRatedByMe?: number | null; // 1–5 or null
+  isRatedByMe?: number | null;
 }
 
 // ── Farmer review (on farmer profile)
@@ -129,7 +128,7 @@ export interface FarmerRegisterPayload extends BaseRegisterPayload {
 
 export interface BuyerRegisterPayload extends BaseRegisterPayload {
   role: "buyer" | "both";
-  intrests: string[];
+  interests: string[];
 }
 
 // Discriminated union — TypeScript enforces specialties only for farmer/both

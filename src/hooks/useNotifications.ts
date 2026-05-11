@@ -3,18 +3,22 @@ import { useEffect } from "react";
 import { useNotificationsStore } from "@/store/notification-store";
 
 /**
- * Drop-in hook for any component that needs notification data.
- * Fetches on mount and connects the WebSocket if not already open.
+ * Full notification hook — fetches, filters, and manages the WS connection.
+ * WS connects on mount and cleanly disconnects on unmount.
  */
 export function useNotifications() {
   const store = useNotificationsStore();
 
+  /* Re-fetch when filter changes — dependency is honest */
   useEffect(() => {
     store.fetchNotifications(store.filter === "unread");
-    store.fetchUnreadCount();
+  }, [store.filter]);
+
+  /* WS lifecycle — connect once, disconnect on unmount */
+  useEffect(() => {
     store.connectWS();
     return () => store.disconnectWS();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   const unread = store.notifications.filter((n) => !n.isRead);
   const displayed = store.filter === "unread" ? unread : store.notifications;
@@ -31,15 +35,15 @@ export function useNotifications() {
 }
 
 /**
- * Lightweight hook — only the unread badge count.
- * Safe to use in nav/header components without triggering a full fetch.
+ * Lightweight badge-only hook.
+ * Fetches the count once — safe in nav/header without a full notification fetch.
  */
 export function useUnreadCount() {
   const { unreadCount, fetchUnreadCount } = useNotificationsStore();
 
   useEffect(() => {
     fetchUnreadCount();
-  }, []);
+  }, [fetchUnreadCount]); // ← stable Zustand reference, won't loop
 
   return unreadCount;
 }

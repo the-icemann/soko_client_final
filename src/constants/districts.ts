@@ -136,10 +136,13 @@ export const UGANDA_DISTRICTS = [
 
 export const categories = [
   "All",
+  "Grains",
   "Vegetables",
   "Fruits",
-  "Grains & Cereals",
+  "Herbs",
+  "Dairy",
+  "Poultry",
   "Livestock",
-  "Dairy & Eggs",
-  "Herbs & Spices",
+  "Fish",
+  "Other",
 ];

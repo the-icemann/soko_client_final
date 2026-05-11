@@ -8,11 +8,12 @@ export const Route = createFileRoute("/(app)/sell/success")({
   component: RouteComponent,
   validateSearch: (s: Record<string, unknown>) => ({
     listingId: (s.listingId as string) ?? "",
+    slug: (s.slug as string) ?? "",
   }),
 });
 
 function RouteComponent() {
-  const { listingId } = Route.useSearch();
+  const { listingId, slug } = Route.useSearch();
   const { resetDraft } = useSellStore();
 
   return (
@@ -32,10 +33,10 @@ function RouteComponent() {
               Your product is now live and visible to buyers across Uganda.
             </p>
           </div>
-          {listingId && (
+          {slug && (
             <div className="inline-flex items-center gap-2 bg-muted/50 border border-border/60 rounded-full px-4 py-2">
               <ShoppingBag size={13} className="text-primary" />
-              <span className="text-sm font-mono font-bold text-foreground">#{listingId}</span>
+              <span className="text-sm font-mono font-bold text-foreground">#{slug}</span>
             </div>
           )}
         </div>
@@ -56,7 +57,7 @@ function RouteComponent() {
               icon: <Eye size={15} className="text-primary" />,
               label: "View your listing",
               sub: "See how buyers see your product",
-              href: listingId ? `/marketplace/${listingId}` : "/marketplace",
+              href: slug ? `/marketplace/${slug}` : "/marketplace",
               onClick: undefined,
             },
             {

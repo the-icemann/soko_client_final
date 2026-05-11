@@ -1,251 +1,153 @@
-// TanStack Query mutations for the blog EDITOR (write / edit page).
-// Flow: createDraft → uploadCover → uploadBodyImages → publish
-// The write-blog-store handles all local draft state.
-// These hooks handle the async API calls + wire results back into the store.
-
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 
 import {
   createPost,
-  deletePost,
-  publishPost,
+  publishPost as publishPostApi,
   updatePost,
   uploadBodyImage,
   uploadCoverImage,
 } from "@/api/blog.api";
 import { useAuthStore } from "@/store/auth-store";
 import { useWriteBlogStore } from "@/store/write-blog-store";
-import { Post } from "@/types";
 
-import { blogKeys } from "./useBlog";
-
-// ── Helper: convert EditorSection[] → SectionPayload[] ───────────────────────
-// The store uses EditorSection (discriminated union); the API wants a flat obj.
-
-function sectionsToPayload(
-  sections: ReturnType<typeof useWriteBlogStore.getState>["draft"]["sections"]
-) {
-  return sections.map((s) => ({
-    type: s.type,
-    content: s.content,
-    caption: "caption" in s ? s.caption : undefined,
-    attribution: "attribution" in s ? s.attribution : undefined,
-  }));
+function useToken() {
+  return useAuthStore((s) => s.token);
 }
 
-// ── useCreateDraft ────────────────────────────────────────────────────────────
-/**
- * Creates a draft on the backend.
- * Returns the created Post (with its real `id`) so subsequent uploads can use it.
- *
- * Usage in your editor's "Save Draft" button:
- *
- *   const { mutateAsync: saveDraft, isPending } = useCreateDraft();
- *   const post = await saveDraft();      // → Post with real id
- */
+// ─── Create draft ─────────────────────────────────────────────────────────────
+
 export function useCreateDraft() {
-  const token = useAuthStore((s) => s.token);
-  const draft = useWriteBlogStore((s) => s.draft);
-  const saveDraft = useWriteBlogStore((s) => s.saveDraft);
+  const token = useToken();
+  const { draft } = useWriteBlogStore();
 
   return useMutation({
-    mutationFn: async () => {
-      if (!token) throw new Error("You must be logged in to write a post");
-
-      const tags = draft.tags
-        .split(",")
-        .map((t) => t.trim())
-        .filter(Boolean);
-
-      return createPost(
+    mutationFn: () =>
+      createPost(
         {
-          title: draft.title.trim(),
-          excerpt: draft.excerpt.trim(),
-          category: draft.category as string,
-          tags,
-          body: sectionsToPayload(draft.sections),
-          image: draft.coverPreviewUrl || undefined,
+          title: draft.title.trim() || "Untitled",
+          excerpt: draft.excerpt.trim() || "",
+          category: draft.category || "General",
+          tags: draft.tags
+            .split(",")
+            .map((t) => t.trim())
+            .filter(Boolean),
+          body: draft.sections,
+          //status:   "draft",
         },
-        token
-      );
-    },
-    onSuccess: () => {
-      saveDraft(); // update lastSaved timestamp in store
-    },
+        token!
+      ),
   });
 }
 
-// ── useUpdateDraft ────────────────────────────────────────────────────────────
-/**
- * Updates an existing draft (already has a real post id).
- *
- * Usage:
- *   const { mutateAsync: save } = useUpdateDraft(post.id);
- *   await save();
- */
+// ─── Update draft ─────────────────────────────────────────────────────────────
+
 export function useUpdateDraft(postId: string) {
-  const token = useAuthStore((s) => s.token);
-  const draft = useWriteBlogStore((s) => s.draft);
-  const saveDraft = useWriteBlogStore((s) => s.saveDraft);
+  const token = useToken();
+  const { draft } = useWriteBlogStore();
 
   return useMutation({
-    mutationFn: async () => {
-      if (!token) throw new Error("Not authenticated");
-
-      const tags = draft.tags
-        .split(",")
-        .map((t) => t.trim())
-        .filter(Boolean);
-
-      return updatePost(
+    mutationFn: () =>
+      updatePost(
         postId,
         {
           title: draft.title.trim(),
           excerpt: draft.excerpt.trim(),
-          category: draft.category as string,
-          tags,
-          body: sectionsToPayload(draft.sections),
-          image: draft.coverPreviewUrl || undefined,
+          category: draft.category || "General",
+          tags: draft.tags
+            .split(",")
+            .map((t) => t.trim())
+            .filter(Boolean),
+          body: draft.sections,
         },
-        token
-      );
-    },
-    onSuccess: () => {
-      saveDraft();
-    },
+        token!
+      ),
   });
 }
 
-// ── useUploadCover ────────────────────────────────────────────────────────────
-/**
- * Uploads the cover File to /posts/{postId}/cover.
- * The backend saves the URL to post.image and returns { url, public_id }.
- *
- * Call AFTER useCreateDraft so you have a real postId.
- *
- * Usage:
- *   const { mutateAsync: uploadCover } = useUploadCover(post.id);
- *   const { url } = await uploadCover(file);
- */
+// ─── Upload cover image ───────────────────────────────────────────────────────
+
 export function useUploadCover(postId: string) {
-  const token = useAuthStore((s) => s.token);
-  const setCoverImage = useWriteBlogStore((s) => s.setCoverImage);
+  const token = useToken();
 
   return useMutation({
-    mutationFn: async (file: File) => {
-      if (!token) throw new Error("Not authenticated");
-      return uploadCoverImage(postId, file, token);
-    },
-    onSuccess: (data, file) => {
-      // Keep the store preview URL in sync with what the server gave back
-      setCoverImage(file, data.url);
-    },
+    mutationFn: (file: File) => uploadCoverImage(postId, file, token!),
   });
 }
 
-// ── useUploadBodyImage ────────────────────────────────────────────────────────
-/**
- * Uploads an inline body image.
- * Returns { url } — put this into a PostSection { type: "image", content: url }.
- *
- * Usage:
- *   const { mutateAsync: uploadBody } = useUploadBodyImage(post.id);
- *   const { url } = await uploadBody({ file, order: sectionIndex });
- *   updateSection(sectionIndex, { content: url });
- */
+// ─── Upload body image ────────────────────────────────────────────────────────
+
 export function useUploadBodyImage(postId: string) {
-  const token = useAuthStore((s) => s.token);
+  const token = useToken();
 
   return useMutation({
-    mutationFn: async ({ file, order }: { file: File; order: number }) => {
-      if (!token) throw new Error("Not authenticated");
-      return uploadBodyImage(postId, file, order, token);
-    },
+    mutationFn: ({ file, order }: { file: File; order: number }) =>
+      uploadBodyImage(postId, file, order, token!),
   });
 }
 
-// ── usePublishPost ────────────────────────────────────────────────────────────
-/**
- * Full publish flow:
- *   1. If no postId yet → create draft first
- *   2. If coverFile exists → upload cover
- *   3. Publish the draft
- *   4. Reset the write-store and navigate to the new post
- *
- * Usage:
- *   const { mutate: publish, isPending } = usePublishPost();
- *   <button onClick={() => publish(existingPostId)}>Publish</button>
- *   // pass undefined to create + publish in one go
- */
+// ─── Publish ──────────────────────────────────────────────────────────────────
+// Flow: ensure draft exists → update with latest content → publish
+
 export function usePublishPost() {
-  const token = useAuthStore((s) => s.token);
-  const draft = useWriteBlogStore((s) => s.draft);
-  const resetDraft = useWriteBlogStore((s) => s.resetDraft);
-  const qc = useQueryClient();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const token = useToken();
+  const { draft, resetDraft } = useWriteBlogStore();
 
   return useMutation({
-    mutationFn: async (existingPostId?: string): Promise<Post> => {
-      if (!token) throw new Error("You must be logged in to publish");
+    mutationFn: async (postId: string | undefined) => {
+      let id = postId;
 
-      // Step 1 — create or reuse draft
-      let postId = existingPostId;
-      let post: Post;
-
-      if (!postId) {
-        const tags = draft.tags
-          .split(",")
-          .map((t) => t.trim())
-          .filter(Boolean);
-        post = await createPost(
+      // 1. Create draft if it doesn't exist yet
+      if (!id) {
+        const created = await createPost(
+          {
+            title: draft.title.trim() || "Untitled",
+            excerpt: draft.excerpt.trim() || "",
+            category: draft.category || "General",
+            tags: draft.tags
+              .split(",")
+              .map((t) => t.trim())
+              .filter(Boolean),
+            body: draft.sections,
+            // status:   "draft",
+          },
+          token!
+        );
+        id = created.id;
+      } else {
+        // 2. Sync latest content
+        await updatePost(
+          id,
           {
             title: draft.title.trim(),
             excerpt: draft.excerpt.trim(),
-            category: draft.category as string,
-            tags,
-            body: sectionsToPayload(draft.sections),
+            category: draft.category || "General",
+            tags: draft.tags
+              .split(",")
+              .map((t) => t.trim())
+              .filter(Boolean),
+            body: draft.sections,
           },
-          token
+          token!
         );
-        postId = post.id;
       }
 
-      // Step 2 — upload cover if user picked a file
+      // 3. Upload cover if a File is attached (not yet uploaded)
       if (draft.coverFile && draft.coverFile.size > 0) {
-        await uploadCoverImage(postId!, draft.coverFile, token);
+        await uploadCoverImage(id, draft.coverFile, token!);
       }
 
-      // Step 3 — publish
-      const published = await publishPost(postId!, token);
-      return published as Post;
+      // 4. Publish
+      return publishPostApi(id, token!);
     },
 
-    onSuccess: (published) => {
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["blog-posts"] });
+      queryClient.invalidateQueries({ queryKey: ["my-posts"] });
       resetDraft();
-      // Bust the post list cache so the new post appears
-      qc.invalidateQueries({ queryKey: blogKeys.all() });
-      // Navigate to the new post
-      navigate({ to: `/blog/${published.slug}` });
-    },
-  });
-}
-
-// ── useDeletePost ─────────────────────────────────────────────────────────────
-
-export function useDeletePost() {
-  const token = useAuthStore((s) => s.token);
-  const qc = useQueryClient();
-  const navigate = useNavigate();
-
-  return useMutation({
-    mutationFn: async (postId: string) => {
-      if (!token) throw new Error("Not authenticated");
-      return deletePost(postId, token);
-    },
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: blogKeys.all() });
-      navigate({ to: "/blog" });
+      navigate({ to: "/blog/$slug", params: { slug: data.slug } });
     },
   });
 }

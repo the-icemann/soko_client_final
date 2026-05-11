@@ -205,7 +205,7 @@ export const useMessagesStore = create<MessagesStore>((set, get) => ({
     const token = useAuthStore.getState().token;
     set({ isLoadingConversations: true });
     try {
-      const conversations = await api.get<ConversationOut[]>("/message/conversations", token);
+      const conversations = await api.get<ConversationOut[]>("message/conversations", token);
       set({ conversations });
     } finally {
       set({ isLoadingConversations: false });
@@ -244,7 +244,7 @@ export const useMessagesStore = create<MessagesStore>((set, get) => ({
     if (!activeConversationId || !text.trim()) return;
 
     const msg = await api.post<MessageOut>(
-      `/message/${activeConversationId}/messages`,
+      `message/conversations/${activeConversationId}/messages`,
       { body: text.trim() },
       token
     );
@@ -265,7 +265,7 @@ export const useMessagesStore = create<MessagesStore>((set, get) => ({
 
   deleteMessage: async (conversationId, messageId) => {
     const token = useAuthStore.getState().token;
-    await api.delete(`/message/${conversationId}/messages/${messageId}`, token);
+    await api.delete(`message/conversations/${conversationId}/messages/${messageId}`, token);
     // Soft-delete locally (backend also broadcasts via WS)
     set((s) => ({
       messages: {
@@ -280,7 +280,7 @@ export const useMessagesStore = create<MessagesStore>((set, get) => ({
   startConversation: async (farmerId, firstMessage, listingId) => {
     const token = useAuthStore.getState().token;
     const result = await api.post<StartConversationOut>(
-      "/message/conversations",
+      "message/conversations",
       { farmer_id: farmerId, first_message: firstMessage, listing_id: listingId ?? null },
       token
     );
@@ -296,7 +296,7 @@ export const useMessagesStore = create<MessagesStore>((set, get) => ({
 
   markAsRead: async (conversationId, messageId) => {
     const token = useAuthStore.getState().token;
-    await api.post(`/message/${conversationId}/messages/${messageId}/read`, {}, token);
+    await api.post(`message/conversations/${conversationId}/messages/${messageId}/read`, {}, token);
     set((s) => ({
       conversations: s.conversations.map((c) =>
         c.id === conversationId ? { ...c, unreadCount: 0 } : c

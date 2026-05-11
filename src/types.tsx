@@ -31,6 +31,7 @@ export interface MarketProduct {
   rating: number;
   qty: string;
   category: string;
+  farmerId?: string;
 }
 
 export interface Article {
@@ -135,6 +136,7 @@ export interface Product {
   img: string; // alias for compatibility
   badge?: string;
   farmer: string; // kept flat for card components
+  farmerId?: string;
   district: string; // kept flat for card components
   verified: boolean;
   price: number;
@@ -160,7 +162,7 @@ export interface Product {
   posted?: string; // e.g. "3 days ago"
   // Pricing tiers — for bulk discounts
   priceTiers?: { minQty: number; price: number; label: string }[];
-  createdAt: string;
+  createdAt?: string;
 }
 
 //Cart Types

@@ -1,12 +1,12 @@
-// src/pages/marketplace/components/product-card.tsx
 import { useNavigate } from "@tanstack/react-router";
-import { ShoppingCart, Star } from "lucide-react";
+import { MessageCircle, ShoppingCart, Star } from "lucide-react";
+import { useState } from "react";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { useMarketplaceStore } from "@/store/marketplace-store";
+import { useAuthStore } from "@/store/auth-store";
+import { useMessagesStore } from "@/store/useMessagesStore";
 import type { MarketProduct } from "@/types";
 
 const StarRating = ({ rating }: { rating: number }) => (
@@ -25,59 +25,118 @@ const StarRating = ({ rating }: { rating: number }) => (
 
 export const MarketProductCard = ({ product }: { product: MarketProduct }) => {
   const navigate = useNavigate();
-  const addToCart = useMarketplaceStore((s) => s.addToCart);
+  const { isFarmer, isBuyer, isAuthenticated, user } = useAuthStore();
+  const { startConversation, setActiveConversation } = useMessagesStore();
+
+  const [chatLoading, setChatLoading] = useState(false);
+  const [warningMsg, setWarningMsg] = useState<string | null>(null);
+
+  const showWarning = (msg: string) => {
+    setWarningMsg(msg);
+    setTimeout(() => setWarningMsg(null), 3500);
+  };
+
+  const handleChat = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    // ── Not logged in ─────────────────────────────────────────────────────
+    if (!isAuthenticated()) {
+      navigate({ to: "/auth/sign-in" });
+      return;
+    }
+
+    // ── Clicked own listing ───────────────────────────────────────────────
+    if (product.farmerId && product.farmerId === user?.id) {
+      showWarning("This is your own listing.");
+      return;
+    }
+
+    // ── Farmer-to-farmer block ────────────────────────────────────────────
+    if (isFarmer() && !isBuyer()) {
+      showWarning("Farmers can't message other farmers here.");
+      return;
+    }
+
+    // ── Missing farmerId (data gap) ───────────────────────────────────────
+    if (!product.farmerId) {
+      showWarning("Unable to contact this farmer right now.");
+      return;
+    }
+
+    // ── Happy path: start or resume conversation ──────────────────────────
+    setChatLoading(true);
+    try {
+      const conversationId = await startConversation(
+        product.farmerId,
+        `Hi, I'm interested in your listing: ${product.name}`,
+        String(product.id)
+      );
+      setActiveConversation(conversationId);
+      navigate({ to: "/messages" });
+    } catch {
+      showWarning("Couldn't start conversation. Try again.");
+    } finally {
+      setChatLoading(false);
+    }
+  };
 
   return (
-    <Card className="overflow-hidden shadow-sm">
-      {/* Image */}
-      <div className="relative flex h-28 items-center justify-center text-5xl">
-        {product.img}
-        {/* {product.badge && (
-          <div className="absolute left-2 top-2">
-            <Badge variant="secondary" className="text-xs">
-              {product.badge}
-            </Badge>
-          </div>
-        )} */}
-      </div>
-
-      <CardContent className="flex flex-col gap-1.5 p-2.5">
-        {/* Name */}
-        <p className="truncate text-[11px] font-bold text-foreground">{product.name}</p>
-
-        {/* Farmer — navigates to farmer profile */}
-        <button
-          type="button"
-          // onClick={() =>
-          //   navigate({
-          //     to: "/farmer-profile",
-          //     search: { id: product.id },
-          //   })
-          //}
-          className="w-fit text-[10px] font-medium text-primary hover:underline"
-        >
-          {product.farmer}
-        </button>
-
-        {/* Price + rating */}
-        <div className="flex items-center justify-between">
-          <p className="text-[13px] font-bold text-primary">{product.price}</p>
-          <StarRating rating={product.rating} />
+    <div className="relative">
+      {/* Warning tooltip — floats above the card */}
+      {warningMsg && (
+        <div className="absolute -top-9 left-0 right-0 z-20 mx-auto flex w-max max-w-full items-center gap-1.5 rounded-lg border border-amber-300 bg-amber-50 px-2.5 py-1.5 text-[10px] font-medium text-amber-800 shadow-md animate-in fade-in slide-in-from-top-1 duration-150">
+          <MessageCircle size={10} className="shrink-0" />
+          {warningMsg}
         </div>
+      )}
 
-        {/* Qty */}
-        <p className="text-[10px] text-muted-foreground">{product.qty}</p>
+      <Card className="overflow-hidden shadow-sm">
+        {/* Image */}
+        <div className="relative flex h-28 items-center justify-center text-5xl">{product.img}</div>
 
-        {/* Add to cart */}
-        <Button
-          size="sm"
-          className="mt-1 h-7 w-full gap-1.5 text-[11px] font-bold"
-          onClick={addToCart}
-        >
-          <ShoppingCart className="size-3" />
-          Add to Cart
-        </Button>
-      </CardContent>
-    </Card>
+        <CardContent className="flex flex-col gap-1.5 p-2.5">
+          {/* Name */}
+          <p className="truncate text-[11px] font-bold text-foreground">{product.name}</p>
+
+          {/* Farmer name */}
+          <button
+            type="button"
+            className="w-fit text-[10px] font-medium text-primary hover:underline"
+          >
+            {product.farmer}
+          </button>
+
+          {/* Price + rating */}
+          <div className="flex items-center justify-between">
+            <p className="text-[13px] font-bold text-primary">{product.price}</p>
+            <StarRating rating={product.rating} />
+          </div>
+
+          {/* Qty */}
+          <p className="text-[10px] text-muted-foreground">{product.qty}</p>
+
+          {/* Actions row */}
+          <div className="mt-1 flex gap-1.5">
+            <Button size="sm" className="h-7 flex-1 gap-1 text-[11px] font-bold">
+              <ShoppingCart className="size-3" />
+              Add to Cart
+            </Button>
+
+            <Button
+              size="sm"
+              variant="outline"
+              className="h-7 w-8 shrink-0 px-0"
+              onClick={handleChat}
+              disabled={chatLoading}
+              title={`Chat with ${product.farmer}`}
+            >
+              <MessageCircle
+                className={cn("size-3", chatLoading && "animate-pulse text-primary")}
+              />
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 };

@@ -1,5 +1,5 @@
 import { api } from "@/api/api";
-import { Product, ProductReview } from "@/types";
+import { Product } from "@/types";
 
 const BASE = "listings";
 
@@ -96,6 +96,7 @@ export function listingToProduct(l: ListingOut): Product {
     img: primaryImage, // alias
     badge: l.badge,
     farmer: l.farmerName,
+    farmerId: l.farmerId,
     district: l.district,
     verified: l.farmerVerified,
     price: l.price,
@@ -157,14 +158,12 @@ export async function fetchListings(
   if (params.limit) qs.set("limit", String(params.limit));
 
   const query = qs.toString();
-  const listings = await api.get<ListingOut[]>(`${BASE}/${query ? `?${query}` : ""}`, token);
-  return listings.map(listingToProduct);
+  return api.get<Product[]>(`${BASE}/${query ? `?${query}` : ""}`, token);
 }
 
 /** GET /listings/slug/{slug} */
 export async function fetchListingBySlug(slug: string, token?: string | null): Promise<Product> {
-  const listing = await api.get<ListingOut>(`${BASE}/slug/${slug}`, token);
-  return listingToProduct(listing);
+  return api.get<Product>(`${BASE}/slug/${slug}`, token);
 }
 
 /** GET /listings/farmer/{farmerId} */
@@ -173,11 +172,7 @@ export async function fetchFarmerListings(
   token?: string | null,
   page = 1
 ): Promise<Product[]> {
-  const listings = await api.get<ListingOut[]>(
-    `${BASE}/farmer/${farmerId}?page=${page}&limit=20`,
-    token
-  );
-  return listings.map(listingToProduct);
+  return api.get<Product[]>(`${BASE}/farmer/${farmerId}?page=${page}&limit=20`, token);
 }
 
 /** GET /listings/{listingId}/reviews */
@@ -221,4 +216,9 @@ export async function fetchPriceSuggestion(
     suggested: number;
     basis: string;
   }>(`${BASE}/price-suggestion?${qs.toString()}`, token);
+}
+
+export async function fetchMyListings(token: string, status?: string): Promise<Product[]> {
+  const qs = status ? `?status=${status}` : "";
+  return api.get<Product[]>(`${BASE}/me${qs}`, token);
 }

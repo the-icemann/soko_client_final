@@ -25,12 +25,14 @@ import { Route as appCheckoutRouteImport } from './routes/(app)/checkout'
 import { Route as appCartRouteImport } from './routes/(app)/cart'
 import { Route as appBlogRouteImport } from './routes/(app)/blog'
 import { Route as appSellIndexRouteImport } from './routes/(app)/sell.index'
+import { Route as appProfileIndexRouteImport } from './routes/(app)/profile.index'
 import { Route as appMarketplaceIndexRouteImport } from './routes/(app)/marketplace.index'
 import { Route as appCheckoutIndexRouteImport } from './routes/(app)/checkout.index'
 import { Route as appBlogIndexRouteImport } from './routes/(app)/blog.index'
 import { Route as AuthGoogleCallbackRouteImport } from './routes/auth/google/callback'
 import { Route as appUserNotificationsRouteImport } from './routes/(app)/user.notifications'
 import { Route as appSellSuccessRouteImport } from './routes/(app)/sell.success'
+import { Route as appProfileAnalyticsRouteImport } from './routes/(app)/profile.analytics'
 import { Route as appMarketplaceIdRouteImport } from './routes/(app)/marketplace.$id'
 import { Route as appFarmersIdRouteImport } from './routes/(app)/farmers.$id'
 import { Route as appCheckoutConfirmationRouteImport } from './routes/(app)/checkout.confirmation'
@@ -116,6 +118,11 @@ const appSellIndexRoute = appSellIndexRouteImport.update({
   path: '/',
   getParentRoute: () => appSellRoute,
 } as any)
+const appProfileIndexRoute = appProfileIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => appProfileRoute,
+} as any)
 const appMarketplaceIndexRoute = appMarketplaceIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -145,6 +152,11 @@ const appSellSuccessRoute = appSellSuccessRouteImport.update({
   id: '/success',
   path: '/success',
   getParentRoute: () => appSellRoute,
+} as any)
+const appProfileAnalyticsRoute = appProfileAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => appProfileRoute,
 } as any)
 const appMarketplaceIdRoute = appMarketplaceIdRouteImport.update({
   id: '/$id',
@@ -181,7 +193,7 @@ export interface FileRoutesByFullPath {
   '/home': typeof appHomeRoute
   '/marketplace': typeof appMarketplaceRouteWithChildren
   '/messages': typeof appMessagesRoute
-  '/profile': typeof appProfileRoute
+  '/profile': typeof appProfileRouteWithChildren
   '/search': typeof appSearchRoute
   '/sell': typeof appSellRouteWithChildren
   '/auth/complete-profile': typeof AuthCompleteProfileRoute
@@ -192,12 +204,14 @@ export interface FileRoutesByFullPath {
   '/checkout/confirmation': typeof appCheckoutConfirmationRoute
   '/farmers/$id': typeof appFarmersIdRoute
   '/marketplace/$id': typeof appMarketplaceIdRoute
+  '/profile/analytics': typeof appProfileAnalyticsRoute
   '/sell/success': typeof appSellSuccessRoute
   '/user/notifications': typeof appUserNotificationsRoute
   '/auth/google/callback': typeof AuthGoogleCallbackRoute
   '/blog/': typeof appBlogIndexRoute
   '/checkout/': typeof appCheckoutIndexRoute
   '/marketplace/': typeof appMarketplaceIndexRoute
+  '/profile/': typeof appProfileIndexRoute
   '/sell/': typeof appSellIndexRoute
 }
 export interface FileRoutesByTo {
@@ -206,7 +220,6 @@ export interface FileRoutesByTo {
   '/cart': typeof appCartRoute
   '/home': typeof appHomeRoute
   '/messages': typeof appMessagesRoute
-  '/profile': typeof appProfileRoute
   '/search': typeof appSearchRoute
   '/auth/complete-profile': typeof AuthCompleteProfileRoute
   '/auth/sign-in': typeof AuthSignInRoute
@@ -216,12 +229,14 @@ export interface FileRoutesByTo {
   '/checkout/confirmation': typeof appCheckoutConfirmationRoute
   '/farmers/$id': typeof appFarmersIdRoute
   '/marketplace/$id': typeof appMarketplaceIdRoute
+  '/profile/analytics': typeof appProfileAnalyticsRoute
   '/sell/success': typeof appSellSuccessRoute
   '/user/notifications': typeof appUserNotificationsRoute
   '/auth/google/callback': typeof AuthGoogleCallbackRoute
   '/blog': typeof appBlogIndexRoute
   '/checkout': typeof appCheckoutIndexRoute
   '/marketplace': typeof appMarketplaceIndexRoute
+  '/profile': typeof appProfileIndexRoute
   '/sell': typeof appSellIndexRoute
 }
 export interface FileRoutesById {
@@ -235,7 +250,7 @@ export interface FileRoutesById {
   '/(app)/home': typeof appHomeRoute
   '/(app)/marketplace': typeof appMarketplaceRouteWithChildren
   '/(app)/messages': typeof appMessagesRoute
-  '/(app)/profile': typeof appProfileRoute
+  '/(app)/profile': typeof appProfileRouteWithChildren
   '/(app)/search': typeof appSearchRoute
   '/(app)/sell': typeof appSellRouteWithChildren
   '/auth/complete-profile': typeof AuthCompleteProfileRoute
@@ -246,12 +261,14 @@ export interface FileRoutesById {
   '/(app)/checkout/confirmation': typeof appCheckoutConfirmationRoute
   '/(app)/farmers/$id': typeof appFarmersIdRoute
   '/(app)/marketplace/$id': typeof appMarketplaceIdRoute
+  '/(app)/profile/analytics': typeof appProfileAnalyticsRoute
   '/(app)/sell/success': typeof appSellSuccessRoute
   '/(app)/user/notifications': typeof appUserNotificationsRoute
   '/auth/google/callback': typeof AuthGoogleCallbackRoute
   '/(app)/blog/': typeof appBlogIndexRoute
   '/(app)/checkout/': typeof appCheckoutIndexRoute
   '/(app)/marketplace/': typeof appMarketplaceIndexRoute
+  '/(app)/profile/': typeof appProfileIndexRoute
   '/(app)/sell/': typeof appSellIndexRoute
 }
 export interface FileRouteTypes {
@@ -276,12 +293,14 @@ export interface FileRouteTypes {
     | '/checkout/confirmation'
     | '/farmers/$id'
     | '/marketplace/$id'
+    | '/profile/analytics'
     | '/sell/success'
     | '/user/notifications'
     | '/auth/google/callback'
     | '/blog/'
     | '/checkout/'
     | '/marketplace/'
+    | '/profile/'
     | '/sell/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -290,7 +309,6 @@ export interface FileRouteTypes {
     | '/cart'
     | '/home'
     | '/messages'
-    | '/profile'
     | '/search'
     | '/auth/complete-profile'
     | '/auth/sign-in'
@@ -300,12 +318,14 @@ export interface FileRouteTypes {
     | '/checkout/confirmation'
     | '/farmers/$id'
     | '/marketplace/$id'
+    | '/profile/analytics'
     | '/sell/success'
     | '/user/notifications'
     | '/auth/google/callback'
     | '/blog'
     | '/checkout'
     | '/marketplace'
+    | '/profile'
     | '/sell'
   id:
     | '__root__'
@@ -329,12 +349,14 @@ export interface FileRouteTypes {
     | '/(app)/checkout/confirmation'
     | '/(app)/farmers/$id'
     | '/(app)/marketplace/$id'
+    | '/(app)/profile/analytics'
     | '/(app)/sell/success'
     | '/(app)/user/notifications'
     | '/auth/google/callback'
     | '/(app)/blog/'
     | '/(app)/checkout/'
     | '/(app)/marketplace/'
+    | '/(app)/profile/'
     | '/(app)/sell/'
   fileRoutesById: FileRoutesById
 }
@@ -462,6 +484,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appSellIndexRouteImport
       parentRoute: typeof appSellRoute
     }
+    '/(app)/profile/': {
+      id: '/(app)/profile/'
+      path: '/'
+      fullPath: '/profile/'
+      preLoaderRoute: typeof appProfileIndexRouteImport
+      parentRoute: typeof appProfileRoute
+    }
     '/(app)/marketplace/': {
       id: '/(app)/marketplace/'
       path: '/'
@@ -503,6 +532,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/sell/success'
       preLoaderRoute: typeof appSellSuccessRouteImport
       parentRoute: typeof appSellRoute
+    }
+    '/(app)/profile/analytics': {
+      id: '/(app)/profile/analytics'
+      path: '/analytics'
+      fullPath: '/profile/analytics'
+      preLoaderRoute: typeof appProfileAnalyticsRouteImport
+      parentRoute: typeof appProfileRoute
     }
     '/(app)/marketplace/$id': {
       id: '/(app)/marketplace/$id'
@@ -585,6 +621,20 @@ const appMarketplaceRouteWithChildren = appMarketplaceRoute._addFileChildren(
   appMarketplaceRouteChildren,
 )
 
+interface appProfileRouteChildren {
+  appProfileAnalyticsRoute: typeof appProfileAnalyticsRoute
+  appProfileIndexRoute: typeof appProfileIndexRoute
+}
+
+const appProfileRouteChildren: appProfileRouteChildren = {
+  appProfileAnalyticsRoute: appProfileAnalyticsRoute,
+  appProfileIndexRoute: appProfileIndexRoute,
+}
+
+const appProfileRouteWithChildren = appProfileRoute._addFileChildren(
+  appProfileRouteChildren,
+)
+
 interface appSellRouteChildren {
   appSellSuccessRoute: typeof appSellSuccessRoute
   appSellIndexRoute: typeof appSellIndexRoute
@@ -605,7 +655,7 @@ interface appRouteRouteChildren {
   appHomeRoute: typeof appHomeRoute
   appMarketplaceRoute: typeof appMarketplaceRouteWithChildren
   appMessagesRoute: typeof appMessagesRoute
-  appProfileRoute: typeof appProfileRoute
+  appProfileRoute: typeof appProfileRouteWithChildren
   appSearchRoute: typeof appSearchRoute
   appSellRoute: typeof appSellRouteWithChildren
   appFarmersIdRoute: typeof appFarmersIdRoute
@@ -619,7 +669,7 @@ const appRouteRouteChildren: appRouteRouteChildren = {
   appHomeRoute: appHomeRoute,
   appMarketplaceRoute: appMarketplaceRouteWithChildren,
   appMessagesRoute: appMessagesRoute,
-  appProfileRoute: appProfileRoute,
+  appProfileRoute: appProfileRouteWithChildren,
   appSearchRoute: appSearchRoute,
   appSellRoute: appSellRouteWithChildren,
   appFarmersIdRoute: appFarmersIdRoute,

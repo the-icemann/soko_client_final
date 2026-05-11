@@ -1,37 +1,46 @@
+import { useNavigate } from "@tanstack/react-router";
+
+import { useMarketplaceStore } from "@/store/marketplace-store";
+
 import { CategoryBadgeGroup } from "../ui/badge";
 import { Button } from "../ui/button";
 
-const items = [
-  { label: "All" },
+const CATEGORY_ITEMS = [
+  { label: "All", image: "🛒" },
   { label: "Grains", image: "🌾" },
   { label: "Vegetables", image: "🥦" },
   { label: "Fruits", image: "🍎" },
-  { label: "Dairy", image: "🥛" },
   { label: "Herbs", image: "🌿" },
+  { label: "Dairy", image: "🥛" },
+  { label: "Poultry", image: "🐔" },
+  { label: "Livestock", image: "🐄" },
+  { label: "Fish", image: "🐟" },
+  { label: "Other", image: "📦" },
 ];
 
 const Categories = () => {
+  const navigate = useNavigate();
+  const setActiveCategory = useMarketplaceStore((s) => s.setActiveCategory);
+
+  const handleCategoryChange = (val: string) => {
+    setActiveCategory(val || "All");
+    navigate({ to: "/marketplace" });
+  };
+
   return (
     <div>
-      {/* Category header */}
       <div className="flex items-center justify-between">
-        <h3 className="text-foreground font-semibold ">Categories</h3>
-
-        <Button variant={"link"}>See all</Button>
+        <h3 className="text-foreground font-semibold">Categories</h3>
+        <Button variant="link" onClick={() => navigate({ to: "/marketplace" })}>
+          See all
+        </Button>
       </div>
 
-      {/* Category Badges */}
-      <div className="flex overflow-x-auto no-scrollbar gap-2 my-3">
+      <div className="my-3">
         <CategoryBadgeGroup
           defaultValue="All"
-          onChange={(val) => console.log(val)}
-          items={[
-            { label: "All" },
-            { label: "Grains", image: "🌾" },
-            { label: "Vegetables", image: "🥦" },
-            { label: "Fruits", image: "🍎" },
-            { label: "Dairy", image: "🥛" },
-          ]}
+          onChange={handleCategoryChange}
+          items={CATEGORY_ITEMS}
         />
       </div>
     </div>
