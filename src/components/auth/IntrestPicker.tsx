@@ -44,22 +44,22 @@ const INTRESTS = [
 ];
 
 export function IntrestPicker() {
-  const { intrests, setIntrests } = useSignUpStore();
+  const { interests, setIntrests } = useSignUpStore();
   const [open, setOpen] = useState(false);
 
   const MAX = 3;
 
   function toggle(value: string) {
-    if (intrests.includes(value)) {
-      setIntrests(intrests.filter((s) => s !== value));
+    if (interests.includes(value)) {
+      setIntrests(interests.filter((s) => s !== value));
     } else {
-      if (intrests.length >= MAX) return;
-      setIntrests([...intrests, value]);
+      if (interests.length >= MAX) return;
+      setIntrests([...interests, value]);
     }
   }
 
   function remove(value: string) {
-    setIntrests(intrests.filter((s) => s !== value));
+    setIntrests(interests.filter((s) => s !== value));
   }
 
   return (
@@ -70,9 +70,9 @@ export function IntrestPicker() {
       </FieldLabel>
 
       {/* Selected badges */}
-      {intrests.length > 0 && (
+      {interests.length > 0 && (
         <div className="flex flex-wrap gap-1.5">
-          {intrests.map((s) => (
+          {interests.map((s) => (
             <Badge key={s} variant="secondary" className="gap-1 pr-1 h-6 text-xs">
               {s}
               <button
@@ -95,12 +95,12 @@ export function IntrestPicker() {
             role="combobox"
             className={cn(
               "w-full h-11 justify-between font-normal",
-              intrests.length === 0 && "text-muted-foreground"
+              interests.length === 0 && "text-muted-foreground"
             )}
           >
-            {intrests.length === 0
+            {interests.length === 0
               ? "Select crops / produce..."
-              : `${intrests.length} of ${MAX} selected`}
+              : `${interests.length} of ${MAX} selected`}
             <ChevronsUpDown className="size-4 opacity-50" />
           </Button>
         </PopoverTrigger>
@@ -111,8 +111,8 @@ export function IntrestPicker() {
               <CommandEmpty>No produce found.</CommandEmpty>
               <CommandGroup>
                 {INTRESTS.map((item) => {
-                  const isSelected = intrests.includes(item);
-                  const isDisabled = !isSelected && intrests.length >= MAX;
+                  const isSelected = interests.includes(item);
+                  const isDisabled = !isSelected && interests.length >= MAX;
                   return (
                     <CommandItem
                       key={item}
@@ -134,7 +134,7 @@ export function IntrestPicker() {
         </PopoverContent>
       </Popover>
 
-      {intrests.length === MAX && (
+      {interests.length === MAX && (
         <p className="text-xs text-muted-foreground">Maximum of {MAX} specialties reached.</p>
       )}
     </div>

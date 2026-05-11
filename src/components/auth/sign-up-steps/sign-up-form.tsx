@@ -15,8 +15,8 @@ import { IntrestPicker } from "../IntrestPicker";
 import { SpecialtyPicker } from "../SpecialtyPicker";
 
 const SignUpForm = () => {
-  const { next, back, role, specialties, district, intrests } = useSignUpStore();
-  const { register, isLoading, error, clearError, handleGoogleLogin } = useAuthStore();
+  const { next, back, role, specialties, district, interests } = useSignUpStore();
+  const { register, isLoading, error, clearError } = useAuthStore();
 
   const [fields, setFields] = useState({
     fullName: "",
@@ -37,9 +37,9 @@ const SignUpForm = () => {
     !passwordMismatch &&
     fields.terms &&
     district !== "" &&
-    (role === "buyer" ? intrests.length > 0 : true) &&
+    (role === "buyer" ? interests.length > 0 : true) &&
     (role === "farmer" ? specialties.length > 0 : true) &&
-    (role === "both" ? specialties.length > 0 && intrests.length > 0 : true);
+    (role === "both" ? specialties.length > 0 && interests.length > 0 : true);
 
   function update<K extends keyof typeof fields>(key: K, value: (typeof fields)[K]) {
     if (error) clearError();
@@ -60,9 +60,8 @@ const SignUpForm = () => {
 
     const payload =
       role === "buyer"
-        ? { ...base, role: role as "buyer" | "both", intrests }
+        ? { ...base, role: role as "buyer" | "both", interests }
         : { ...base, role: role as "farmer" | "both", specialties };
-
     try {
       await register(payload);
       next(); // only advances on success
