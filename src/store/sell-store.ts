@@ -38,9 +38,11 @@ interface SellStore {
   aiSuggestion: AiPriceSuggestion | null;
   isLoadingAi: boolean;
   placedListingId: string | null;
+  placedSlug: string;
 
   // Field setters
   setField: <K extends keyof SellListingDraft>(key: K, value: SellListingDraft[K]) => void;
+  setPlacedSlug: (slug: string) => void;
 
   // Photos
   addPhotos: (files: File[]) => void;
@@ -75,9 +77,11 @@ export const useSellStore = create<SellStore>()(
       aiSuggestion: null,
       isLoadingAi: false,
       placedListingId: null,
+      placedSlug: "",
 
       // ── Field setter ─────────────────────────────────────────────────────
       setField: (key, value) => set((s) => ({ draft: { ...s.draft, [key]: value } })),
+      setPlacedSlug: (slug) => set({ placedSlug: slug }),
 
       // ── Photos ───────────────────────────────────────────────────────────
       addPhotos: (files) => {

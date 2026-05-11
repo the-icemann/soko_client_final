@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-import { BLOG_CATEGORIES, BlogCategory } from "./blog-store";
+import { BlogCategory } from "./blog-store";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
