@@ -10,6 +10,7 @@ import {
   Search,
   ShoppingCart,
   Sparkles,
+  User,
   X,
 } from "lucide-react";
 import { useState } from "react";
@@ -18,14 +19,15 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { useNotifications } from "@/hooks/useNotifications";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/auth-store";
 import { useCartStore } from "@/store/cart-store";
 
 import { Logo } from "../landing-page/logo";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+// ─── Types
 interface NavbarProps {
   cartCount?: number;
 }
@@ -106,7 +108,8 @@ export default function Navbar() {
   const [sheetOpen, setSheetOpen] = useState(false);
   const { getSummary } = useCartStore();
   const cartCount = getSummary().itemCount;
-  const { user } = useAuthStore();
+  const { user, isAuthenticated } = useAuthStore();
+  const { unreadCount } = useNotifications();
 
   return (
     <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border">
@@ -144,7 +147,11 @@ export default function Navbar() {
               aria-label="Notifications"
             >
               <Bell size={18} />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-background" />
+              {unreadCount > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 px-1 bg-red-500 text-white text-[10px] font-semibold rounded-full ring-2 ring-background flex items-center justify-center leading-none">
+                  {unreadCount > 99 ? "99+" : unreadCount}
+                </span>
+              )}
             </Button>
           </Link>
 
@@ -166,21 +173,49 @@ export default function Navbar() {
           </Link>
 
           {/* Sell — desktop */}
-          <Link to="/sell" className="hidden md:flex">
-            <Button
-              size="sm"
-              className="rounded-[10px] hover:bg-primary/60 active:scale-[0.97] font-semibold gap-1.5 shadow-sm h-9 px-4"
-            >
-              <Plus size={15} strokeWidth={2.5} />
-              Sell
-            </Button>
-          </Link>
+          {user?.role === "both" ||
+            (user?.role === "farmer" && (
+              <Link to="/sell" className="hidden md:flex">
+                <Button
+                  size="sm"
+                  className="rounded-[10px] hover:bg-primary/60 active:scale-[0.97] font-semibold gap-1.5 shadow-sm h-9 px-4"
+                >
+                  <Plus size={15} strokeWidth={2.5} />
+                  Sell
+                </Button>
+              </Link>
+            ))}
 
           {/* Avatar — desktop */}
-          <Link to="/profile" className="hidden md:flex ml-0.5" aria-label="Profile">
-            <Avatar className="w-9 h-9 ring-2 ring-primary cursor-pointer hover:ring-emerald-400 transition-all">
-              <AvatarFallback className="text-xs font-bold">{user?.initials}</AvatarFallback>
-            </Avatar>
+          {isAuthenticated() ? (
+            <Link to="/profile" className="hidden md:flex ml-0.5" aria-label="Profile">
+              <Avatar className="w-9 h-9 ring-2 ring-primary cursor-pointer hover:ring-emerald-400 transition-all">
+                <AvatarFallback className="text-xs font-bold">{user?.initials}</AvatarFallback>
+              </Avatar>
+            </Link>
+          ) : (
+            <Link to="/auth/sign-in" className="hidden md:flex ml-0.5" aria-label="Profile">
+              <Avatar className="w-9 h-9 ring-2 ring-primary cursor-pointer hover:ring-emerald-400 flex items-center justify-center transition-all">
+                <User />
+              </Avatar>
+            </Link>
+          )}
+
+          {/* Notifications — mobile */}
+          <Link to="/user/notifications" onClick={() => setSheetOpen(false)} className="md:hidden">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="relative rounded-[10px] w-9 h-9 text-muted-foreground hover:text-foreground"
+              aria-label="Notifications"
+            >
+              <Bell size={18} />
+              {unreadCount > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 px-1 bg-red-500 text-white text-[10px] font-semibold rounded-full ring-2 ring-background flex items-center justify-center leading-none">
+                  {unreadCount > 99 ? "99+" : unreadCount}
+                </span>
+              )}
+            </Button>
           </Link>
 
           {/* Cart — mobile */}
@@ -213,7 +248,8 @@ export default function Navbar() {
               </Button>
             </SheetTrigger>
 
-            <SheetContent side="right" className="w-72 px-0 pt-0">
+            <SheetContent side="right" className="w-72 px-0 pt-0" aria-describedby={undefined}>
+              <SheetTitle className="sr-only">Navigation menu</SheetTitle>
               {/* Sheet header */}
               <div className="flex items-center gap-2.5 px-4 h-16 border-b border-border">
                 <Logo size="md" LogoStyle="text-foreground" />
@@ -231,34 +267,37 @@ export default function Navbar() {
               {/* Bottom actions */}
               <div className="px-3 py-3 flex items-center gap-2">
                 {/* Notifications */}
-                <Link to="/user/notifications" onClick={() => setSheetOpen(false)}>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="relative rounded-xl w-10 h-10 text-muted-foreground"
-                  >
-                    <Bell size={18} />
-                    <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full ring-2 ring-background" />
-                  </Button>
-                </Link>
 
-                <div className="flex flex-col items-center">
+                <div
+                  className={`${isAuthenticated() ? "flex flex-col items-center" : "flex gap-2 items-center"}`}
+                >
                   {/* Profile */}
-                  <Link
-                    to="/profile"
-                    onClick={() => setSheetOpen(false)}
-                    className="flex items-center gap-2 flex-1 px-3 py-2 rounded-xl hover:bg-muted transition-colors"
-                  >
-                    <Avatar className="w-7.5 h-7.5 ring-2 ring-primary">
-                      <AvatarFallback className="text-xs font-bold">
-                        {user?.initials}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="text-left">
-                      <p className="text-xs font-semibold text-foreground">{user?.name}</p>
-                      <p className="text-xs text-muted-foreground">View profile</p>
-                    </div>
-                  </Link>
+
+                  {isAuthenticated() ? (
+                    <Link
+                      to="/profile"
+                      onClick={() => setSheetOpen(false)}
+                      className="flex items-center gap-2 flex-1 px-3 py-2 rounded-xl hover:bg-muted transition-colors"
+                    >
+                      <Avatar className="w-7.5 h-7.5 ring-2 ring-primary">
+                        <AvatarFallback className="text-xs font-bold">
+                          {user?.initials}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="text-left">
+                        <p className="text-xs font-semibold text-foreground">{user?.name}</p>
+                        <p className="text-xs text-muted-foreground">View profile</p>
+                      </div>
+                    </Link>
+                  ) : (
+                    <Link to="/auth/sign-in">
+                      <Avatar className="w-7.5 h-7.5 ring-2 ring-primary">
+                        <AvatarFallback className="text-xs font-bold">
+                          <User />
+                        </AvatarFallback>
+                      </Avatar>
+                    </Link>
+                  )}
 
                   {/* Sell */}
                   <Link to="/sell" onClick={() => setSheetOpen(false)}>
