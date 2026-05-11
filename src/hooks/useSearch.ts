@@ -1,41 +1,31 @@
-import { useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
-import type { Farmer, Product } from "../types";
+import { searchFarmers, searchProducts } from "@/api/search.api";
+import { useAuthStore } from "@/store/auth-store";
+import { useSearchStore } from "@/store/search-store";
 
-export function useSearch(farmers: Farmer[], products: Product[]) {
-  const [query, setQuery] = useState("");
-  const [activeTab, setActiveTab] = useState("farmers");
+const STALE = 1000 * 30; // 30 s — search results go stale quickly
 
-  const filteredFarmers = useMemo(() => {
-    if (!query) return farmers;
-    const q = query.toLowerCase();
-    return farmers.filter(
-      (f) =>
-        f.name.toLowerCase().includes(q) ||
-        f.produce.some((p) => p.toLowerCase().includes(q)) ||
-        f.location.toLowerCase().includes(q)
-    );
-  }, [query, farmers]);
+export function useProductSearch() {
+  const query = useSearchStore((s) => s.query);
+  const token = useAuthStore((s) => s.token);
 
-  const filteredProducts = useMemo(() => {
-    if (!query) return products;
-    const q = query.toLowerCase();
-    return products.filter(
-      (p) => p.name.toLowerCase().includes(q) || p.farmer.toLowerCase().includes(q)
-    );
-  }, [query, products]);
+  return useQuery({
+    queryKey: ["search", "products", query],
+    queryFn: () => searchProducts(query, token),
+    staleTime: STALE,
+    placeholderData: (prev) => prev,
+  });
+}
 
-  const handleTabChange = (tab: string) => {
-    setActiveTab(tab);
-    setQuery("");
-  };
+export function useFarmerSearch() {
+  const query = useSearchStore((s) => s.query);
+  const token = useAuthStore((s) => s.token);
 
-  return {
-    query,
-    setQuery,
-    activeTab,
-    handleTabChange,
-    filteredFarmers,
-    filteredProducts,
-  };
+  return useQuery({
+    queryKey: ["search", "farmers", query],
+    queryFn: () => searchFarmers(query, undefined, token),
+    staleTime: STALE,
+    placeholderData: (prev) => prev,
+  });
 }

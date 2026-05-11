@@ -12,7 +12,7 @@ import { useSellStore } from "@/store/sell-store";
 
 import { listingKeys } from "./useMarketplace";
 
-const BASE_URL = import.meta.env.VITE_API_URL ?? "/";
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 // ── Step 1: Create draft (JSON body) ──────────────────────────────────────────
 
@@ -103,6 +103,7 @@ export function useCreateListing() {
   const draft = useSellStore((s) => s.draft);
   const resetDraft = useSellStore((s) => s.resetDraft);
   const setPlacedId = useSellStore((s) => s.setPlacedListingId);
+  const setPlacedSlug = useSellStore((s) => s.setPlacedSlug);
   const qc = useQueryClient();
   const navigate = useNavigate();
 
@@ -168,10 +169,11 @@ export function useCreateListing() {
 
     onSuccess: (data) => {
       setPlacedId(data.id);
+      setPlacedSlug(data.slug);
       resetDraft();
       // Bust marketplace cache so the new listing appears immediately
       qc.invalidateQueries({ queryKey: listingKeys.all() });
-      navigate({ to: "/sell/success", search: { listingId: data.id } });
+      navigate({ to: "/sell/success", search: { listingId: data.id, slug: data.slug } });
     },
   });
 }
