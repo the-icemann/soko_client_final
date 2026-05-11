@@ -1,7 +1,8 @@
 import { Input } from "@base-ui/react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useState } from "react";
 
+import { uploadCoverImage } from "@/api/blog.api";
 import { Separator } from "@/components/ui/separator";
 import { AddSectionBar } from "@/components/write-blog-page/add-section-bar";
 import { PostMeta } from "@/components/write-blog-page/post-meta";
@@ -15,9 +16,18 @@ import {
   useUploadBodyImage,
   useUploadCover,
 } from "@/hooks/useWriteBlog";
+import { useAuthStore } from "@/store/auth-store";
 import { useWriteBlogStore } from "@/store/write-blog-store";
 
 export const Route = createFileRoute("/(app)/blog/write")({
+  beforeLoad: () => {
+    const { isAuthenticated } = useAuthStore.getState();
+    if (!isAuthenticated()) {
+      throw redirect({
+        to: "/auth/sign-in",
+      });
+    }
+  },
   component: RouteComponent,
 });
 
@@ -44,11 +54,11 @@ function RouteComponent() {
 
   // Track the server-side post id once the first draft is created
   const [postId, setPostId] = useState<string | undefined>();
+  const token = useAuthStore((s) => s.token);
 
   // ── Mutations ────────────────────────────────────────────────────────────
   const { mutateAsync: createDraft, isPending: isCreating } = useCreateDraft();
   const { mutateAsync: updateDraft, isPending: isUpdating } = useUpdateDraft(postId ?? "");
-  const { mutateAsync: uploadCover } = useUploadCover(postId ?? "");
   const { mutateAsync: uploadBody } = useUploadBodyImage(postId ?? "");
   const {
     mutate: publish,
@@ -72,14 +82,17 @@ function RouteComponent() {
   // ── Cover image picked ────────────────────────────────────────────────────
   // PostMeta calls setCoverImage(file, previewUrl) — we intercept by wrapping it.
   const handleCoverImageChange = async (file: File, previewUrl: string) => {
-    // Always update the local preview immediately
     setCoverImage(file, previewUrl);
 
-    // If we already have a postId, upload straight away so the server stays in sync.
-    // If not, the file will be uploaded as part of the publish flow.
-    if (postId) {
-      await uploadCover(file);
+    let id = postId;
+
+    if (!id) {
+      const post = await createDraft();
+      id = post.id;
+      setPostId(id);
     }
+
+    await uploadCoverImage(id, file, token!);
   };
 
   // ── Body image picked ─────────────────────────────────────────────────────

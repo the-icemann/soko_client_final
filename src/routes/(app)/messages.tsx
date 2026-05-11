@@ -1,12 +1,21 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useEffect } from "react";
 
 import { ChatPanel } from "@/components/message-page/ChatPanel";
 import { ConversationsSidebar } from "@/components/message-page/ConversationsSidebar";
 import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/store/auth-store";
 import { useMessagesStore } from "@/store/useMessagesStore";
 
 export const Route = createFileRoute("/(app)/messages")({
+  beforeLoad: () => {
+    const { isAuthenticated } = useAuthStore.getState();
+    if (!isAuthenticated()) {
+      throw redirect({
+        to: "/auth/sign-in",
+      });
+    }
+  },
   component: RouteComponent,
 });
 

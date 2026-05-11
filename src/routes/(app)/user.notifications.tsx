@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 import { NotificationEmptyState } from "@/components/notification-page/emptyState";
 import { NotificationHeader } from "@/components/notification-page/Header";
@@ -6,8 +6,17 @@ import { NotificationItem } from "@/components/notification-page/Item";
 import { NotificationSkeletonList } from "@/components/notification-page/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useNotifications } from "@/hooks/useNotifications";
+import { useAuthStore } from "@/store/auth-store";
 
 export const Route = createFileRoute("/(app)/user/notifications")({
+  beforeLoad: () => {
+    const { isAuthenticated } = useAuthStore.getState();
+    if (!isAuthenticated()) {
+      throw redirect({
+        to: "/auth/sign-in",
+      });
+    }
+  },
   component: RouteComponent,
 });
 

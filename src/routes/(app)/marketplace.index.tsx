@@ -6,7 +6,8 @@ import { MarketplaceFilters } from "@/components/market-place/MarketplaceFilters
 import { MarketplaceGrid } from "@/components/market-place/MarketplaceGrid";
 import { Button } from "@/components/ui/button";
 import { useListings } from "@/hooks/useMarketplace";
-import { useMarketplaceStore } from "@/store/useMarketplaceStore";
+import { useAuthStore } from "@/store/auth-store";
+import { useMarketplaceStore } from "@/store/marketplace-store";
 
 export const Route = createFileRoute("/(app)/marketplace/")({
   component: RouteComponent,
@@ -18,6 +19,7 @@ function RouteComponent() {
   // ── Server state ──────────────────────────────────────────────────────────
   // Filtering by category, district, search is done server-side via query params.
   const { data: listings = [], isLoading, error } = useListings();
+  const { isAuthenticated, user } = useAuthStore();
 
   // ── Client UI state ───────────────────────────────────────────────────────
   const { sort, viewMode } = useMarketplaceStore();
@@ -56,10 +58,12 @@ function RouteComponent() {
             </>
           )}
         </p>
-        <Button size="sm" className="gap-1.5" onClick={() => navigate({ to: "/sell" })}>
-          <Plus className="w-4 h-4" />
-          List Your Produce
-        </Button>
+        {(user?.role === "farmer" || (user?.role === "both" && isAuthenticated())) && (
+          <Button size="sm" className="gap-1.5" onClick={() => navigate({ to: "/sell" })}>
+            <Plus className="w-4 h-4" />
+            List Your Produce
+          </Button>
+        )}
       </div>
 
       <MarketplaceGrid products={sorted} viewMode={viewMode} isLoading={isLoading} />
