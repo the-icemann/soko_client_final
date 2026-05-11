@@ -1,6 +1,6 @@
 import { api } from "@/api/api";
-import { listingToProduct } from "@/api/listings.api";
 import type { ListingOut } from "@/api/listings.api";
+import { listingToProduct } from "@/api/listings.api";
 import type { Product } from "@/types";
 import type { FarmerProfile } from "@/types/profile";
 
