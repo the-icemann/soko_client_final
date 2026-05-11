@@ -1,3 +1,5 @@
+import "@/styles/sokobot.css";
+
 import {
   Composer,
   type Configuration,

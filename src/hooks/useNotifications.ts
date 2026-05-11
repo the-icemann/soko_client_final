@@ -14,7 +14,7 @@ export function useNotifications() {
     store.fetchUnreadCount();
     store.connectWS();
     return () => store.disconnectWS();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   const unread = store.notifications.filter((n) => !n.isRead);
   const displayed = store.filter === "unread" ? unread : store.notifications;
