@@ -1,0 +1,227 @@
+/* ── SokoBot webchat theme ─────────────────────────────────────────────────
+   Overrides @botpress/webchat defaults with Shamba brand colours.
+   Imported once in soko-webchat.tsx via StylesheetProvider or a plain import.
+──────────────────────────────────────────────────────────────────────────── */
+
+/* ── 1. Remap Botpress primary scale → Shamba emerald ── */
+.bpFont {
+  --bpPrimary-1: #f3fdf8;
+  --bpPrimary-50: #e6fbf2; /* --shamba-emerald-soft */
+  --bpPrimary-100: #ccf2df;
+  --bpPrimary-200: #99e5bf;
+  --bpPrimary-300: #66daa3;
+  --bpPrimary-400: #33cf87;
+  --bpPrimary-500: #00c471; /* --shamba-emerald */
+  --bpPrimary-600: #00a35d;
+  --bpPrimary-700: #007a45;
+  --bpPrimary-800: #005a33;
+  --bpPrimary-900: #003d23;
+  --bpPrimary-950: #0b2618; /* --shamba-forest */
+
+  /* ── Remap gray scale → Shamba cream/forest neutrals ── */
+  --bpGray-1: #fdfcfa;
+  --bpGray-50: #f7f4ee; /* --shamba-cream */
+  --bpGray-100: #ede8df; /* --shamba-cream-dark */
+  --bpGray-200: #e7e2d9; /* --shamba-border */
+  --bpGray-300: #d4cfc8;
+  --bpGray-400: #a09890;
+  --bpGray-500: #78716c; /* --shamba-muted */
+  --bpGray-600: #5a534e;
+  --bpGray-700: #3d3733;
+  --bpGray-800: #292524; /* --shamba-ink */
+  --bpGray-900: #153d26; /* --shamba-forest-mid */
+  --bpGray-950: #0b2618; /* --shamba-forest */
+
+  /* ── Border radius → match app (0.625rem base) ── */
+  --bpRadius-sm: 4px;
+  --bpRadius-md: 8px;
+  --bpRadius-lg: 10px;
+  --bpRadius-xl: 14px;
+
+  /* ── Font ── */
+  font-family: "Outfit", "Geist Variable", sans-serif !important;
+}
+
+/* ── 2. FAB (floating action button) ── */
+.bpFabContainer {
+  background: #00c471 !important;
+  box-shadow:
+    0 4px 24px rgba(0, 196, 113, 0.35),
+    0 2px 8px rgba(11, 38, 24, 0.2) !important;
+  border: 2px solid rgba(255, 255, 255, 0.15) !important;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease !important;
+}
+
+.bpFabContainer:hover {
+  background: #00a35d !important;
+  transform: scale(1.06) !important;
+  box-shadow:
+    0 6px 32px rgba(0, 196, 113, 0.45),
+    0 2px 10px rgba(11, 38, 24, 0.25) !important;
+}
+
+.bpFabContainer:active {
+  transform: scale(0.97) !important;
+}
+
+.bpFabIcon {
+  color: #0b2618 !important;
+}
+
+/* ── 3. Chat container ── */
+.bpContainer {
+  border-radius: 16px !important;
+  box-shadow:
+    0 20px 60px rgba(11, 38, 24, 0.18),
+    0 4px 16px rgba(11, 38, 24, 0.1) !important;
+  border: 1px solid #e7e2d9 !important;
+  overflow: hidden !important;
+  font-family: "Outfit", "Geist Variable", sans-serif !important;
+}
+
+/* ── 4. Header ── */
+.bpHeaderContainer {
+  background: #0b2618 !important;
+  border-bottom: 1px solid rgba(0, 196, 113, 0.2) !important;
+  padding: 14px 16px !important;
+}
+
+.bpHeaderContentContainer {
+  gap: 10px !important;
+}
+
+.bpHeaderContentAvatarContainer {
+  background: #00c471 !important;
+  border-radius: 50% !important;
+  width: 36px !important;
+  height: 36px !important;
+}
+
+.bpHeaderContentAvatarFallback {
+  color: #0b2618 !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+}
+
+/* Bot name — force full white so it's legible on forest bg */
+.bpHeaderContainer * {
+  color: #f7f4ee !important;
+}
+
+/* Description / status — slightly dimmed */
+.bpHeaderContentDescription,
+.bpHeaderContainer [class*="description"],
+.bpHeaderContainer [class*="subtitle"] {
+  color: rgba(247, 244, 238, 0.7) !important;
+  font-size: 12px !important;
+}
+
+/* Action icons in header (close, etc.) */
+.bpHeaderContentActionsIcons svg {
+  color: rgba(247, 244, 238, 0.7) !important;
+}
+.bpHeaderContentActionsIcons svg:hover {
+  color: #f7f4ee !important;
+}
+
+/* ── 5. Message list background ── */
+[class*="bpMessageList"],
+[class*="bpScrollable"] {
+  background: #f7f4ee !important;
+}
+
+/* ── 6. Bot message bubbles ── */
+[class*="bpMessage"][class*="bot"] [class*="bubble"],
+[class*="bpBubble"][class*="bot"] {
+  background: #ffffff !important;
+  border: 1px solid #e7e2d9 !important;
+  color: #292524 !important;
+  border-radius: 4px 14px 14px 14px !important;
+}
+
+/* ── 7. User message bubbles ── */
+[class*="bpMessage"][class*="user"] [class*="bubble"],
+[class*="bpBubble"][class*="user"] {
+  background: #00c471 !important;
+  color: #0b2618 !important;
+  border-radius: 14px 4px 14px 14px !important;
+  font-weight: 500 !important;
+}
+
+/* ── 8. Composer (input area) ── */
+.bpComposerContainer {
+  background: #ffffff !important;
+  border-top: 1px solid #e7e2d9 !important;
+  padding: 10px 12px !important;
+}
+
+.bpComposerInputContainer {
+  background: #f7f4ee !important;
+  border: 1.5px solid #e7e2d9 !important;
+  border-radius: 10px !important;
+  transition: border-color 0.15s ease !important;
+}
+
+.bpComposerInputContainer:focus-within {
+  border-color: #00c471 !important;
+  box-shadow: 0 0 0 3px rgba(0, 196, 113, 0.12) !important;
+}
+
+.bpComposerInput {
+  color: #292524 !important;
+  font-family: "Outfit", sans-serif !important;
+  font-size: 14px !important;
+}
+
+.bpComposerInput::placeholder {
+  color: #a09890 !important;
+}
+
+/* ── 9. Send button ── */
+.bpComposerSendButton {
+  background: #00c471 !important;
+  color: #0b2618 !important;
+  border-radius: 8px !important;
+  transition:
+    background 0.15s ease,
+    transform 0.1s ease !important;
+}
+
+.bpComposerSendButton:hover {
+  background: #00a35d !important;
+}
+
+.bpComposerSendButton:active {
+  transform: scale(0.95) !important;
+}
+
+/* ── 10. Typing indicator dots ── */
+[class*="bpTyping"] span,
+[class*="typing"] span {
+  background: #00c471 !important;
+}
+
+/* ── 11. Timestamp / metadata text ── */
+[class*="bpTimestamp"],
+[class*="timestamp"] {
+  color: #a09890 !important;
+  font-size: 11px !important;
+}
+
+/* ── 12. Scrollbar ── */
+.bpContainer ::-webkit-scrollbar {
+  width: 4px;
+}
+.bpContainer ::-webkit-scrollbar-track {
+  background: transparent;
+}
+.bpContainer ::-webkit-scrollbar-thumb {
+  background: #d4cfc8;
+  border-radius: 4px;
+}
+.bpContainer ::-webkit-scrollbar-thumb:hover {
+  background: #a09890;
+}
