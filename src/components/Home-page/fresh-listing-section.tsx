@@ -6,19 +6,6 @@ import { ProductCard } from "../common/product-card";
 import { Button } from "../ui/button";
 
 export const FreshListingsSection = ({ products }: { products: Product[] }) => {
-  //const navigate = useNavigate()
-  // const [wishlist, setWishlist] = useState<number[]>([])
-
-  // const toggleWishlist = (id: number) =>
-  //   setWishlist((prev: number[]) =>
-  //     prev.includes(id) ? prev.filter((w) => w !== id) : [...prev, id]
-  //   )
-
-  const addToCart = (id: number) => {
-    // handle cart logic here
-    console.log("added to cart", id);
-  };
-
   return (
     <div>
       {/* Header */}
@@ -37,13 +24,7 @@ export const FreshListingsSection = ({ products }: { products: Product[] }) => {
       {/* Grid */}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
         {products.slice(0, 4).map((p) => (
-          <ProductCard
-            key={p.id}
-            product={p}
-            // isWishlisted={wishlist.includes(p.id)}
-            //onToggleWishlist={toggleWishlist}
-            //onAddToCart={addToCart}
-          />
+          <ProductCard key={p.id} product={p} />
         ))}
       </div>
     </div>
