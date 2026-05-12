@@ -7,3 +7,4 @@ dist-ssr
 .tanstack
 .env
 dist
+dev-dist/

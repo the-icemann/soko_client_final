@@ -72,14 +72,11 @@ export async function uploadCoverImage(
   const form = new FormData();
   form.append("file", file);
 
-  const res = await fetch(
-    `${import.meta.env.VITE_API_URL}posts/${postId}/cover`,
-    {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}` },
-      body: form,
-    }
-  );
+  const res = await fetch(`${import.meta.env.VITE_API_URL}posts/${postId}/cover`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body: form,
+  });
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
