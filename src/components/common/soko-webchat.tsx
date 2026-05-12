@@ -51,7 +51,6 @@ function SokoChatWidget() {
   const userId = useAuthStore((s) => s.user?.id);
   const userRole = useAuthStore((s) => s.user?.role);
 
-  // Sync Soko auth into Botpress user attributes so the bot can make authenticated API calls
   useEffect(() => {
     if (!updateUser) return;
     if (token && userId && userRole) {
@@ -119,7 +118,7 @@ export function SokoWebchat() {
 
   if (!clientId) return null;
 
-  const storageKey = userId ? `soko-${userId}` : "soko-anon";
+  const storageKey = userId ? `soko-v2-${userId}` : "soko-v2-anon";
 
   return (
     <>
