@@ -73,7 +73,7 @@ export async function uploadCoverImage(
   form.append("file", file);
 
   const res = await fetch(
-    `${import.meta.env.VITE_API_URL ?? "http://localhost/"}posts/${postId}/cover`,
+    `${import.meta.env.VITE_API_URL}posts/${postId}/cover`,
     {
       method: "POST",
       headers: { Authorization: `Bearer ${token}` },

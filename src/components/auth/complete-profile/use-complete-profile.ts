@@ -18,7 +18,7 @@ interface CompleteProfilePayload {
 
 export function useCompleteProfile() {
   const navigate = useNavigate();
-  const { district, specialties, intrests, setSpecialties, setIntrests, reset } = useSignUpStore();
+  const { district, specialties, interests, setSpecialties, setIntrests, reset } = useSignUpStore();
 
   const [step, setStep] = useState<0 | 1>(0);
   const [role, setRoleState] = useState<UserRole | "">("");
@@ -32,8 +32,8 @@ export function useCompleteProfile() {
     phone.trim().length >= 9 &&
     district !== "" &&
     (role === "farmer" ? specialties.length > 0 : true) &&
-    (role === "buyer" ? intrests.length > 0 : true) &&
-    (role === "both" ? specialties.length > 0 && intrests.length > 0 : true);
+    (role === "buyer" ? interests.length > 0 : true) &&
+    (role === "both" ? specialties.length > 0 && interests.length > 0 : true);
 
   /** Clear picker state when role changes to avoid stale data */
   function handleRoleSelect(r: UserRole) {
@@ -63,7 +63,7 @@ export function useCompleteProfile() {
       phone: phone.trim(),
       district,
       ...(role === "farmer" || role === "both" ? { specialties } : {}),
-      ...(role === "buyer" || role === "both" ? { interests: intrests } : {}),
+      ...(role === "buyer" || role === "both" ? { interests: interests } : {}),
     };
 
     try {

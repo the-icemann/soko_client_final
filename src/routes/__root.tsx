@@ -3,6 +3,7 @@ import { createRootRoute, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 
 import { SokoWebchat } from "@/components/common/soko-webchat";
+import { PWAUpdateBanner } from "@/components/common/pwa-update-banner";
 import { ThemeProvider } from "@/components/theme-provider";
 
 const queryClient = new QueryClient({
@@ -25,6 +26,8 @@ function RootComponent() {
         <Outlet />
         <SokoWebchat />
         <TanStackRouterDevtools position="bottom-left" />
+        <PWAUpdateBanner />
+        <TanStackRouterDevtools position="bottom-right" />
       </ThemeProvider>
     </QueryClientProvider>
   );
