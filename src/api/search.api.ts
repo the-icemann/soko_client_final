@@ -1,6 +1,4 @@
 import { api } from "@/api/api";
-import type { ListingOut } from "@/api/listings.api";
-import { listingToProduct } from "@/api/listings.api";
 import type { Product } from "@/types";
 import type { FarmerProfile } from "@/types/profile";
 
@@ -23,8 +21,8 @@ export interface SearchFarmerResult {
 export async function searchProducts(query: string, token?: string | null): Promise<Product[]> {
   const qs = new URLSearchParams({ limit: "40" });
   if (query) qs.set("search", query);
-  const listings = await api.get<ListingOut[]>(`listings/?${qs}`, token);
-  return listings.map(listingToProduct);
+  const listings = await api.get<Product[]>(`listings/?${qs}`, token);
+  return listings;
 }
 
 /** GET /users/farmers?search=&district= */

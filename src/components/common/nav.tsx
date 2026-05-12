@@ -45,7 +45,7 @@ const NAV_LINKS: NavLink[] = [
   { to: "/blog", label: "Blog", icon: <BookOpen size={17} /> },
   { to: "/prices", label: "Prices", icon: <BarChart2 size={17} /> },
   { to: "/messages", label: "Messages", icon: <MessageCircle size={17} /> },
-  { to: "/ai", label: "AI Assistant", icon: <Sparkles size={17} /> },
+  // { to: "/ai", label: "AI Assistant", icon: <Sparkles size={17} /> },
 ];
 
 // ─── NavLink item — desktop ───────────────────────────────────────────────────
