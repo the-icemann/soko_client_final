@@ -109,6 +109,6 @@ Pre-commit hooks (Lefthook) run format and lint automatically on staged files.
 
 ## Related Repos
 
-- [`soko_backend`](../soko_backend) — Django microservices API
+- [`soko_backend`](../soko_backend) — FASTAPI(python) microservices API
 - [`SokoBot`](../SokoBot) — Botpress ADK bot powering the in-app AI assistant
 - [`soko_ml`](../soko_ml) — ML gateway for recommendations and price prediction
