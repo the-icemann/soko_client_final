@@ -42,6 +42,7 @@
     "@eslint/core": "^1.1.1",
     "@eslint/js": "^10.0.1",
     "@tanstack/eslint-plugin-query": "^5.91.4",
+    "@types/luxon": "^3.7.1",
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^4.3.4",
