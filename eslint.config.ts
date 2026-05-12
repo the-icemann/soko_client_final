@@ -7,7 +7,7 @@ import simpleImportSort from "eslint-plugin-simple-import-sort";
 import tseslint from "typescript-eslint";
 
 export default defineConfig([
-  { ignores: ["dist", "node_modules", ".tanstack"] },
+  { ignores: ["dist", "dev-dist", "node_modules", ".tanstack"] },
 
   js.configs.recommended,
   ...tseslint.configs.recommended,

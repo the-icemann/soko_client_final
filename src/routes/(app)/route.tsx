@@ -1,12 +1,16 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { Home, HomeIcon, MessageCircle, Search, ShoppingBag, User } from "lucide-react";
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 
 import { CartDrawer } from "@/components/cart/cart-drawer";
 import Navbar from "@/components/common/nav";
 import { BottomNav, type BottomNavItem } from "@/components/navigation/bottom-navigation";
 import { useNotificationsStore } from "@/store/notification-store";
 import { useMessagesStore } from "@/store/useMessagesStore";
+
+const SokoWebchat = lazy(() =>
+  import("@/components/common/soko-webchat").then((m) => ({ default: m.SokoWebchat }))
+);
 
 export const Route = createFileRoute("/(app)")({
   component: RouteComponent,
@@ -59,6 +63,9 @@ function RouteComponent() {
       <Outlet />
       <BottomNav items={NAV_ITEMS} />
       <CartDrawer />
+      <Suspense>
+        <SokoWebchat />
+      </Suspense>
     </div>
   );
 }
