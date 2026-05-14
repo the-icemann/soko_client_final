@@ -3,6 +3,7 @@ import { CheckCircle2, ChevronRight, Eye, PlusCircle, ShoppingBag } from "lucide
 
 import { Button } from "@/components/ui/button";
 import { useSellStore } from "@/store/sell-store";
+import { useAuthStore } from "@/store/auth-store";
 
 export const Route = createFileRoute("/(app)/sell/success")({
   component: RouteComponent,

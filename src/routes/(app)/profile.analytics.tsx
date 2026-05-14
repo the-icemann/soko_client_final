@@ -1,5 +1,5 @@
-import { createFileRoute, Link, redirect } from "@tanstack/react-router";
-import { ArrowLeft, BookOpen, LayoutDashboard, Package, ShoppingBag, Wallet } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowLeft, BookOpen, LayoutDashboard, Package, ShoppingBag } from "lucide-react";
 
 import {
   ActivityTimeline,
@@ -23,12 +23,6 @@ import {
 import { useAuthStore } from "@/store/auth-store";
 
 export const Route = createFileRoute("/(app)/profile/analytics")({
-  beforeLoad: () => {
-    const { isAuthenticated } = useAuthStore.getState();
-    if (!isAuthenticated()) {
-      throw redirect({ to: "/auth/sign-in" });
-    }
-  },
   component: AnalyticsPage,
 });
 

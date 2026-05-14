@@ -1,13 +1,20 @@
 import { Button } from "@base-ui/react";
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Badge, ShoppingBag } from "lucide-react";
 
 import CartItemFull from "@/components/cart/cart-item-full";
 import { OrderSummaryPanel } from "@/components/cart/order-summary-panel";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useCartStore } from "@/store/cart-store";
+import { useAuthStore } from "@/store/auth-store";
 
 export const Route = createFileRoute("/(app)/cart")({
+  beforeLoad: () => {
+    const { isAuthenticated } = useAuthStore.getState();
+    if (!isAuthenticated()) {
+      throw redirect({ to: "/auth/sign-in" });
+    }
+  },
   component: RouteComponent,
 });
 
