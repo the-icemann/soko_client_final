@@ -72,24 +72,76 @@ pnpm preview    # preview production build locally
 ## Project Structure
 
 ```
-src/
-  components/     # shared UI components
-  routes/
-    index.tsx           # landing page (/)
-    auth/               # sign-in, sign-up, complete-profile
-    (app)/              # authenticated app shell
-      home.tsx
-      marketplace.*     # listing browse + detail
-      sell.*            # create listing flow
-      cart.tsx
-      checkout.*
-      messages.tsx
-      profile.*
-      blog.*
-      search.tsx
-  store/          # Zustand stores
-  hooks/          # custom React hooks
-  lib/            # API clients, utilities
+.
+├── public/                        # Static assets, PWA manifest & icons
+├── src/
+│   ├── api/                       # API clients
+│   │   ├── api.ts                 # Base Axios instance & interceptors
+│   │   ├── listings.api.ts
+│   │   ├── blog.api.ts
+│   │   ├── checkout-api.ts
+│   │   ├── orders.api.ts
+│   │   ├── notification.api.ts
+│   │   ├── profile.api.ts
+│   │   └── search.api.ts
+│   ├── components/
+│   │   ├── ui/                    # shadcn/Radix primitives (button, input, card…)
+│   │   ├── common/                # Shared layout pieces (nav, product-card, webchat)
+│   │   ├── navigation/            # Bottom navigation bar
+│   │   ├── auth/                  # Sign-in, sign-up & complete-profile sub-components
+│   │   ├── landing-page/
+│   │   ├── Home-page/
+│   │   ├── market-place/
+│   │   ├── product-detail-page/
+│   │   ├── sell-page/
+│   │   ├── cart/
+│   │   ├── message-page/
+│   │   ├── profile-page/
+│   │   ├── blog-page/
+│   │   ├── blog-post-page/
+│   │   ├── write-blog-page/
+│   │   ├── search-page/
+│   │   └── notification-page/
+│   ├── routes/
+│   │   ├── __root.tsx             # Root layout & providers
+│   │   ├── index.tsx              # Landing page (/)
+│   │   ├── about.tsx
+│   │   ├── auth/
+│   │   │   ├── sign-in.tsx
+│   │   │   ├── sign-up.tsx
+│   │   │   ├── complete-profile.tsx
+│   │   │   └── google/callback.tsx
+│   │   └── (app)/                 # Authenticated shell
+│   │       ├── route.tsx          # Layout guard & bottom nav
+│   │       ├── home.tsx
+│   │       ├── marketplace.*      # index, $id
+│   │       ├── sell.*             # index, success
+│   │       ├── cart.tsx
+│   │       ├── checkout.*         # index, confirmation
+│   │       ├── blog.*             # index, $slug, write
+│   │       ├── farmers.$id.tsx
+│   │       ├── profile.*          # index, analytics
+│   │       ├── messages.tsx
+│   │       ├── search.tsx
+│   │       └── user.notifications.tsx
+│   ├── store/                     # Zustand stores
+│   │   ├── auth-store.ts
+│   │   ├── cart-store.ts
+│   │   ├── marketplace-store.ts
+│   │   ├── sell-store.ts
+│   │   ├── blog-store.ts          # + blog-post-store, write-blog-store
+│   │   ├── search-store.ts
+│   │   ├── notification-store.ts
+│   │   ├── product-detail-store.ts
+│   │   ├── useMessagesStore.ts
+│   │   └── useSignUpStore.ts
+│   ├── hooks/                     # Custom React hooks (data fetching, UI logic)
+│   ├── lib/                       # Shared utilities (cn, formatters…)
+│   ├── types/                     # TypeScript interfaces & enums
+│   └── constants/                 # Static data, district list, colours
+├── vite.config.js
+├── tsconfig.json
+└── vercel.json
 ```
 
 ---
