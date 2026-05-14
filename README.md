@@ -21,16 +21,16 @@ Built with React 19, TanStack Router, TanStack Query, Tailwind CSS v4, and shadc
 
 ## Tech Stack
 
-| Layer | Library |
-|---|---|
-| Framework | React 19 |
-| Routing | TanStack Router (file-based) |
-| Data fetching | TanStack Query |
-| Styling | Tailwind CSS v4, shadcn/ui, Radix UI |
-| State | Zustand |
-| AI chat | Botpress Webchat |
-| Build | Vite 7, vite-plugin-pwa |
-| Package manager | pnpm |
+| Layer           | Library                              |
+| --------------- | ------------------------------------ |
+| Framework       | React 19                             |
+| Routing         | TanStack Router (file-based)         |
+| Data fetching   | TanStack Query                       |
+| Styling         | Tailwind CSS v4, shadcn/ui, Radix UI |
+| State           | Zustand                              |
+| AI chat         | Botpress Webchat                     |
+| Build           | Vite 7, vite-plugin-pwa              |
+| Package manager | pnpm                                 |
 
 ---
 
@@ -55,8 +55,8 @@ Copy `.env.example` to `.env` and fill in the values:
 cp .env.example .env
 ```
 
-| Variable | Description |
-|---|---|
+| Variable                  | Description                                                                                                                  |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | `VITE_BOTPRESS_CLIENT_ID` | Botpress Webchat client ID (from Botpress Cloud → your bot → Integrations → Webchat). Leave blank to disable the bot toggle. |
 
 ### Run
@@ -109,6 +109,6 @@ Pre-commit hooks (Lefthook) run format and lint automatically on staged files.
 
 ## Related Repos
 
-- [`soko_backend`](../soko_backend) — FASTAPI (python) microservices API
+- [`soko_backend`](https://github.com/ArielWandera/soko.git) — FASTAPI (python) microservices API
 - [`SokoBot`](../SokoBot) — Botpress ADK bot powering the in-app AI assistant
-- [`soko_ml`](../soko_ml) — ML gateway for recommendations and price prediction
+- [`soko_ml`](https://github.com/ArielWandera/soko/tree/main/services/soko-ml) — ML gateway for recommendations and price prediction
