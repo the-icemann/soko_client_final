@@ -122,7 +122,7 @@ const HeroSection = () => {
               <Button
                 variant="outline"
                 onClick={() => {
-                  navigate({ to: "/auth/sign-up" });
+                  navigate({ to: "/home" });
                 }}
                 className="flex justify-between items-center hover:-translate-y-0.5 transition-all gap-2 font-body   h-auto bg-transparent text-[15px] border-r-16"
                 style={{ padding: "15px 28px", fontSize: 15 }}

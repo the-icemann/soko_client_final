@@ -3,15 +3,11 @@ import { Logo } from "@/components/landing-page/logo";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { useNavigate } from "@tanstack/react-router";
 
 /* ── CTA Banner ── */
-export function CTABanner({
-  onSignUp,
-  onExplore,
-}: {
-  onSignUp?: () => void;
-  onExplore?: () => void;
-}) {
+export function CTABanner() {
+  const navigate = useNavigate();
   return (
     <section className="px-6 pb-24 bg-background">
       <div className="max-w-300 mx-auto">
@@ -59,7 +55,7 @@ export function CTABanner({
             </p>
             <div className="flex flex-col sm:flex-row gap-3.5 justify-center items-center">
               <Button
-                onClick={onSignUp}
+                onClick={() => navigate({ to: "/auth/sign-up" })}
                 className="hover:-translate-y-0.5 transition-all gap-2 font-body font-bold"
                 style={{
                   background: "var(--shamba-emerald)",
@@ -74,7 +70,7 @@ export function CTABanner({
               </Button>
               <Button
                 variant="outline"
-                onClick={onExplore}
+                onClick={() => navigate({ to: "/marketplace" })}
                 className="hover:border-(--shamba-emerald) hover:bg-white/[0.07] transition-all font-body"
                 style={{
                   background: "transparent",

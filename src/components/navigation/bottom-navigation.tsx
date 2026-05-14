@@ -3,7 +3,6 @@ import { ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 
-// Types
 export interface BottomNavItem {
   label: string;
   href: string;
@@ -15,9 +14,9 @@ export interface BottomNavItem {
 interface BottomNavProps {
   items: BottomNavItem[];
   className?: string;
+  onItemClick?: (item: BottomNavItem) => void;
 }
 
-//Badge
 const NavBadge = ({ count }: { count: number }) => {
   if (count <= 0) return null;
   return (
@@ -27,44 +26,58 @@ const NavBadge = ({ count }: { count: number }) => {
   );
 };
 
-// Item
-
-const BottomNavItem = ({ item, isActive }: { item: BottomNavItem; isActive: boolean }) => (
-  <Link
-    to={item.href}
-    className={cn(
-      "relative flex flex-1 flex-col items-center justify-center gap-1 py-2",
-      "text-muted-foreground transition-colors duration-200",
-      "hover:text-foreground",
-      { "text-primary": isActive }
-    )}
-  >
-    {/* Icon with badge */}
-    <div className="relative">
-      {isActive && item.activeIcon ? item.activeIcon : item.icon}
-      {item.badge !== undefined && <NavBadge count={item.badge} />}
-    </div>
-
-    {/* Label */}
-    <span
-      className={cn(
-        "text-[10px] font-medium leading-none transition-colors",
-        isActive ? "text-primary" : "text-muted-foreground"
+const BottomNavItem = ({
+  item,
+  isActive,
+  onItemClick,
+}: {
+  item: BottomNavItem;
+  isActive: boolean;
+  onItemClick?: (item: BottomNavItem) => void;
+}) => {
+  const content = (
+    <>
+      <div className="relative">
+        {isActive && item.activeIcon ? item.activeIcon : item.icon}
+        {item.badge !== undefined && <NavBadge count={item.badge} />}
+      </div>
+      <span
+        className={cn(
+          "text-[10px] font-medium leading-none transition-colors",
+          isActive ? "text-primary" : "text-muted-foreground"
+        )}
+      >
+        {item.label}
+      </span>
+      {isActive && (
+        <span className="absolute bottom-0 left-1/2 size-1 -translate-x-1/2 rounded-full bg-primary" />
       )}
-    >
-      {item.label}
-    </span>
+    </>
+  );
 
-    {/* Active indicator dot */}
-    {isActive && (
-      <span className="absolute bottom-0 left-1/2 size-1 -translate-x-1/2 rounded-full bg-primary" />
-    )}
-  </Link>
-);
+  const sharedClass = cn(
+    "relative flex flex-1 flex-col items-center justify-center gap-1 py-2",
+    "text-muted-foreground transition-colors duration-200 hover:text-foreground",
+    { "text-primary": isActive }
+  );
 
-//Root
+  // Items with href="#..." are action items (e.g. install) — render as button
+  if (item.href.startsWith("#")) {
+    return (
+      <button className={sharedClass} onClick={() => onItemClick?.(item)}>
+        {content}
+      </button>
+    );
+  }
 
-function BottomNav({ items, className }: BottomNavProps) {
+  return (
+    <Link to={item.href} className={sharedClass} onClick={() => onItemClick?.(item)}>
+      {content}
+    </Link>
+  );
+};
+
+function BottomNav({ items, className, onItemClick }: BottomNavProps) {
   const pathName = useRouterState({
     select: (s) => s.location.pathname,
   });
@@ -74,14 +87,19 @@ function BottomNav({ items, className }: BottomNavProps) {
       data-slot="bottom-nav"
       className={cn(
         "md:hidden fixed bottom-0 left-0 right-0 z-50",
-        "flex h-16  items-stretch",
+        "flex h-16 items-stretch",
         "border-t border-border bg-background/50 backdrop-blur-md",
         "pb-safe-bottom",
         className
       )}
     >
       {items.map((item) => (
-        <BottomNavItem key={item.href} item={item} isActive={pathName === item.href} />
+        <BottomNavItem
+          key={item.href}
+          item={item}
+          isActive={pathName === item.href}
+          onItemClick={onItemClick}
+        />
       ))}
     </nav>
   );

@@ -1,10 +1,11 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { Home, HomeIcon, MessageCircle, Search, ShoppingBag, User } from "lucide-react";
+import { Download, Home, HomeIcon, MessageCircle, Search, ShoppingBag, User } from "lucide-react";
 import { lazy, Suspense, useEffect } from "react";
 
 import { CartDrawer } from "@/components/cart/cart-drawer";
 import Navbar from "@/components/common/nav";
 import { BottomNav, type BottomNavItem } from "@/components/navigation/bottom-navigation";
+import { usePWAInstall } from "@/hooks/use-pwa-install";
 import { useNotificationsStore } from "@/store/notification-store";
 import { useMessagesStore } from "@/store/useMessagesStore";
 
@@ -21,6 +22,7 @@ function RouteComponent() {
     s.conversations.reduce((sum, c) => sum + c.unreadCount, 0)
   );
   const { unreadCount: unreadNotifications, fetchUnreadCount } = useNotificationsStore();
+  const { canInstall, install } = usePWAInstall();
 
   useEffect(() => {
     fetchUnreadCount();
@@ -55,13 +57,28 @@ function RouteComponent() {
       icon: <User className="size-5" />,
       badge: unreadNotifications,
     },
+    // Injected only when the app is installable
+    ...(canInstall
+      ? [
+          {
+            label: "Install",
+            href: "#install",
+            icon: <Download className="size-5" />,
+          },
+        ]
+      : []),
   ];
 
   return (
     <div>
       <Navbar />
       <Outlet />
-      <BottomNav items={NAV_ITEMS} />
+      <BottomNav
+        items={NAV_ITEMS}
+        onItemClick={(item) => {
+          if (item.href === "#install") install();
+        }}
+      />
       <CartDrawer />
       <Suspense>
         <SokoWebchat />

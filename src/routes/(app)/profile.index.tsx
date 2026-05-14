@@ -1,6 +1,5 @@
-// src/routes/(app)/profile/index.tsx
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, Link, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ArrowRight,
   BadgeCheck,
@@ -37,10 +36,6 @@ import { Product } from "@/types";
 import { OrderSummaryItem, PayoutRecord } from "@/types/profile";
 
 export const Route = createFileRoute("/(app)/profile/")({
-  beforeLoad: () => {
-    const { isAuthenticated } = useAuthStore.getState();
-    if (!isAuthenticated()) throw redirect({ to: "/auth/sign-in" });
-  },
   component: RouteComponent,
 });
 
