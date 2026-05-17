@@ -1,11 +1,13 @@
 import {
   Bell,
   CheckCircle2,
+  Leaf,
   MessageSquare,
   Package,
   ShoppingCart,
   Star,
   UserPlus,
+  Users,
   Wallet,
   XCircle,
   Zap,
@@ -65,6 +67,16 @@ const EVENT_MAP: Record<string, { Icon: React.ElementType; bg: string; fg: strin
     Icon: Zap,
     bg: "bg-slate-100 dark:bg-slate-800",
     fg: "text-slate-500 dark:text-slate-400",
+  },
+  buyer_match: {
+    Icon: Users,
+    bg: "bg-green-100 dark:bg-green-900/40",
+    fg: "text-green-600 dark:text-green-400",
+  },
+  listing_match: {
+    Icon: Leaf,
+    bg: "bg-teal-100 dark:bg-teal-900/40",
+    fg: "text-teal-600 dark:text-teal-400",
   },
 };
 

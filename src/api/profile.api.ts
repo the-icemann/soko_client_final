@@ -91,9 +91,9 @@ export interface ListingOut {
   updatedAt: string;
 }
 
-/** GET /listings?farmer_id={farmerId} — all active listings for a farmer */
+/** GET /listings/farmer/{farmerId} — all active listings for a farmer */
 export function fetchFarmerListings(farmerId: string, token?: string | null) {
-  return api.get<ListingOut[]>(`listings?farmer_id=${farmerId}&limit=50`, token);
+  return api.get<ListingOut[]>(`listings/farmer/${farmerId}?limit=50`, token);
 }
 
 export interface FarmerOrderSummaryOut {
