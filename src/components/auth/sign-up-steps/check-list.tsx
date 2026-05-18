@@ -1,5 +1,5 @@
 import { useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { api } from "@/api/api";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,21 @@ export function CheckList() {
   const { user, token } = useAuthStore();
 
   const [resendState, setResendState] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [countdown, setCountdown] = useState(3);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCountdown((c) => {
+        if (c <= 1) {
+          clearInterval(interval);
+          navigate({ to: "/home" });
+          return 0;
+        }
+        return c - 1;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   async function handleResend() {
     setResendState("sending");
@@ -51,8 +66,8 @@ export function CheckList() {
       <div className="flex flex-col items-center gap-4 w-full">
         <OnboardingChecklist />
 
-        <Button className="w-full h-11" onClick={() => navigate({ to: "/marketplace" })}>
-          Go to Marketplace
+        <Button className="w-full h-11" onClick={() => navigate({ to: "/home" })}>
+          Go to Home {countdown > 0 && `(${countdown})`}
         </Button>
 
         <Button

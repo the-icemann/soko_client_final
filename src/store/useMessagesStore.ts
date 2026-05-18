@@ -114,14 +114,19 @@ export const useMessagesStore = create<MessagesStore>((set, get) => ({
 
       switch (event) {
         case "new_message": {
-          const msg = data as MessageOut;
-          // Append to message list
+          const rawMsg = data as MessageOut;
+          // Recompute isMine client-side — the server sends a single payload
+          // with isMine from the sender's perspective, so we must correct it.
+          const currentUserId = useAuthStore.getState().user?.id;
+          const msg: MessageOut = { ...rawMsg, isMine: rawMsg.senderId === currentUserId };
+
+          const conversationKnown = conversations.some((c) => c.id === msg.conversationId);
+
           set({
             messages: {
               ...messages,
               [msg.conversationId]: [...(messages[msg.conversationId] ?? []), msg],
             },
-            // Update conversation preview
             conversations: conversations.map((c) =>
               c.id === msg.conversationId
                 ? {
@@ -136,7 +141,13 @@ export const useMessagesStore = create<MessagesStore>((set, get) => ({
                 : c
             ),
           });
-          // Auto mark as read if conversation is open
+
+          // If this message belongs to a conversation we haven't loaded yet,
+          // refresh the list so it appears in the sidebar.
+          if (!conversationKnown) {
+            get().fetchConversations();
+          }
+
           if (activeConversationId === msg.conversationId) {
             get().markAsRead(msg.conversationId, msg.id);
           }
@@ -220,12 +231,20 @@ export const useMessagesStore = create<MessagesStore>((set, get) => ({
         `/message/conversations/${conversationId}`,
         token
       );
-      set((s) => ({
-        messages: { ...s.messages, [conversationId]: detail.messages },
-        conversations: s.conversations.map((c) =>
-          c.id === conversationId ? detail.conversation : c
-        ),
-      }));
+      set((s) => {
+        // Preserve any messages delivered by WS while the API call was in-flight
+        const fetchedIds = new Set(detail.messages.map((m) => m.id));
+        const wsOnly = (s.messages[conversationId] ?? []).filter((m) => !fetchedIds.has(m.id));
+        const merged = [...detail.messages, ...wsOnly].sort(
+          (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        );
+        return {
+          messages: { ...s.messages, [conversationId]: merged },
+          conversations: s.conversations.map((c) =>
+            c.id === conversationId ? detail.conversation : c
+          ),
+        };
+      });
     } finally {
       set({ isLoadingMessages: false });
     }
