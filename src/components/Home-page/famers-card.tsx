@@ -23,15 +23,11 @@ const StarRating = ({ rating }: { rating: number }) => (
 );
 
 //── Farmer Card
-export const FarmerCard = ({ farmer }: { farmer: Farmer }) => {
-  // const navigate = useNavigate()
-
+export const FarmerCard = ({ farmer, onClick }: { farmer: Farmer; onClick?: () => void }) => {
   return (
     <Card
       className="w-42 shrink-0 cursor-pointer shadow-sm transition-shadow hover:shadow-md mt-2"
-      // onClick={() =>
-      //   // navigate({ to: "/farmer-profile", search: { id: farmer.id } })
-      // }
+      onClick={onClick}
     >
       <CardContent className="flex flex-col gap-2 p-3.5">
         {/* Avatar + name row */}

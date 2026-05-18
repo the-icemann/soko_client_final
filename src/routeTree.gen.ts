@@ -18,6 +18,7 @@ import { Route as AuthCompleteProfileRouteImport } from './routes/auth/complete-
 import { Route as appSellRouteImport } from './routes/(app)/sell'
 import { Route as appSearchRouteImport } from './routes/(app)/search'
 import { Route as appProfileRouteImport } from './routes/(app)/profile'
+import { Route as appPricesRouteImport } from './routes/(app)/prices'
 import { Route as appMessagesRouteImport } from './routes/(app)/messages'
 import { Route as appMarketplaceRouteImport } from './routes/(app)/marketplace'
 import { Route as appHomeRouteImport } from './routes/(app)/home'
@@ -36,6 +37,7 @@ import { Route as appProfileAnalyticsRouteImport } from './routes/(app)/profile.
 import { Route as appMarketplaceIdRouteImport } from './routes/(app)/marketplace.$id'
 import { Route as appFarmersIdRouteImport } from './routes/(app)/farmers.$id'
 import { Route as appCheckoutConfirmationRouteImport } from './routes/(app)/checkout.confirmation'
+import { Route as appBuyersIdRouteImport } from './routes/(app)/buyers.$id'
 import { Route as appBlogWriteRouteImport } from './routes/(app)/blog.write'
 import { Route as appBlogSlugRouteImport } from './routes/(app)/blog.$slug'
 
@@ -81,6 +83,11 @@ const appSearchRoute = appSearchRouteImport.update({
 const appProfileRoute = appProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => appRouteRoute,
+} as any)
+const appPricesRoute = appPricesRouteImport.update({
+  id: '/prices',
+  path: '/prices',
   getParentRoute: () => appRouteRoute,
 } as any)
 const appMessagesRoute = appMessagesRouteImport.update({
@@ -173,6 +180,11 @@ const appCheckoutConfirmationRoute = appCheckoutConfirmationRouteImport.update({
   path: '/confirmation',
   getParentRoute: () => appCheckoutRoute,
 } as any)
+const appBuyersIdRoute = appBuyersIdRouteImport.update({
+  id: '/buyers/$id',
+  path: '/buyers/$id',
+  getParentRoute: () => appRouteRoute,
+} as any)
 const appBlogWriteRoute = appBlogWriteRouteImport.update({
   id: '/write',
   path: '/write',
@@ -193,6 +205,7 @@ export interface FileRoutesByFullPath {
   '/home': typeof appHomeRoute
   '/marketplace': typeof appMarketplaceRouteWithChildren
   '/messages': typeof appMessagesRoute
+  '/prices': typeof appPricesRoute
   '/profile': typeof appProfileRouteWithChildren
   '/search': typeof appSearchRoute
   '/sell': typeof appSellRouteWithChildren
@@ -201,6 +214,7 @@ export interface FileRoutesByFullPath {
   '/auth/sign-up': typeof AuthSignUpRoute
   '/blog/$slug': typeof appBlogSlugRoute
   '/blog/write': typeof appBlogWriteRoute
+  '/buyers/$id': typeof appBuyersIdRoute
   '/checkout/confirmation': typeof appCheckoutConfirmationRoute
   '/farmers/$id': typeof appFarmersIdRoute
   '/marketplace/$id': typeof appMarketplaceIdRoute
@@ -220,12 +234,14 @@ export interface FileRoutesByTo {
   '/cart': typeof appCartRoute
   '/home': typeof appHomeRoute
   '/messages': typeof appMessagesRoute
+  '/prices': typeof appPricesRoute
   '/search': typeof appSearchRoute
   '/auth/complete-profile': typeof AuthCompleteProfileRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/blog/$slug': typeof appBlogSlugRoute
   '/blog/write': typeof appBlogWriteRoute
+  '/buyers/$id': typeof appBuyersIdRoute
   '/checkout/confirmation': typeof appCheckoutConfirmationRoute
   '/farmers/$id': typeof appFarmersIdRoute
   '/marketplace/$id': typeof appMarketplaceIdRoute
@@ -250,6 +266,7 @@ export interface FileRoutesById {
   '/(app)/home': typeof appHomeRoute
   '/(app)/marketplace': typeof appMarketplaceRouteWithChildren
   '/(app)/messages': typeof appMessagesRoute
+  '/(app)/prices': typeof appPricesRoute
   '/(app)/profile': typeof appProfileRouteWithChildren
   '/(app)/search': typeof appSearchRoute
   '/(app)/sell': typeof appSellRouteWithChildren
@@ -258,6 +275,7 @@ export interface FileRoutesById {
   '/auth/sign-up': typeof AuthSignUpRoute
   '/(app)/blog/$slug': typeof appBlogSlugRoute
   '/(app)/blog/write': typeof appBlogWriteRoute
+  '/(app)/buyers/$id': typeof appBuyersIdRoute
   '/(app)/checkout/confirmation': typeof appCheckoutConfirmationRoute
   '/(app)/farmers/$id': typeof appFarmersIdRoute
   '/(app)/marketplace/$id': typeof appMarketplaceIdRoute
@@ -282,6 +300,7 @@ export interface FileRouteTypes {
     | '/home'
     | '/marketplace'
     | '/messages'
+    | '/prices'
     | '/profile'
     | '/search'
     | '/sell'
@@ -290,6 +309,7 @@ export interface FileRouteTypes {
     | '/auth/sign-up'
     | '/blog/$slug'
     | '/blog/write'
+    | '/buyers/$id'
     | '/checkout/confirmation'
     | '/farmers/$id'
     | '/marketplace/$id'
@@ -309,12 +329,14 @@ export interface FileRouteTypes {
     | '/cart'
     | '/home'
     | '/messages'
+    | '/prices'
     | '/search'
     | '/auth/complete-profile'
     | '/auth/sign-in'
     | '/auth/sign-up'
     | '/blog/$slug'
     | '/blog/write'
+    | '/buyers/$id'
     | '/checkout/confirmation'
     | '/farmers/$id'
     | '/marketplace/$id'
@@ -338,6 +360,7 @@ export interface FileRouteTypes {
     | '/(app)/home'
     | '/(app)/marketplace'
     | '/(app)/messages'
+    | '/(app)/prices'
     | '/(app)/profile'
     | '/(app)/search'
     | '/(app)/sell'
@@ -346,6 +369,7 @@ export interface FileRouteTypes {
     | '/auth/sign-up'
     | '/(app)/blog/$slug'
     | '/(app)/blog/write'
+    | '/(app)/buyers/$id'
     | '/(app)/checkout/confirmation'
     | '/(app)/farmers/$id'
     | '/(app)/marketplace/$id'
@@ -433,6 +457,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof appProfileRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/prices': {
+      id: '/(app)/prices'
+      path: '/prices'
+      fullPath: '/prices'
+      preLoaderRoute: typeof appPricesRouteImport
       parentRoute: typeof appRouteRoute
     }
     '/(app)/messages': {
@@ -561,6 +592,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appCheckoutConfirmationRouteImport
       parentRoute: typeof appCheckoutRoute
     }
+    '/(app)/buyers/$id': {
+      id: '/(app)/buyers/$id'
+      path: '/buyers/$id'
+      fullPath: '/buyers/$id'
+      preLoaderRoute: typeof appBuyersIdRouteImport
+      parentRoute: typeof appRouteRoute
+    }
     '/(app)/blog/write': {
       id: '/(app)/blog/write'
       path: '/write'
@@ -655,9 +693,11 @@ interface appRouteRouteChildren {
   appHomeRoute: typeof appHomeRoute
   appMarketplaceRoute: typeof appMarketplaceRouteWithChildren
   appMessagesRoute: typeof appMessagesRoute
+  appPricesRoute: typeof appPricesRoute
   appProfileRoute: typeof appProfileRouteWithChildren
   appSearchRoute: typeof appSearchRoute
   appSellRoute: typeof appSellRouteWithChildren
+  appBuyersIdRoute: typeof appBuyersIdRoute
   appFarmersIdRoute: typeof appFarmersIdRoute
   appUserNotificationsRoute: typeof appUserNotificationsRoute
 }
@@ -669,9 +709,11 @@ const appRouteRouteChildren: appRouteRouteChildren = {
   appHomeRoute: appHomeRoute,
   appMarketplaceRoute: appMarketplaceRouteWithChildren,
   appMessagesRoute: appMessagesRoute,
+  appPricesRoute: appPricesRoute,
   appProfileRoute: appProfileRouteWithChildren,
   appSearchRoute: appSearchRoute,
   appSellRoute: appSellRouteWithChildren,
+  appBuyersIdRoute: appBuyersIdRoute,
   appFarmersIdRoute: appFarmersIdRoute,
   appUserNotificationsRoute: appUserNotificationsRoute,
 }
