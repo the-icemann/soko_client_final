@@ -93,7 +93,7 @@ export const useAuthStore = create<AuthStore>()(
 
       //Google Auth
       handleGoogleLogin: () => {
-        window.location.href = "http://localhost/auth/google/login";
+        window.location.href = "/auth/google/login";
       },
 
       //Settings Update
