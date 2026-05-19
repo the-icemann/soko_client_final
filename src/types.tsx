@@ -19,6 +19,7 @@ export interface Farmer {
   online?: boolean;
   reviews?: number;
   price?: string;
+  matchScore?: number;
 }
 export interface MarketProduct {
   id: number;
