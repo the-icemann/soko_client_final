@@ -78,7 +78,7 @@ interface MessagesStore {
   sendMessage: (text: string) => Promise<void>;
   deleteMessage: (conversationId: string, messageId: string) => Promise<void>;
   startConversation: (
-    farmerId: string,
+    recipientId: string,
     firstMessage: string,
     listingId?: string
   ) => Promise<string>;
@@ -296,11 +296,11 @@ export const useMessagesStore = create<MessagesStore>((set, get) => ({
     }));
   },
 
-  startConversation: async (farmerId, firstMessage, listingId) => {
+  startConversation: async (recipientId, firstMessage, listingId) => {
     const token = useAuthStore.getState().token;
     const result = await api.post<StartConversationOut>(
       "message/conversations",
-      { farmer_id: farmerId, first_message: firstMessage, listing_id: listingId ?? null },
+      { recipient_id: recipientId, first_message: firstMessage, listing_id: listingId ?? null },
       token
     );
     set((s) => ({
