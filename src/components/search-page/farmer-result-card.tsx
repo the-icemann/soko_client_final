@@ -2,13 +2,13 @@ import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { BadgeCheck, MapPin, MessageCircle, Star, TrendingUp } from "lucide-react";
 
-import { startConversation } from "@/api/search.api";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/auth-store";
+import { useMessagesStore } from "@/store/useMessagesStore";
 import { FarmerProfile } from "@/types/profile";
 
 function initials(name: string) {
@@ -32,14 +32,18 @@ interface Props {
 export function FarmerResultCard({ farmer }: Props) {
   const navigate = useNavigate();
   const { token } = useAuthStore();
+  const { startConversation, setActiveConversation } = useMessagesStore();
 
   /* Start / retrieve conversation then navigate to messages */
   const { mutate: chat, isPending: chatting } = useMutation({
     mutationFn: () => {
       if (!token) throw new Error("Sign in to message farmers");
-      return startConversation(farmer.id, token);
+      return startConversation(farmer.id, `Hi, I'm interested in what you have to offer.`);
     },
-    onSuccess: (conv) => navigate({ to: "/messages", search: { conversationId: conv.id } }),
+    onSuccess: (conversationId) => {
+      setActiveConversation(conversationId);
+      navigate({ to: "/messages" });
+    },
   });
 
   const specialties = farmer.farmerBio

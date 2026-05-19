@@ -1,13 +1,16 @@
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, BadgeCheck, Calendar, MapPin, ShoppingBasket } from "lucide-react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { ArrowLeft, BadgeCheck, Calendar, MapPin, MessageCircle, ShoppingBasket } from "lucide-react";
+import { useState } from "react";
 
 import { api } from "@/api/api";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthStore } from "@/store/auth-store";
+import { useMessagesStore } from "@/store/useMessagesStore";
 
 export const Route = createFileRoute("/(app)/buyers/$id")({
   component: RouteComponent,
@@ -48,6 +51,27 @@ function BuyerSkeleton() {
 function RouteComponent() {
   const { id } = Route.useParams();
   const { data: buyer, isLoading, error } = useBuyerProfile(id);
+  const { user, isFarmer, isBuyer } = useAuthStore();
+  const { startConversation, setActiveConversation } = useMessagesStore();
+  const navigate = useNavigate();
+  const [chatLoading, setChatLoading] = useState(false);
+
+  const canMessage = (isFarmer() || isBuyer()) && user?.id !== id;
+
+  async function handleMessage() {
+    if (!buyer) return;
+    setChatLoading(true);
+    try {
+      const conversationId = await startConversation(
+        buyer.id,
+        `Hi ${buyer.name.split(" ")[0]}, I'd like to connect with you on Soko.`
+      );
+      setActiveConversation(conversationId);
+      navigate({ to: "/messages" });
+    } finally {
+      setChatLoading(false);
+    }
+  }
 
   if (isLoading) {
     return (
@@ -90,7 +114,7 @@ function RouteComponent() {
                 {buyer.initials}
               </AvatarFallback>
             </Avatar>
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <h1 className="text-xl font-bold truncate">{buyer.name}</h1>
               {buyer.verified && (
                 <div className="flex items-center gap-1 mt-0.5">
@@ -103,6 +127,18 @@ function RouteComponent() {
                 <span>{buyer.district || "Uganda"}</span>
               </div>
             </div>
+            {canMessage && (
+              <Button
+                size="sm"
+                variant="secondary"
+                className="shrink-0 gap-1.5 text-xs"
+                disabled={chatLoading}
+                onClick={handleMessage}
+              >
+                <MessageCircle className="size-3.5" />
+                {chatLoading ? "…" : "Message"}
+              </Button>
+            )}
           </div>
         </div>
 
