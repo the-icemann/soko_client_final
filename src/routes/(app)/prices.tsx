@@ -61,8 +61,8 @@ function BuyerSection() {
 
 function PricesPage() {
   const isFarmer = useAuthStore((s) => s.isFarmer());
-  const isBuyer  = useAuthStore((s) => s.isBuyer());
-  const isBoth   = useAuthStore((s) => s.isBoth());
+  const isBuyer = useAuthStore((s) => s.isBuyer());
+  const isBoth = useAuthStore((s) => s.isBoth());
 
   return (
     <div className="min-h-screen bg-muted/20 pb-24">

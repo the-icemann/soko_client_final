@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
 import { ChartNoAxesColumnDecreasing } from "lucide-react";
+import { useEffect, useState } from "react";
 
-import { useAuthStore } from "@/store/auth-store";
 import { Skeleton } from "@/components/ui/skeleton";
-import { CROP_DISPLAY, ML_CROPS, fmtUGX, mapToMLCrop } from "@/lib/prices-utils";
+import { CROP_DISPLAY, fmtUGX, mapToMLCrop, ML_CROPS } from "@/lib/prices-utils";
+import { useAuthStore } from "@/store/auth-store";
 import { PricePrediction as PricePredictionData } from "@/types";
+
 import { PricePredictionCard } from "./predictions-card";
 
 // ── nearest reference market by district ─────────────────────────────────────
@@ -14,7 +15,8 @@ function nearestMarket(district: string | undefined): string {
   if (d.includes("gulu") || d.includes("kitgum") || d.includes("pader")) return "Gulu";
   if (d.includes("lira") || d.includes("otuke") || d.includes("amolatar")) return "Lira";
   if (d.includes("mbarara") || d.includes("bushenyi") || d.includes("kabale")) return "Mbarara";
-  if (d.includes("mbale") || d.includes("jinja") || d.includes("tororo") || d.includes("soroti")) return "Mbale";
+  if (d.includes("mbale") || d.includes("jinja") || d.includes("tororo") || d.includes("soroti"))
+    return "Mbale";
   if (d.includes("masaka") || d.includes("ssembabule") || d.includes("lwengo")) return "Masaka";
   return "Kisenyi_Kampala";
 }
@@ -24,9 +26,9 @@ function nearestMarket(district: string | undefined): string {
 async function fetchCropCard(cropKey: string, market: string): Promise<PricePredictionData | null> {
   try {
     const res = await fetch("/ml/price/predict", {
-      method:  "POST",
+      method: "POST",
       headers: { "Content-Type": "application/json" },
-      body:    JSON.stringify({ crop: cropKey, market, weeks_ahead: 4 }),
+      body: JSON.stringify({ crop: cropKey, market, weeks_ahead: 4 }),
     });
     if (!res.ok) return null;
     const data = await res.json();
@@ -36,15 +38,13 @@ async function fetchCropCard(cropKey: string, market: string): Promise<PricePred
     const curr = preds[0].predicted_price_ugx;
     const next = preds[1].predicted_price_ugx;
     const spread = preds[0].upper_bound - preds[0].lower_bound;
-    const confidence = Math.round(
-      Math.max(30, Math.min(95, 100 - (spread / curr) * 50))
-    );
+    const confidence = Math.round(Math.max(30, Math.min(95, 100 - (spread / curr) * 50)));
 
     return {
-      crop:       CROP_DISPLAY[cropKey] ?? cropKey,
-      current:    fmtUGX(curr) + "/kg",
-      predicted:  fmtUGX(next) + "/kg",
-      trend:      next >= curr ? "up" : "down",
+      crop: CROP_DISPLAY[cropKey] ?? cropKey,
+      current: fmtUGX(curr) + "/kg",
+      predicted: fmtUGX(next) + "/kg",
+      trend: next >= curr ? "up" : "down",
       confidence,
     };
   } catch {
@@ -67,26 +67,37 @@ function PriceSkeleton() {
 // ── component ─────────────────────────────────────────────────────────────────
 
 const PricePrediction = () => {
-  const { user }  = useAuthStore();
-  const isFarmer  = useAuthStore((s) => s.isFarmer());
-  const isBuyer   = useAuthStore((s) => s.isBuyer());
+  const { user } = useAuthStore();
+  const isFarmer = useAuthStore((s) => s.isFarmer());
+  const isBuyer = useAuthStore((s) => s.isBuyer());
 
-  const [cards,   setCards]   = useState<PricePredictionData[]>([]);
+  const [cards, setCards] = useState<PricePredictionData[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) { setLoading(false); return; }
+    if (!user) {
+      setLoading(false);
+      return;
+    }
 
     const market = nearestMarket(user.district);
 
     const keys: string[] = [];
     const seen = new Set<string>();
 
-    const addKey = (k: string) => { if (!seen.has(k)) { seen.add(k); keys.push(k); } };
+    const addKey = (k: string) => {
+      if (!seen.has(k)) {
+        seen.add(k);
+        keys.push(k);
+      }
+    };
 
     if (isFarmer && user.specialties?.length) {
       // Farmer: personalised — show their specialties only
-      user.specialties.forEach((s) => { const k = mapToMLCrop(s); if (k) addKey(k); });
+      user.specialties.forEach((s) => {
+        const k = mapToMLCrop(s);
+        if (k) addKey(k);
+      });
     }
 
     if (isBuyer) {
@@ -104,9 +115,10 @@ const PricePrediction = () => {
       .finally(() => setLoading(false));
   }, [user?.id]);
 
-  const emptyHint = isFarmer && !isBuyer
-    ? "Add specialties in your profile to see your crop price predictions."
-    : "Price predictions are temporarily unavailable.";
+  const emptyHint =
+    isFarmer && !isBuyer
+      ? "Add specialties in your profile to see your crop price predictions."
+      : "Price predictions are temporarily unavailable.";
 
   return (
     <div>

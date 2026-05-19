@@ -7,7 +7,7 @@ on:
 
 concurrency:
   group: deploy-frontend
-  cancel-in-progress: true  # cancel queued deploy if a newer push comes in
+  cancel-in-progress: true # cancel queued deploy if a newer push comes in
 
 jobs:
   build-and-deploy:

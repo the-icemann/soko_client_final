@@ -1,17 +1,12 @@
-import { useEffect, useState } from "react";
 import { AlertTriangle, ShoppingBasket, TrendingDown, TrendingUp } from "lucide-react";
+import { useEffect, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  CROP_DISPLAY,
-  MARKET_DISPLAY,
-  ML_CROPS,
-  fmtUGX,
-} from "@/lib/prices-utils";
-import { usePricesStore, type BuyerCropData } from "@/store/usePricesStore";
+import { CROP_DISPLAY, fmtUGX, MARKET_DISPLAY, ML_CROPS } from "@/lib/prices-utils";
 import { useAuthStore } from "@/store/auth-store";
+import { type BuyerCropData, usePricesStore } from "@/store/usePricesStore";
 
 // ── Trend badge ───────────────────────────────────────────────────────────────
 
@@ -21,14 +16,17 @@ function PriceTrend({ data }: { data: BuyerCropData }) {
   if (!best || best.weeklyPredictions.length < 2) return null;
 
   const first = best.weeklyPredictions[0].predicted_price_ugx;
-  const last  = best.weeklyPredictions[best.weeklyPredictions.length - 1].predicted_price_ugx;
-  const pct   = (((last - first) / first) * 100).toFixed(1);
-  const up    = last >= first;
+  const last = best.weeklyPredictions[best.weeklyPredictions.length - 1].predicted_price_ugx;
+  const pct = (((last - first) / first) * 100).toFixed(1);
+  const up = last >= first;
 
   return (
-    <span className={`inline-flex items-center gap-0.5 text-[10px] font-semibold ${up ? "text-red-500" : "text-green-600"}`}>
+    <span
+      className={`inline-flex items-center gap-0.5 text-[10px] font-semibold ${up ? "text-red-500" : "text-green-600"}`}
+    >
       {up ? <TrendingUp className="size-3" /> : <TrendingDown className="size-3" />}
-      {up ? "+" : ""}{pct}% (4 wk)
+      {up ? "+" : ""}
+      {pct}% (4 wk)
     </span>
   );
 }
@@ -66,7 +64,10 @@ function CropCard({ data }: { data: BuyerCropData }) {
           <span className="text-xs text-muted-foreground">— {fmtUGX(data.highestPrice)} / kg</span>
         </div>
         <div className="text-xs text-muted-foreground">
-          Best buy: <span className="font-semibold text-foreground">{MARKET_DISPLAY[data.bestBuyMarket] ?? data.bestBuyMarket}</span>
+          Best buy:{" "}
+          <span className="font-semibold text-foreground">
+            {MARKET_DISPLAY[data.bestBuyMarket] ?? data.bestBuyMarket}
+          </span>
         </div>
       </CardHeader>
 
@@ -82,7 +83,9 @@ function CropCard({ data }: { data: BuyerCropData }) {
             >
               <span className="text-muted-foreground">{MARKET_DISPLAY[m.market] ?? m.market}</span>
               <div className="text-right">
-                <span className={`font-semibold ${i === 0 ? "text-green-700 dark:text-green-400" : "text-foreground"}`}>
+                <span
+                  className={`font-semibold ${i === 0 ? "text-green-700 dark:text-green-400" : "text-foreground"}`}
+                >
                   {fmtUGX(m.currentPrice)}
                 </span>
                 <span className="text-muted-foreground ml-1">/kg</span>
@@ -98,13 +101,18 @@ function CropCard({ data }: { data: BuyerCropData }) {
               4-Week Forecast · {MARKET_DISPLAY[data.bestBuyMarket] ?? data.bestBuyMarket}
             </p>
             <div className="rounded-md border border-border/60 overflow-hidden text-xs">
-              {(data.markets.find((m) => m.market === data.bestBuyMarket)?.weeklyPredictions ?? []).map((p) => (
+              {(
+                data.markets.find((m) => m.market === data.bestBuyMarket)?.weeklyPredictions ?? []
+              ).map((p) => (
                 <div
                   key={p.date}
                   className="flex items-center justify-between px-2.5 py-1.5 border-t border-border/50 first:border-0"
                 >
                   <span className="text-muted-foreground">
-                    {new Date(p.date).toLocaleDateString("en-UG", { day: "numeric", month: "short" })}
+                    {new Date(p.date).toLocaleDateString("en-UG", {
+                      day: "numeric",
+                      month: "short",
+                    })}
                   </span>
                   <span className="font-semibold">
                     {fmtUGX(p.predicted_price_ugx)}
@@ -132,20 +140,14 @@ function CropCard({ data }: { data: BuyerCropData }) {
 // ── Category filter ───────────────────────────────────────────────────────────
 
 const CATEGORY_GROUPS: Record<string, string[]> = {
-  All:        [...ML_CROPS],
-  Grains:     ["maize_grain", "sorghum", "millet"],
-  Legumes:    ["yellow_beans"],
+  All: [...ML_CROPS],
+  Grains: ["maize_grain", "sorghum", "millet"],
+  Legumes: ["yellow_beans"],
   Vegetables: ["tomatoes", "irish_potatoes"],
-  Starchy:    ["matoke", "cassava_chips"],
+  Starchy: ["matoke", "cassava_chips"],
 };
 
-function CategoryFilter({
-  active,
-  onChange,
-}: {
-  active: string;
-  onChange: (c: string) => void;
-}) {
+function CategoryFilter({ active, onChange }: { active: string; onChange: (c: string) => void }) {
   return (
     <div className="flex gap-2 flex-wrap">
       {Object.keys(CATEGORY_GROUPS).map((cat) => (

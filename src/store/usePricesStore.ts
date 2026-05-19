@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 import { api } from "@/api/api";
-import { ML_MARKETS, ML_CROPS, CROP_DISPLAY, type MLCrop } from "@/lib/prices-utils";
+import { CROP_DISPLAY, ML_CROPS, ML_MARKETS, type MLCrop } from "@/lib/prices-utils";
 import { useAuthStore } from "@/store/auth-store";
 
 // ── Shared types ──────────────────────────────────────────────────────────────
@@ -68,7 +68,13 @@ interface PricesStore {
     userId: string,
     farmerLat: number,
     farmerLng: number,
-    crops: Array<{ key: string; label: string; listingName: string; quantityKg: number; isFallback: boolean }>
+    crops: Array<{
+      key: string;
+      label: string;
+      listingName: string;
+      quantityKg: number;
+      isFallback: boolean;
+    }>
   ) => Promise<void>;
 
   fetchBuyerData: (cropKeys?: string[]) => Promise<void>;
@@ -85,20 +91,25 @@ async function fetchRoute(
   lng: number,
   crop: string,
   qty: number
-): Promise<{ tier: number; tier_message: string | null; ranked_markets: MarketResult[]; transport_disclaimer: string } | null> {
+): Promise<{
+  tier: number;
+  tier_message: string | null;
+  ranked_markets: MarketResult[];
+  transport_disclaimer: string;
+} | null> {
   try {
     const res = await fetch("/ml/location/route", {
-      method:  "POST",
+      method: "POST",
       headers: {
-        "Content-Type":  "application/json",
+        "Content-Type": "application/json",
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
       body: JSON.stringify({
-        farmer_id:      userId,
-        farmer_lat:     lat,
-        farmer_lng:     lng,
+        farmer_id: userId,
+        farmer_lat: lat,
+        farmer_lng: lng,
         crop,
-        quantity_kg:    qty,
+        quantity_kg: qty,
         max_distance_km: 300,
       }),
     });
@@ -118,9 +129,9 @@ async function fetchPredict(
 ): Promise<WeeklyPrediction[] | null> {
   try {
     const res = await fetch("/ml/price/predict", {
-      method:  "POST",
+      method: "POST",
       headers: { "Content-Type": "application/json" },
-      body:    JSON.stringify({ crop, market, weeks_ahead: weeksAhead }),
+      body: JSON.stringify({ crop, market, weeks_ahead: weeksAhead }),
     });
     if (!res.ok) return null;
     const data = await res.json();
@@ -133,10 +144,10 @@ async function fetchPredict(
 // ── Store implementation ──────────────────────────────────────────────────────
 
 export const usePricesStore = create<PricesStore>((set, get) => ({
-  farmerInsights:  [],
+  farmerInsights: [],
   isLoadingFarmer: false,
-  buyerData:       [],
-  isLoadingBuyer:  false,
+  buyerData: [],
+  isLoadingBuyer: false,
 
   fetchFarmerInsights: async (userId, farmerLat, farmerLng, crops) => {
     if (get().isLoadingFarmer) return;
@@ -149,16 +160,16 @@ export const usePricesStore = create<PricesStore>((set, get) => ({
         crops.map(async (c): Promise<FarmerCropInsight> => {
           if (c.isFallback) {
             return {
-              cropKey:             c.key,
-              cropLabel:           c.label,
-              listingName:         c.listingName,
-              quantityKg:          c.quantityKg,
-              tier:                3,
-              tierMessage:         "No price model available for this crop.",
-              rankedMarkets:       [],
+              cropKey: c.key,
+              cropLabel: c.label,
+              listingName: c.listingName,
+              quantityKg: c.quantityKg,
+              tier: 3,
+              tierMessage: "No price model available for this crop.",
+              rankedMarkets: [],
               transportDisclaimer: "",
-              isFallback:          true,
-              error:               null,
+              isFallback: true,
+              error: null,
             };
           }
 
@@ -166,30 +177,30 @@ export const usePricesStore = create<PricesStore>((set, get) => ({
 
           if (!route) {
             return {
-              cropKey:             c.key,
-              cropLabel:           c.label,
-              listingName:         c.listingName,
-              quantityKg:          c.quantityKg,
-              tier:                1,
-              tierMessage:         null,
-              rankedMarkets:       [],
+              cropKey: c.key,
+              cropLabel: c.label,
+              listingName: c.listingName,
+              quantityKg: c.quantityKg,
+              tier: 1,
+              tierMessage: null,
+              rankedMarkets: [],
               transportDisclaimer: "",
-              isFallback:          false,
-              error:               "Could not reach the market routing service. Ensure the ML stack is running.",
+              isFallback: false,
+              error: "Could not reach the market routing service. Ensure the ML stack is running.",
             };
           }
 
           return {
-            cropKey:             c.key,
-            cropLabel:           c.label,
-            listingName:         c.listingName,
-            quantityKg:          c.quantityKg,
-            tier:                route.tier,
-            tierMessage:         route.tier_message ?? null,
-            rankedMarkets:       route.ranked_markets ?? [],
+            cropKey: c.key,
+            cropLabel: c.label,
+            listingName: c.listingName,
+            quantityKg: c.quantityKg,
+            tier: route.tier,
+            tierMessage: route.tier_message ?? null,
+            rankedMarkets: route.ranked_markets ?? [],
             transportDisclaimer: route.transport_disclaimer ?? "",
-            isFallback:          false,
-            error:               null,
+            isFallback: false,
+            error: null,
           };
         })
       );
@@ -219,38 +230,38 @@ export const usePricesStore = create<PricesStore>((set, get) => ({
         const markets = marketResults
           .filter((m) => m.predictions && m.predictions.length > 0)
           .map((m) => ({
-            market:              m.market,
-            currentPrice:        m.predictions![0].predicted_price_ugx,
-            lowerBound:          m.predictions![0].lower_bound,
-            upperBound:          m.predictions![0].upper_bound,
-            weeklyPredictions:   m.predictions!,
+            market: m.market,
+            currentPrice: m.predictions![0].predicted_price_ugx,
+            lowerBound: m.predictions![0].lower_bound,
+            upperBound: m.predictions![0].upper_bound,
+            weeklyPredictions: m.predictions!,
           }));
 
         if (markets.length === 0) {
           return {
             cropKey,
-            cropLabel:     CROP_DISPLAY[cropKey] ?? cropKey,
-            markets:       [],
+            cropLabel: CROP_DISPLAY[cropKey] ?? cropKey,
+            markets: [],
             bestBuyMarket: "-",
-            lowestPrice:   0,
-            highestPrice:  0,
-            error:         "No market data available for this commodity.",
+            lowestPrice: 0,
+            highestPrice: 0,
+            error: "No market data available for this commodity.",
           };
         }
 
-        const sorted       = [...markets].sort((a, b) => a.currentPrice - b.currentPrice);
-        const lowestPrice  = sorted[0].currentPrice;
+        const sorted = [...markets].sort((a, b) => a.currentPrice - b.currentPrice);
+        const lowestPrice = sorted[0].currentPrice;
         const highestPrice = sorted[sorted.length - 1].currentPrice;
         const bestBuyMarket = sorted[0].market;
 
         return {
           cropKey,
-          cropLabel:     CROP_DISPLAY[cropKey] ?? cropKey,
+          cropLabel: CROP_DISPLAY[cropKey] ?? cropKey,
           markets,
           bestBuyMarket,
           lowestPrice,
           highestPrice,
-          error:         null,
+          error: null,
         };
       })
     );

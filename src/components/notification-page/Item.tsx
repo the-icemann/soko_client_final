@@ -14,11 +14,16 @@ interface Props {
 function resolveRoute(entityType: string | null, entityId: string | null): string | null {
   if (!entityType || !entityId) return null;
   switch (entityType) {
-    case "listing": return `/marketplace/${entityId}`;
-    case "profile": return `/farmers/${entityId}`;
-    case "order":   return `/profile`;
-    case "message": return `/messages`;
-    default:        return null;
+    case "listing":
+      return `/marketplace/${entityId}`;
+    case "profile":
+      return `/farmers/${entityId}`;
+    case "order":
+      return `/profile`;
+    case "message":
+      return `/messages`;
+    default:
+      return null;
   }
 }
 
