@@ -30,7 +30,7 @@ export interface FarmerCropInsight {
   cropKey: string;
   cropLabel: string;
   listingName: string;
-  quantityKg: number;
+  quantityKg: number | null; // null = specialty-only, no listing quantity known
   tier: number;
   tierMessage: string | null;
   rankedMarkets: MarketResult[];
@@ -72,7 +72,7 @@ interface PricesStore {
       key: string;
       label: string;
       listingName: string;
-      quantityKg: number;
+      quantityKg: number | null;
       isFallback: boolean;
     }>
   ) => Promise<void>;
@@ -90,7 +90,7 @@ async function fetchRoute(
   lat: number,
   lng: number,
   crop: string,
-  qty: number
+  qty: number | null
 ): Promise<{
   tier: number;
   tier_message: string | null;
@@ -109,7 +109,7 @@ async function fetchRoute(
         farmer_lat: lat,
         farmer_lng: lng,
         crop,
-        quantity_kg: qty,
+        ...(qty !== null ? { quantity_kg: qty } : {}),
         max_distance_km: 300,
       }),
     });

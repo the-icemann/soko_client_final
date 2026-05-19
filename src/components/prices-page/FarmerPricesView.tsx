@@ -271,6 +271,17 @@ function InsightPanel({ insight }: { insight: FarmerCropInsight }) {
 
   return (
     <div className="space-y-4">
+      {/* Specialty-only context note */}
+      {insight.quantityKg === null && (
+        <div className="flex items-center gap-2 text-xs text-blue-700 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 px-3 py-2 rounded-lg">
+          <Info className="size-3 shrink-0" />
+          <span>
+            Showing per-kg market rates for your specialty crops. <strong>Add a listing</strong> to
+            unlock total stock value projections.
+          </span>
+        </div>
+      )}
+
       {/* Tier badge */}
       {insight.tier > 1 && (
         <div className="flex items-center gap-2 text-xs text-amber-700 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 px-3 py-2 rounded-lg">
@@ -338,11 +349,11 @@ export function FarmerPricesView() {
         key: string;
         label: string;
         listingName: string;
-        quantityKg: number;
+        quantityKg: number | null;
         isFallback: boolean;
       }> = [];
 
-      // Try specialties first
+      // Try specialties first — no quantity yet, farmer hasn't listed
       if (user.specialties && user.specialties.length > 0) {
         cropsInput = user.specialties.map((s) => {
           const key = mapToMLCrop(s);
@@ -350,7 +361,7 @@ export function FarmerPricesView() {
             key: key ?? s.toLowerCase().replace(/\s+/g, "_"),
             label: key ? (CROP_DISPLAY[key] ?? s) : s,
             listingName: s,
-            quantityKg: 500,
+            quantityKg: null,
             isFallback: !key,
           };
         });
@@ -377,7 +388,7 @@ export function FarmerPricesView() {
                 key,
                 label: CROP_DISPLAY[key] ?? l.name,
                 listingName: l.name,
-                quantityKg: l.qty > 0 ? l.qty : 500,
+                quantityKg: l.qty > 0 ? l.qty : null,
                 isFallback: false,
               };
               cropsInput.push(entry);
@@ -444,7 +455,7 @@ export function FarmerPricesView() {
         <span>
           Based on your location: <strong>{user?.district ?? "Uganda"}</strong>
         </span>
-        {active.quantityKg > 0 && (
+        {active.quantityKg !== null && active.quantityKg > 0 && (
           <>
             <span>·</span>
             <span>
