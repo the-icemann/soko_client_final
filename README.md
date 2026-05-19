@@ -58,6 +58,7 @@ cp .env.example .env
 | Variable                  | Description                                                                                                                  |
 | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | `VITE_BOTPRESS_CLIENT_ID` | Botpress Webchat client ID (from Botpress Cloud → your bot → Integrations → Webchat). Leave blank to disable the bot toggle. |
+| `VITE_API_URL`            | Base URL for the API gateway. All client requests are routed through this endpoint (e.g. `https://api.example.com/v1/`).     |
 
 ### Run
 
