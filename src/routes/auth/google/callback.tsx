@@ -25,7 +25,7 @@ export const Route = createFileRoute("/auth/google/callback")({
       throw redirect({ to: "/auth/sign-in" });
     }
 
-    const res = await fetch("http://localhost/auth/me", {
+    const res = await fetch("/auth/me", {
       headers: { Authorization: `Bearer ${access_token}` },
     });
 

@@ -106,7 +106,8 @@ export const useMessagesStore = create<MessagesStore>((set, get) => ({
     const { token, user } = useAuthStore.getState();
     if (!token || !user) return;
 
-    const socket = new WebSocket(`ws://localhost/message/ws/${user.id}?token=${token}`);
+    const proto = window.location.protocol === "https:" ? "wss:" : "ws:";
+    const socket = new WebSocket(`${proto}//${window.location.host}/message/ws/${user.id}?token=${token}`);
 
     socket.onmessage = (e) => {
       const { event, data } = JSON.parse(e.data);
