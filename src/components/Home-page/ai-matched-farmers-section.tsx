@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthStore } from "@/store/auth-store";
+import { useMessagesStore } from "@/store/useMessagesStore";
 
 import { FarmerCard } from "./famers-card";
 
@@ -94,10 +95,21 @@ const AIMatchedFarmersSection = () => {
   const isFarmer = useAuthStore((s) => s.isFarmer());
   const isBuyer = useAuthStore((s) => s.isBuyer());
   const navigate = useNavigate();
+  const { startConversation, setActiveConversation } = useMessagesStore();
 
   const [farmers, setFarmers] = useState<ReturnType<typeof farmerFromRec>[]>([]);
   const [buyers, setBuyers] = useState<ReturnType<typeof buyerFromRec>[]>([]);
   const [loading, setLoading] = useState(true);
+
+  async function handleConnect(recipientId: string, recipientName: string, isBuyerRecipient: boolean) {
+    const firstName = recipientName.split(" ")[0];
+    const greeting = isBuyerRecipient
+      ? `Hi ${firstName}, I grow produce matching your interests. Let's connect on Soko!`
+      : `Hi ${firstName}, I'm interested in what you grow. Let's connect on Soko!`;
+    const conversationId = await startConversation(recipientId, greeting);
+    setActiveConversation(conversationId);
+    navigate({ to: "/messages" });
+  }
 
   useEffect(() => {
     if (!user?.id) {
@@ -165,6 +177,7 @@ const AIMatchedFarmersSection = () => {
                   key={f.id}
                   farmer={f}
                   onClick={() => navigate({ to: "/farmers/$id", params: { id: String(f.id) } })}
+                  onMessage={() => handleConnect(String(f.id), f.name, false)}
                 />
               ))}
             </div>
@@ -195,6 +208,7 @@ const AIMatchedFarmersSection = () => {
                   key={b.id}
                   farmer={b}
                   onClick={() => navigate({ to: "/buyers/$id", params: { id: String(b.id) } })}
+                  onMessage={() => handleConnect(String(b.id), b.name, true)}
                 />
               ))}
             </div>
