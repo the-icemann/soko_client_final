@@ -1,9 +1,10 @@
+import { useNavigate } from "@tanstack/react-router";
+
 import { Icon, type IconName } from "@/components/landing-page/icon";
 import { Logo } from "@/components/landing-page/logo";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { useNavigate } from "@tanstack/react-router";
 
 /* ── CTA Banner ── */
 export function CTABanner() {

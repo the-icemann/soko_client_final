@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
-import { Sparkle, Users } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
+import { Sparkle, Users } from "lucide-react";
+import { useEffect, useState } from "react";
 
-import { useAuthStore } from "@/store/auth-store";
-import { FarmerCard } from "./famers-card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useAuthStore } from "@/store/auth-store";
+
+import { FarmerCard } from "./famers-card";
 
 // ── Shapes returned by recommendation service ──────────────────────────────
 
@@ -31,35 +32,45 @@ interface RecBuyer {
 // ── Adapters ───────────────────────────────────────────────────────────────
 
 function farmerFromRec(f: RecFarmer) {
-  const initials = f.name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
+  const initials = f.name
+    .split(" ")
+    .map((w) => w[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
   return {
-    id:       f.id,
-    name:     f.name,
-    avatar:   initials,
+    id: f.id,
+    name: f.name,
+    avatar: initials,
     avatarUrl: "",
-    online:   false,
+    online: false,
     verified: false,
-    badge:    f.specialties[0] ?? "Farmer",
+    badge: f.specialties[0] ?? "Farmer",
     location: f.district,
-    rating:   f.averageRating || 3.5,
-    produce:  f.specialties.slice(0, 3),
+    rating: f.averageRating || 3.5,
+    produce: f.specialties.slice(0, 3),
     matchScore: f.matchScore,
   };
 }
 
 function buyerFromRec(b: RecBuyer) {
-  const initials = b.name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
+  const initials = b.name
+    .split(" ")
+    .map((w) => w[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
   return {
-    id:       b.id,
-    name:     b.name,
-    avatar:   initials,
+    id: b.id,
+    name: b.name,
+    avatar: initials,
     avatarUrl: "",
-    online:   false,
+    online: false,
     verified: false,
-    badge:    b.interests[0] ?? "Buyer",
+    badge: b.interests[0] ?? "Buyer",
     location: b.district,
-    rating:   3.5,
-    produce:  b.interests.slice(0, 3),
+    rating: 3.5,
+    produce: b.interests.slice(0, 3),
     matchScore: b.matchScore,
   };
 }
@@ -81,26 +92,27 @@ function RecommendationSkeleton() {
 const AIMatchedFarmersSection = () => {
   const { user, token } = useAuthStore();
   const isFarmer = useAuthStore((s) => s.isFarmer());
-  const isBuyer  = useAuthStore((s) => s.isBuyer());
+  const isBuyer = useAuthStore((s) => s.isBuyer());
   const navigate = useNavigate();
 
   const [farmers, setFarmers] = useState<ReturnType<typeof farmerFromRec>[]>([]);
-  const [buyers,  setBuyers]  = useState<ReturnType<typeof buyerFromRec>[]>([]);
+  const [buyers, setBuyers] = useState<ReturnType<typeof buyerFromRec>[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user?.id) { setLoading(false); return; }
+    if (!user?.id) {
+      setLoading(false);
+      return;
+    }
 
-    const headers: Record<string, string> = token
-      ? { Authorization: `Bearer ${token}` }
-      : {};
+    const headers: Record<string, string> = token ? { Authorization: `Bearer ${token}` } : {};
 
     const fetches: Promise<void>[] = [];
 
     if (isBuyer || useAuthStore.getState().isBoth()) {
       fetches.push(
         fetch(`/ml/recommend/farmers-for-buyer/${user.id}?top_n=6`, { headers })
-          .then((r) => r.ok ? r.json() : null)
+          .then((r) => (r.ok ? r.json() : null))
           .then((data) => {
             if (data?.recommended_farmers) {
               setFarmers(data.recommended_farmers.map(farmerFromRec));
@@ -113,7 +125,7 @@ const AIMatchedFarmersSection = () => {
     if (isFarmer || useAuthStore.getState().isBoth()) {
       fetches.push(
         fetch(`/ml/recommend/buyers-for-farmer/${user.id}?top_n=6`, { headers })
-          .then((r) => r.ok ? r.json() : null)
+          .then((r) => (r.ok ? r.json() : null))
           .then((data) => {
             if (data?.recommended_buyers) {
               setBuyers(data.recommended_buyers.map(buyerFromRec));

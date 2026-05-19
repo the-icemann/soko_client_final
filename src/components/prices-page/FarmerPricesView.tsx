@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import {
   AlertTriangle,
   BadgeCheck,
@@ -11,23 +10,24 @@ import {
   TrendingUp,
   Truck,
 } from "lucide-react";
+import { useEffect, useState } from "react";
 
+import { api } from "@/api/api";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { api } from "@/api/api";
 import {
+  confidenceMeta,
   CROP_DISPLAY,
-  MARKET_DISPLAY,
   fmtUGX,
   getDistrictCoords,
   mapToMLCrop,
+  MARKET_DISPLAY,
   signalMeta,
-  confidenceMeta,
 } from "@/lib/prices-utils";
-import { usePricesStore, type FarmerCropInsight } from "@/store/usePricesStore";
 import { useAuthStore } from "@/store/auth-store";
+import { type FarmerCropInsight, usePricesStore } from "@/store/usePricesStore";
 
 interface ListingSnap {
   id: string;
@@ -61,9 +61,7 @@ function CropTabs({
           }`}
         >
           {ins.cropLabel}
-          {ins.isFallback && (
-            <span className="ml-1 opacity-60">?</span>
-          )}
+          {ins.isFallback && <span className="ml-1 opacity-60">?</span>}
         </button>
       ))}
     </div>
@@ -82,8 +80,8 @@ function FallbackCard({ insight }: { insight: FarmerCropInsight }) {
         <div>
           <p className="text-sm font-semibold">No price model for "{insight.listingName}"</p>
           <p className="text-xs text-muted-foreground mt-1 max-w-xs">
-            Our ML models cover: maize, beans, potatoes, tomatoes, matoke, cassava, sorghum, and millet.
-            Price intelligence for other crops is coming soon.
+            Our ML models cover: maize, beans, potatoes, tomatoes, matoke, cassava, sorghum, and
+            millet. Price intelligence for other crops is coming soon.
           </p>
         </div>
       </CardContent>
@@ -108,13 +106,13 @@ function SellSignalCard({ insight }: { insight: FarmerCropInsight }) {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-2">
-        <span className={`inline-flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-full ${sig.bg} ${sig.color}`}>
+        <span
+          className={`inline-flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-full ${sig.bg} ${sig.color}`}
+        >
           {sig.label}
         </span>
         <p className="text-xs text-muted-foreground leading-relaxed">{top.signal_reason}</p>
-        <p className={`text-[10px] font-medium ${conf.color}`}>
-          Confidence: {conf.label}
-        </p>
+        <p className={`text-[10px] font-medium ${conf.color}`}>Confidence: {conf.label}</p>
       </CardContent>
     </Card>
   );
@@ -137,7 +135,9 @@ function BestMarketCard({ insight }: { insight: FarmerCropInsight }) {
         <div className="text-xs space-y-0.5 text-muted-foreground">
           <div className="flex justify-between">
             <span>Predicted price</span>
-            <span className="font-semibold text-foreground">{fmtUGX(top.predicted_price_ugx)}/kg</span>
+            <span className="font-semibold text-foreground">
+              {fmtUGX(top.predicted_price_ugx)}/kg
+            </span>
           </div>
           <div className="flex justify-between">
             <span>Transport ({top.transport_mode.replace("_", " ")})</span>
@@ -174,8 +174,23 @@ function MarketRankTable({ insight }: { insight: FarmerCropInsight }) {
           <Truck className="size-3" /> All Markets Ranked by Net Value
         </h4>
         {markets.length > 3 && (
-          <Button variant="ghost" size="sm" className="text-xs h-6 px-2" onClick={() => setExpanded(!expanded)}>
-            {expanded ? <><ChevronUp className="size-3 mr-1" />Less</> : <><ChevronDown className="size-3 mr-1" />{markets.length - 3} more</>}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-xs h-6 px-2"
+            onClick={() => setExpanded(!expanded)}
+          >
+            {expanded ? (
+              <>
+                <ChevronUp className="size-3 mr-1" />
+                Less
+              </>
+            ) : (
+              <>
+                <ChevronDown className="size-3 mr-1" />
+                {markets.length - 3} more
+              </>
+            )}
           </Button>
         )}
       </div>
@@ -203,8 +218,12 @@ function MarketRankTable({ insight }: { insight: FarmerCropInsight }) {
                 {i === 0 && <BadgeCheck className="size-3 text-green-600 shrink-0" />}
                 <span className="truncate font-medium">{MARKET_DISPLAY[m.market] ?? m.market}</span>
               </div>
-              <span className="text-right text-muted-foreground">{m.distance_km.toFixed(0)} km</span>
-              <span className="text-right text-red-500">-{fmtUGX(m.transport_cost_per_kg_ugx)}</span>
+              <span className="text-right text-muted-foreground">
+                {m.distance_km.toFixed(0)} km
+              </span>
+              <span className="text-right text-red-500">
+                -{fmtUGX(m.transport_cost_per_kg_ugx)}
+              </span>
               <span className={`text-right font-semibold ${i === 0 ? "text-green-600" : ""}`}>
                 {fmtUGX(m.net_value_per_kg_ugx)}
               </span>
@@ -283,7 +302,9 @@ function FarmerSkeleton() {
   return (
     <div className="space-y-4">
       <div className="flex gap-2">
-        {[1, 2, 3].map((i) => <Skeleton key={i} className="h-8 w-24 rounded-full" />)}
+        {[1, 2, 3].map((i) => (
+          <Skeleton key={i} className="h-8 w-24 rounded-full" />
+        ))}
       </div>
       <div className="flex gap-3">
         <Skeleton className="h-32 flex-1 rounded-xl" />
@@ -313,18 +334,24 @@ export function FarmerPricesView() {
       setListingsLoading(true);
 
       // Determine crops from specialties, then fall back to listings
-      let cropsInput: Array<{ key: string; label: string; listingName: string; quantityKg: number; isFallback: boolean }> = [];
+      let cropsInput: Array<{
+        key: string;
+        label: string;
+        listingName: string;
+        quantityKg: number;
+        isFallback: boolean;
+      }> = [];
 
       // Try specialties first
       if (user.specialties && user.specialties.length > 0) {
         cropsInput = user.specialties.map((s) => {
           const key = mapToMLCrop(s);
           return {
-            key:         key ?? s.toLowerCase().replace(/\s+/g, "_"),
-            label:       key ? (CROP_DISPLAY[key] ?? s) : s,
+            key: key ?? s.toLowerCase().replace(/\s+/g, "_"),
+            label: key ? (CROP_DISPLAY[key] ?? s) : s,
             listingName: s,
-            quantityKg:  500,
-            isFallback:  !key,
+            quantityKg: 500,
+            isFallback: !key,
           };
         });
       }
@@ -348,10 +375,10 @@ export function FarmerPricesView() {
               // Listing crop not in specialties — add it
               const entry = {
                 key,
-                label:       CROP_DISPLAY[key] ?? l.name,
+                label: CROP_DISPLAY[key] ?? l.name,
                 listingName: l.name,
-                quantityKg:  l.qty > 0 ? l.qty : 500,
-                isFallback:  false,
+                quantityKg: l.qty > 0 ? l.qty : 500,
+                isFallback: false,
               };
               cropsInput.push(entry);
               byKey.set(key, entry);
@@ -398,7 +425,8 @@ export function FarmerPricesView() {
           <div>
             <p className="text-sm font-semibold">No crops found</p>
             <p className="text-xs text-muted-foreground mt-1 max-w-xs">
-              Add your specialties in your profile or create a listing to get personalised market intelligence.
+              Add your specialties in your profile or create a listing to get personalised market
+              intelligence.
             </p>
           </div>
         </CardContent>
@@ -413,9 +441,16 @@ export function FarmerPricesView() {
       <CropTabs insights={farmerInsights} activeKey={active.cropKey} onSelect={setActiveKey} />
       <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
         <MapPin className="size-3" />
-        <span>Based on your location: <strong>{user?.district ?? "Uganda"}</strong></span>
+        <span>
+          Based on your location: <strong>{user?.district ?? "Uganda"}</strong>
+        </span>
         {active.quantityKg > 0 && (
-          <><span>·</span><span>Quantity: <strong>{active.quantityKg.toFixed(0)} kg</strong></span></>
+          <>
+            <span>·</span>
+            <span>
+              Quantity: <strong>{active.quantityKg.toFixed(0)} kg</strong>
+            </span>
+          </>
         )}
       </div>
       <InsightPanel insight={active} />

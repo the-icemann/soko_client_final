@@ -1,5 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, BadgeCheck, Calendar, MapPin, ShoppingBasket } from "lucide-react";
 
 import { api } from "@/api/api";
@@ -14,13 +14,13 @@ export const Route = createFileRoute("/(app)/buyers/$id")({
 });
 
 interface BuyerPublicProfile {
-  id:          string;
-  name:        string;
-  initials:    string;
-  avatarUrl?:  string;
-  district:    string;
-  verified:    boolean;
-  interests:   string[];
+  id: string;
+  name: string;
+  initials: string;
+  avatarUrl?: string;
+  district: string;
+  verified: boolean;
+  interests: string[];
   memberSince: string;
   totalOrders: number | null;
 }
@@ -29,8 +29,8 @@ function useBuyerProfile(id: string) {
   const token = useAuthStore((s) => s.token);
   return useQuery<BuyerPublicProfile>({
     queryKey: ["buyer-profile", id],
-    queryFn:  () => api.get<BuyerPublicProfile>(`users/buyers/${id}`, token),
-    enabled:  !!id,
+    queryFn: () => api.get<BuyerPublicProfile>(`users/buyers/${id}`, token),
+    enabled: !!id,
     staleTime: 1000 * 60 * 5,
   });
 }
@@ -67,7 +67,7 @@ function RouteComponent() {
 
   const joined = new Date(buyer.memberSince).toLocaleDateString("en-UG", {
     month: "long",
-    year:  "numeric",
+    year: "numeric",
   });
 
   return (

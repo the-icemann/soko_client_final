@@ -69,7 +69,7 @@ export function DetailsStep({
           onChange={(e) => onPhoneChange(e.target.value)}
           required
         />
-        <FieldDescription>Used for order updates only. Never shared.</FieldDescription> 
+        <FieldDescription>Used for order updates only. Never shared.</FieldDescription>
       </Field>
 
       {/* District — reads/writes useSignUpStore internally */}

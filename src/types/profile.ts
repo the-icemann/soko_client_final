@@ -21,8 +21,8 @@ export interface AuthenticatedUser {
   // Farmer-specific
   farmerBio?: string;
   farmName?: string;
-  specialties?: string[];  // crops the farmer grows
-  interests?: string[];    // buyer's commodity interests
+  specialties?: string[]; // crops the farmer grows
+  interests?: string[]; // buyer's commodity interests
   // Stats — populated by API
   totalOrders?: number; // buyer
   totalSpent?: number; // buyer (UGX)

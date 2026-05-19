@@ -62,8 +62,8 @@ const SignUpForm = () => {
       role === "buyer"
         ? { ...base, role: "buyer" as const, interests }
         : role === "farmer"
-        ? { ...base, role: "farmer" as const, specialties }
-        : { ...base, role: "both" as const, specialties, interests };
+          ? { ...base, role: "farmer" as const, specialties }
+          : { ...base, role: "both" as const, specialties, interests };
     try {
       await register(payload);
       next(); // only advances on success

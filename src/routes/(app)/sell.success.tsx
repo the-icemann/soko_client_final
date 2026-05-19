@@ -2,8 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { CheckCircle2, ChevronRight, Eye, PlusCircle, ShoppingBag } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { useSellStore } from "@/store/sell-store";
 import { useAuthStore } from "@/store/auth-store";
+import { useSellStore } from "@/store/sell-store";
 
 export const Route = createFileRoute("/(app)/sell/success")({
   component: RouteComponent,

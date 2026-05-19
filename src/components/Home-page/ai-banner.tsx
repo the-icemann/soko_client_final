@@ -1,21 +1,22 @@
-import { useEffect, useRef, useState } from "react";
-import { ArrowRight, Leaf, Sparkles, TrendingUp } from "lucide-react";
 import { Link } from "@tanstack/react-router";
+import { ArrowRight, Leaf, Sparkles, TrendingUp } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+
+import { CROP_DISPLAY, fmtUGX, mapToMLCrop, ML_CROPS } from "@/lib/prices-utils";
+import { useAuthStore } from "@/store/auth-store";
 
 import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
-import { CROP_DISPLAY, ML_CROPS, fmtUGX, mapToMLCrop } from "@/lib/prices-utils";
-import { useAuthStore } from "@/store/auth-store";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 interface CropSnap {
-  cropKey:      string;
-  cropLabel:    string;
+  cropKey: string;
+  cropLabel: string;
   currentPrice: number;
-  price2wk:     number;
-  pctChange:    number;
-  confidence:   number;
+  price2wk: number;
+  pctChange: number;
+  confidence: number;
 }
 
 // ── Fetch helper ──────────────────────────────────────────────────────────────
@@ -23,26 +24,26 @@ interface CropSnap {
 async function fetchSnap(cropKey: string): Promise<CropSnap | null> {
   try {
     const res = await fetch("/ml/price/predict", {
-      method:  "POST",
+      method: "POST",
       headers: { "Content-Type": "application/json" },
-      body:    JSON.stringify({ crop: cropKey, market: "Kisenyi_Kampala", weeks_ahead: 4 }),
+      body: JSON.stringify({ crop: cropKey, market: "Kisenyi_Kampala", weeks_ahead: 4 }),
     });
     if (!res.ok) return null;
     const data = await res.json();
     const p = data.predictions;
     if (!p || p.length < 3) return null;
 
-    const curr   = p[0].predicted_price_ugx;
-    const wk2    = p[2].predicted_price_ugx;
+    const curr = p[0].predicted_price_ugx;
+    const wk2 = p[2].predicted_price_ugx;
     const spread = p[0].upper_bound - p[0].lower_bound;
 
     return {
       cropKey,
-      cropLabel:    CROP_DISPLAY[cropKey] ?? cropKey,
+      cropLabel: CROP_DISPLAY[cropKey] ?? cropKey,
       currentPrice: curr,
-      price2wk:     wk2,
-      pctChange:    Math.round(Math.abs(((wk2 - curr) / curr) * 100) * 10) / 10,
-      confidence:   Math.round(Math.max(30, Math.min(95, 100 - (spread / curr) * 50))),
+      price2wk: wk2,
+      pctChange: Math.round(Math.abs(((wk2 - curr) / curr) * 100) * 10) / 10,
+      confidence: Math.round(Math.max(30, Math.min(95, 100 - (spread / curr) * 50))),
     };
   } catch {
     return null;
@@ -53,12 +54,10 @@ async function fetchSnap(cropKey: string): Promise<CropSnap | null> {
 
 function pickCandidates(
   isFarmer: boolean,
-  specialties: string[] | undefined,
+  specialties: string[] | undefined
 ): { keys: string[]; isPersonalised: boolean } {
   if (isFarmer && specialties?.length) {
-    const mapped = specialties
-      .map(mapToMLCrop)
-      .filter((k) => k !== null) as string[];
+    const mapped = specialties.map(mapToMLCrop).filter((k) => k !== null) as string[];
     if (mapped.length > 0) {
       const deduped = Array.from(new Set(mapped));
       return { keys: deduped, isPersonalised: true };
@@ -78,12 +77,18 @@ function pickTwo(pool: string[]): [string, string | null] {
 // ── Headline templates ────────────────────────────────────────────────────────
 
 function buildHeadline(snap: CropSnap, idx: number) {
-  const dir     = snap.price2wk >= snap.currentPrice ? "rising" : "falling";
-  const pct     = `${snap.pctChange}%`;
+  const dir = snap.price2wk >= snap.currentPrice ? "rising" : "falling";
+  const pct = `${snap.pctChange}%`;
   const options = [
-    { before: `${snap.cropLabel} prices ${dir} `,            accent: `${pct} in 2 weeks` },
-    { before: `${pct} ${dir === "rising" ? "surge" : "drop"} forecast for `, accent: snap.cropLabel },
-    { before: `Best time to ${dir === "rising" ? "sell" : "hold"} `, accent: `${snap.cropLabel} — ${pct} shift ahead` },
+    { before: `${snap.cropLabel} prices ${dir} `, accent: `${pct} in 2 weeks` },
+    {
+      before: `${pct} ${dir === "rising" ? "surge" : "drop"} forecast for `,
+      accent: snap.cropLabel,
+    },
+    {
+      before: `Best time to ${dir === "rising" ? "sell" : "hold"} `,
+      accent: `${snap.cropLabel} — ${pct} shift ahead`,
+    },
   ];
   return options[idx % options.length];
 }
@@ -100,8 +105,11 @@ function StatPill({ snap }: { snap: CropSnap }) {
       <span className="text-white font-bold text-sm leading-none">
         {fmtUGX(snap.currentPrice)}/kg
       </span>
-      <span className={`text-[10px] font-semibold mt-0.5 ${up ? "text-emerald-300" : "text-red-300"}`}>
-        {up ? "↑ +" : "↓ -"}{snap.pctChange}% 2 wks
+      <span
+        className={`text-[10px] font-semibold mt-0.5 ${up ? "text-emerald-300" : "text-red-300"}`}
+      >
+        {up ? "↑ +" : "↓ -"}
+        {snap.pctChange}% 2 wks
       </span>
     </div>
   );
@@ -141,11 +149,12 @@ function NoCoverageBanner({ specialties }: { specialties: string[] }) {
               </span>
             </div>
             <h2 className="text-white text-xl md:text-2xl font-bold leading-tight mb-1.5 font-serif">
-              Price intelligence <span className="text-emerald-200">coming soon</span> for your crops
+              Price intelligence <span className="text-emerald-200">coming soon</span> for your
+              crops
             </h2>
             <p className="text-white/55 text-xs md:text-sm mb-4 max-w-sm">
-              Our ML models don't yet cover{listed ? ` ${listed}` : " your specialties"}.
-              Check the market overview for nearby commodities.
+              Our ML models don't yet cover{listed ? ` ${listed}` : " your specialties"}. Check the
+              market overview for nearby commodities.
             </p>
             <Link to="/prices">
               <Button
@@ -176,8 +185,8 @@ function NoCoverageBanner({ specialties }: { specialties: string[] }) {
 // ── Main banner ───────────────────────────────────────────────────────────────
 
 const AiBanner = () => {
-  const { user }  = useAuthStore();
-  const isFarmer  = useAuthStore((s) => s.isFarmer());
+  const { user } = useAuthStore();
+  const isFarmer = useAuthStore((s) => s.isFarmer());
 
   // Compute candidate pool once — stable for this mount
   const { keys: candidateKeys, isPersonalised } = useRef(
@@ -187,13 +196,13 @@ const AiBanner = () => {
   // Also stable per mount: which two crops to show and which headline template
   const [featuredKey, secondKey, templateIdx] = useRef(
     candidateKeys.length > 0
-      ? [...pickTwo(candidateKeys), Math.floor(Math.random() * 3)] as const
-      : [null, null, 0] as const
+      ? ([...pickTwo(candidateKeys), Math.floor(Math.random() * 3)] as const)
+      : ([null, null, 0] as const)
   ).current;
 
   const [featured, setFeatured] = useState<CropSnap | null>(null);
-  const [second,   setSecond]   = useState<CropSnap | null>(null);
-  const [loading,  setLoading]  = useState(candidateKeys.length > 0);
+  const [second, setSecond] = useState<CropSnap | null>(null);
+  const [loading, setLoading] = useState(candidateKeys.length > 0);
 
   useEffect(() => {
     if (!featuredKey) return;
@@ -201,7 +210,10 @@ const AiBanner = () => {
     if (secondKey) fetches.push(fetchSnap(secondKey));
 
     Promise.all(fetches)
-      .then(([f, s]) => { setFeatured(f ?? null); setSecond(s ?? null); })
+      .then(([f, s]) => {
+        setFeatured(f ?? null);
+        setSecond(s ?? null);
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -213,7 +225,7 @@ const AiBanner = () => {
   if (loading) return <BannerSkeleton />;
   if (!featured) return null;
 
-  const hl  = buildHeadline(featured, templateIdx);
+  const hl = buildHeadline(featured, templateIdx);
   const dir = featured.price2wk >= featured.currentPrice ? "rising" : "falling";
   const subtext = isPersonalised
     ? `Based on your ${user?.specialties?.slice(0, 2).join(" & ")} specialty data`
@@ -226,9 +238,17 @@ const AiBanner = () => {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(0,0,0,0.2)_0%,transparent_70%)]" />
       <div className="absolute -top-12 -right-12 size-52 rounded-full border-[28px] border-white/10" />
       <div className="absolute -top-6  -right-6  size-32 rounded-full border-[16px] border-white/8" />
-      <svg className="absolute inset-0 w-full h-full opacity-[0.04] pointer-events-none" aria-hidden>
+      <svg
+        className="absolute inset-0 w-full h-full opacity-[0.04] pointer-events-none"
+        aria-hidden
+      >
         <filter id="grain">
-          <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.65"
+            numOctaves="3"
+            stitchTiles="stitch"
+          />
           <feColorMatrix type="saturate" values="0" />
         </filter>
         <rect width="100%" height="100%" filter="url(#grain)" />
@@ -236,7 +256,6 @@ const AiBanner = () => {
 
       <div className="relative z-10 p-5 md:p-7">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 md:gap-8">
-
           {/* Left: text */}
           <div className="flex-1 min-w-0">
             <div className="inline-flex items-center gap-1.5 bg-white/15 border border-white/25 rounded-full px-3 py-1 mb-3 backdrop-blur-sm">
