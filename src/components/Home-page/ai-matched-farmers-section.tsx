@@ -101,7 +101,11 @@ const AIMatchedFarmersSection = () => {
   const [buyers, setBuyers] = useState<ReturnType<typeof buyerFromRec>[]>([]);
   const [loading, setLoading] = useState(true);
 
-  async function handleConnect(recipientId: string, recipientName: string, isBuyerRecipient: boolean) {
+  async function handleConnect(
+    recipientId: string,
+    recipientName: string,
+    isBuyerRecipient: boolean,
+  ) {
     const firstName = recipientName.split(" ")[0];
     const greeting = isBuyerRecipient
       ? `Hi ${firstName}, I grow produce matching your interests. Let's connect on Soko!`

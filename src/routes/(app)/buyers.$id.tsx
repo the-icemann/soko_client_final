@@ -1,6 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { ArrowLeft, BadgeCheck, Calendar, MapPin, MessageCircle, ShoppingBasket } from "lucide-react";
+import {
+  ArrowLeft,
+  BadgeCheck,
+  Calendar,
+  MapPin,
+  MessageCircle,
+  ShoppingBasket,
+} from "lucide-react";
 import { useState } from "react";
 
 import { api } from "@/api/api";
