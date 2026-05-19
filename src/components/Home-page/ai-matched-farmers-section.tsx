@@ -104,7 +104,7 @@ const AIMatchedFarmersSection = () => {
   async function handleConnect(
     recipientId: string,
     recipientName: string,
-    isBuyerRecipient: boolean,
+    isBuyerRecipient: boolean
   ) {
     const firstName = recipientName.split(" ")[0];
     const greeting = isBuyerRecipient
