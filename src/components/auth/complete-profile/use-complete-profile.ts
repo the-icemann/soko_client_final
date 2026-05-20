@@ -5,6 +5,7 @@ import { useState } from "react";
 
 import { api, ApiError } from "@/api/api";
 import { useAuthStore } from "@/store/auth-store";
+import { useMessagesStore } from "@/store/useMessagesStore";
 import { useSignUpStore } from "@/store/useSignUpStore";
 import { AuthenticatedUser, UserRole } from "@/types/profile";
 
@@ -68,14 +69,19 @@ export function useCompleteProfile() {
 
     try {
       // setup_token HttpOnly cookie is sent automatically — no Bearer header needed
-      await api.post("/auth/complete-profile", payload, null);
+      const { access_token } = await api.post<{ access_token: string }>(
+        "/auth/complete-profile",
+        payload,
+        null,
+      );
 
-      // Real auth cookies are now set — hydrate the store
-      const me = await api.get<AuthenticatedUser>("/users/me");
-      useAuthStore.setState({ user: me, isLoading: false });
+      // Hydrate the store with the real token + user
+      const me = await api.get<AuthenticatedUser>("/users/me", access_token);
+      useAuthStore.setState({ user: me, token: access_token, isLoading: false });
+      useMessagesStore.getState().connectWS();
 
       reset();
-      navigate({ to: "/marketplace" });
+      navigate({ to: "/home" });
     } catch (err) {
       setIsLoading(false);
 
