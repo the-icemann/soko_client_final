@@ -231,7 +231,7 @@ export const useMessagesStore = create<MessagesStore>((set, get) => ({
     set({ isLoadingMessages: true });
     try {
       const detail = await api.get<ConversationDetailOut>(
-        `/message/conversations/${conversationId}`,
+        `message/conversations/${conversationId}`,
         token
       );
       set((s) => {
@@ -255,9 +255,10 @@ export const useMessagesStore = create<MessagesStore>((set, get) => ({
 
   setActiveConversation: (id) => {
     set({ activeConversationId: id, isMobileConversationOpen: true });
-    if (!get().messages[id]) {
-      get().fetchMessages(id);
-    }
+    // Always fetch — ensures history loads on fresh sessions and new messages
+    // that arrived via push/notification while the user was away are visible.
+    // The merge logic in fetchMessages deduplicates against any WS messages.
+    get().fetchMessages(id);
   },
 
   sendMessage: async (text) => {
