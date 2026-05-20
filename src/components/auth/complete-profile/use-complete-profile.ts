@@ -89,7 +89,7 @@ export function useCompleteProfile() {
   }
 
   function handleRetry() {
-    window.location.href = `${import.meta.env.VITE_API_URL ?? ""}/auth/google/login`;
+    window.location.href = "/auth/google/login";
   }
 
   return {
