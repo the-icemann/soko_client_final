@@ -1,7 +1,8 @@
 import { useNavigate } from "@tanstack/react-router";
-import { Sparkle, Users } from "lucide-react";
+import { AlertCircle, Sparkle, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 
+import { api } from "@/api/api";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthStore } from "@/store/auth-store";
 import { useMessagesStore } from "@/store/useMessagesStore";
@@ -100,12 +101,30 @@ const AIMatchedFarmersSection = () => {
   const [farmers, setFarmers] = useState<ReturnType<typeof farmerFromRec>[]>([]);
   const [buyers, setBuyers] = useState<ReturnType<typeof buyerFromRec>[]>([]);
   const [loading, setLoading] = useState(true);
+  const [noListingNotice, setNoListingNotice] = useState<string | null>(null);
 
   async function handleConnect(
     recipientId: string,
     recipientName: string,
     isBuyerRecipient: boolean
   ) {
+    const { token } = useAuthStore.getState();
+
+    // Only check listings when a buyer is connecting to a recommended farmer
+    if (!isBuyerRecipient) {
+      const listings = await api.get<unknown[]>(`listings/farmer/${recipientId}?limit=1`, token);
+      if (!listings || listings.length === 0) {
+        // Notify the farmer and show a notice — don't open a conversation
+        try {
+          await api.post(`listings/farmer/${recipientId}/request-listing`, {}, token);
+        } catch {
+          // Non-fatal — notice still shown even if notification fails
+        }
+        setNoListingNotice(recipientName);
+        return;
+      }
+    }
+
     const firstName = recipientName.split(" ")[0];
     const greeting = isBuyerRecipient
       ? `Hi ${firstName}, I grow produce matching your interests. Let's connect on Soko!`
@@ -167,6 +186,26 @@ const AIMatchedFarmersSection = () => {
               <h3 className="text-foreground font-semibold text-sm">AI-Matched Farmers</h3>
             </div>
           </div>
+
+          {noListingNotice && (
+            <div className="flex items-start gap-2 rounded-xl border border-amber-500/30 bg-amber-500/10 px-3 py-2.5 mb-2">
+              <AlertCircle size={14} className="text-amber-500 mt-0.5 shrink-0" />
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-medium text-amber-700 dark:text-amber-400">
+                  {noListingNotice} has no active listings yet
+                </p>
+                <p className="text-[11px] text-muted-foreground mt-0.5">
+                  We've let them know you're looking — check back soon.
+                </p>
+              </div>
+              <button
+                onClick={() => setNoListingNotice(null)}
+                className="text-muted-foreground hover:text-foreground text-xs leading-none mt-0.5 shrink-0"
+              >
+                ✕
+              </button>
+            </div>
+          )}
 
           {loading ? (
             <RecommendationSkeleton />

@@ -12,7 +12,9 @@ interface Props {
 }
 
 function resolveRoute(entityType: string | null, entityId: string | null): string | null {
-  if (!entityType || !entityId) return null;
+  if (!entityType) return null;
+  if (entityType === "sell") return "/sell";
+  if (!entityId) return null;
   switch (entityType) {
     case "listing":
       return `/marketplace/${entityId}`;
