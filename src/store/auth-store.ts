@@ -79,6 +79,7 @@ export const useAuthStore = create<AuthStore>()(
           const { tokens } = await api.post<AuthTokens>("auth/register", payload);
           const user = await api.get<AuthenticatedUser>("users/me", tokens.access_token);
           set({ user, token: tokens.access_token, isLoading: false });
+          useMessagesStore.getState().connectWS();
         } catch (err) {
           set({ error: (err as Error).message, isLoading: false });
           throw err;

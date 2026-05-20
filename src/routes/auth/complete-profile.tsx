@@ -1,6 +1,8 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { Sprout } from "lucide-react";
+import { useEffect } from "react";
 
+import { api } from "@/api/api";
 import { DetailsStep } from "@/components/auth/complete-profile/details-step";
 import { ErrorBanner } from "@/components/auth/complete-profile/error-banner";
 import { RoleStep } from "@/components/auth/complete-profile/role-step";
@@ -8,18 +10,33 @@ import { StepDots } from "@/components/auth/complete-profile/step-dots";
 import { useCompleteProfile } from "@/components/auth/complete-profile/use-complete-profile";
 import { Logo } from "@/components/landing-page/logo";
 import { useAuthStore } from "@/store/auth-store";
+import { useMessagesStore } from "@/store/useMessagesStore";
 import { useSignUpStore } from "@/store/useSignUpStore";
+import { AuthenticatedUser } from "@/types/profile";
 
 export const Route = createFileRoute("/auth/complete-profile")({
-  beforeLoad: () => {
-    const { user, token } = useAuthStore.getState();
+  validateSearch: (search: Record<string, unknown>) => ({
+    access_token: (search.access_token as string) || undefined,
+  }),
 
-    /* Already authenticated — redirect before anything renders */
-    if (user && token) {
-      throw redirect({ to: "/marketplace" });
+  beforeLoad: async ({ search }) => {
+    // Returning Google user — access_token delivered via query param after OAuth.
+    // Hydrate the store now so the redirect to /home lands authenticated.
+    if (search.access_token) {
+      try {
+        const user = await api.get<AuthenticatedUser>("users/me", search.access_token);
+        useAuthStore.setState({ user, token: search.access_token });
+        useMessagesStore.getState().connectWS();
+      } catch {
+        throw redirect({ to: "/auth/sign-in" });
+      }
+      throw redirect({ to: "/home" });
     }
 
-    /* Wipe stale signup store data from any previous session */
+    // Already authenticated — no need to be here
+    const { user, token } = useAuthStore.getState();
+    if (user && token) throw redirect({ to: "/home" });
+
     useSignUpStore.getState().reset();
   },
 
