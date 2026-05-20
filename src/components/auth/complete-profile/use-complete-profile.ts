@@ -69,11 +69,7 @@ export function useCompleteProfile() {
 
     try {
       // setup_token HttpOnly cookie is sent automatically — no Bearer header needed
-      const { access_token } = await api.post<{ access_token: string }>(
-        "/auth/complete-profile",
-        payload,
-        null,
-      );
+      const { access_token } = await api.post<{ access_token: string }>("/auth/complete-profile", payload, null);
 
       // Hydrate the store with the real token + user
       const me = await api.get<AuthenticatedUser>("/users/me", access_token);
