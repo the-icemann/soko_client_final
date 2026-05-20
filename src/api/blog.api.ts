@@ -72,7 +72,7 @@ export async function uploadCoverImage(
   const form = new FormData();
   form.append("file", file);
 
-  const res = await fetch(`${import.meta.env.VITE_API_URL ?? "/"}posts/${postId}/cover`, {
+  const res = await fetch(`${import.meta.env.VITE_API_URL || "/"}posts/${postId}/cover`, {
     method: "POST",
     headers: { Authorization: `Bearer ${token}` },
     body: form,
@@ -99,7 +99,7 @@ export async function uploadBodyImage(
   form.append("file", file);
 
   const res = await fetch(
-    `${import.meta.env.VITE_API_URL ?? "/"}posts/${postId}/body-image?order=${order}`,
+    `${import.meta.env.VITE_API_URL || "/"}posts/${postId}/body-image?order=${order}`,
     {
       method: "POST",
       headers: { Authorization: `Bearer ${token}` },
