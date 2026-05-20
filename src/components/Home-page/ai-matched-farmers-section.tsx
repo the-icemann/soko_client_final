@@ -112,16 +112,20 @@ const AIMatchedFarmersSection = () => {
 
     // Only check listings when a buyer is connecting to a recommended farmer
     if (!isBuyerRecipient) {
-      const listings = await api.get<unknown[]>(`listings/farmer/${recipientId}?limit=1`, token);
-      if (!listings || listings.length === 0) {
-        // Notify the farmer and show a notice — don't open a conversation
-        try {
-          await api.post(`listings/farmer/${recipientId}/request-listing`, {}, token);
-        } catch {
-          // Non-fatal — notice still shown even if notification fails
+      try {
+        const listings = await api.get<unknown[]>(`listings/farmer/${recipientId}?limit=1`, token);
+        if (!listings || listings.length === 0) {
+          // Notify the farmer and show a notice — don't open a conversation
+          try {
+            await api.post(`listings/farmer/${recipientId}/request-listing`, {}, token);
+          } catch {
+            // Non-fatal — notice still shown even if notification fails
+          }
+          setNoListingNotice(recipientName);
+          return;
         }
-        setNoListingNotice(recipientName);
-        return;
+      } catch {
+        // Listing check failed — fail open and proceed to conversation
       }
     }
 
