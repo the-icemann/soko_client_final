@@ -81,6 +81,12 @@ export default defineConfig({
       "/auth": "http://localhost:80",
       "/users": "http://localhost:80",
       "/posts": "http://localhost:80",
+      "/notifications": "http://localhost:80",
+      "/message": "http://localhost:80",
+      "/recommendations": "http://localhost:80",
+      "/ml": "http://localhost:80",
+      "/webhook": "http://localhost:80",
+      "/ussd": "http://localhost:80",
     },
   },
 });

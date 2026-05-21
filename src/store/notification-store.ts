@@ -118,7 +118,8 @@ export const useNotificationsStore = create<NotificationsStore>((set, get) => ({
     const { token, user } = useAuthStore.getState();
     if (!token || !user || get().ws) return;
 
-    const socket = new WebSocket(`ws://localhost/notifications/ws/${user.id}?token=${token}`);
+    const wsProtocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+    const socket = new WebSocket(`${wsProtocol}//${window.location.host}/notifications/ws/${user.id}?token=${token}`);
 
     socket.onopen = () => {
       // Keep-alive ping every 30s

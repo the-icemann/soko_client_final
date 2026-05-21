@@ -1,3 +1,4 @@
+import { useNavigate } from "@tanstack/react-router";
 import { formatDistanceToNow } from "date-fns";
 
 import type { NotificationOut } from "@/api/notification.api";
@@ -10,14 +11,27 @@ interface Props {
   onMarkRead: (id: string) => void;
 }
 
+function resolveRoute(entityType: string | null, entityId: string | null): string | null {
+  if (!entityType || !entityId) return null;
+  switch (entityType) {
+    case "listing": return `/marketplace/${entityId}`;
+    case "profile": return `/farmers/${entityId}`;
+    case "order":   return `/profile`;
+    case "message": return `/messages`;
+    default:        return null;
+  }
+}
+
 export function NotificationItem({ notification, onMarkRead }: Props) {
-  const { id, type, title, body, isRead, createdAt } = notification;
+  const { id, type, title, body, isRead, createdAt, entityType, entityId } = notification;
+  const navigate = useNavigate();
 
   const timeAgo = formatDistanceToNow(new Date(createdAt), { addSuffix: true });
 
   function handleClick() {
     if (!isRead) onMarkRead(id);
-    // TODO: navigate to entityType/entityId when routing is wired
+    const route = resolveRoute(entityType, entityId);
+    if (route) navigate({ to: route });
   }
 
   return (
