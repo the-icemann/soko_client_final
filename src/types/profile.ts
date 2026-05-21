@@ -21,6 +21,8 @@ export interface AuthenticatedUser {
   // Farmer-specific
   farmerBio?: string;
   farmName?: string;
+  specialties?: string[]; // crops the farmer grows
+  interests?: string[]; // buyer's commodity interests
   // Stats — populated by API
   totalOrders?: number; // buyer
   totalSpent?: number; // buyer (UGX)
@@ -122,17 +124,22 @@ interface BaseRegisterPayload {
 }
 
 export interface FarmerRegisterPayload extends BaseRegisterPayload {
-  role: "farmer" | "both";
-  specialties: string[]; // max 3
+  role: "farmer";
+  specialties: string[];
 }
 
 export interface BuyerRegisterPayload extends BaseRegisterPayload {
-  role: "buyer" | "both";
+  role: "buyer";
   interests: string[];
 }
 
-// Discriminated union — TypeScript enforces specialties only for farmer/both
-export type RegisterPayload = FarmerRegisterPayload | BuyerRegisterPayload;
+export interface BothRegisterPayload extends BaseRegisterPayload {
+  role: "both";
+  specialties: string[];
+  interests: string[];
+}
+
+export type RegisterPayload = FarmerRegisterPayload | BuyerRegisterPayload | BothRegisterPayload;
 
 // ── Auth API responses
 

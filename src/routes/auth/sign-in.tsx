@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 
 import AuthLayout from "@/components/auth/auth-layout";
@@ -14,6 +14,9 @@ import { Ic } from "@/constants/crisp-svg";
 import { useAuthStore } from "@/store/auth-store";
 
 export const Route = createFileRoute("/auth/sign-in")({
+  beforeLoad: () => {
+    if (useAuthStore.getState().isAuthenticated()) throw redirect({ to: "/home" });
+  },
   component: RouteComponent,
 });
 
@@ -32,7 +35,7 @@ function RouteComponent() {
     e.preventDefault();
     try {
       await login({ email: fields.email, password: fields.password });
-      navigate({ to: "/marketplace" });
+      navigate({ to: "/home" });
     } catch {
       // error is already set in the store — nothing extra needed here
     }

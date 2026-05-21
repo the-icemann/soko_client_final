@@ -41,7 +41,7 @@ export function RoleStep({ role, onSelect, onNext }: Props) {
       <Field>
         <h3 className="font-bold text-2xl text-foreground">Almost there!</h3>
         <p className="text-sm text-muted-foreground mt-1">
-          How will you be using Shamba? You can always change this later.
+          How will you be using Soko? You can always change this later.
         </p>
       </Field>
 

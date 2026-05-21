@@ -78,7 +78,7 @@ interface MessagesStore {
   sendMessage: (text: string) => Promise<void>;
   deleteMessage: (conversationId: string, messageId: string) => Promise<void>;
   startConversation: (
-    farmerId: string,
+    recipientId: string,
     firstMessage: string,
     listingId?: string
   ) => Promise<string>;
@@ -106,7 +106,10 @@ export const useMessagesStore = create<MessagesStore>((set, get) => ({
     const { token, user } = useAuthStore.getState();
     if (!token || !user) return;
 
-    const socket = new WebSocket(`ws://localhost/message/ws/${user.id}?token=${token}`);
+    const proto = window.location.protocol === "https:" ? "wss:" : "ws:";
+    const socket = new WebSocket(
+      `${proto}//${window.location.host}/message/ws/${user.id}?token=${token}`
+    );
 
     socket.onmessage = (e) => {
       const { event, data } = JSON.parse(e.data);
@@ -114,14 +117,19 @@ export const useMessagesStore = create<MessagesStore>((set, get) => ({
 
       switch (event) {
         case "new_message": {
-          const msg = data as MessageOut;
-          // Append to message list
+          const rawMsg = data as MessageOut;
+          // Recompute isMine client-side — the server sends a single payload
+          // with isMine from the sender's perspective, so we must correct it.
+          const currentUserId = useAuthStore.getState().user?.id;
+          const msg: MessageOut = { ...rawMsg, isMine: rawMsg.senderId === currentUserId };
+
+          const conversationKnown = conversations.some((c) => c.id === msg.conversationId);
+
           set({
             messages: {
               ...messages,
               [msg.conversationId]: [...(messages[msg.conversationId] ?? []), msg],
             },
-            // Update conversation preview
             conversations: conversations.map((c) =>
               c.id === msg.conversationId
                 ? {
@@ -136,7 +144,13 @@ export const useMessagesStore = create<MessagesStore>((set, get) => ({
                 : c
             ),
           });
-          // Auto mark as read if conversation is open
+
+          // If this message belongs to a conversation we haven't loaded yet,
+          // refresh the list so it appears in the sidebar.
+          if (!conversationKnown) {
+            get().fetchConversations();
+          }
+
           if (activeConversationId === msg.conversationId) {
             get().markAsRead(msg.conversationId, msg.id);
           }
@@ -217,15 +231,23 @@ export const useMessagesStore = create<MessagesStore>((set, get) => ({
     set({ isLoadingMessages: true });
     try {
       const detail = await api.get<ConversationDetailOut>(
-        `/message/conversations/${conversationId}`,
+        `message/conversations/${conversationId}`,
         token
       );
-      set((s) => ({
-        messages: { ...s.messages, [conversationId]: detail.messages },
-        conversations: s.conversations.map((c) =>
-          c.id === conversationId ? detail.conversation : c
-        ),
-      }));
+      set((s) => {
+        // Preserve any messages delivered by WS while the API call was in-flight
+        const fetchedIds = new Set(detail.messages.map((m) => m.id));
+        const wsOnly = (s.messages[conversationId] ?? []).filter((m) => !fetchedIds.has(m.id));
+        const merged = [...detail.messages, ...wsOnly].sort(
+          (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        );
+        return {
+          messages: { ...s.messages, [conversationId]: merged },
+          conversations: s.conversations.map((c) =>
+            c.id === conversationId ? detail.conversation : c
+          ),
+        };
+      });
     } finally {
       set({ isLoadingMessages: false });
     }
@@ -233,9 +255,10 @@ export const useMessagesStore = create<MessagesStore>((set, get) => ({
 
   setActiveConversation: (id) => {
     set({ activeConversationId: id, isMobileConversationOpen: true });
-    if (!get().messages[id]) {
-      get().fetchMessages(id);
-    }
+    // Always fetch — ensures history loads on fresh sessions and new messages
+    // that arrived via push/notification while the user was away are visible.
+    // The merge logic in fetchMessages deduplicates against any WS messages.
+    get().fetchMessages(id);
   },
 
   sendMessage: async (text) => {
@@ -277,11 +300,11 @@ export const useMessagesStore = create<MessagesStore>((set, get) => ({
     }));
   },
 
-  startConversation: async (farmerId, firstMessage, listingId) => {
+  startConversation: async (recipientId, firstMessage, listingId) => {
     const token = useAuthStore.getState().token;
     const result = await api.post<StartConversationOut>(
       "message/conversations",
-      { farmer_id: farmerId, first_message: firstMessage, listing_id: listingId ?? null },
+      { recipient_id: recipientId, first_message: firstMessage, listing_id: listingId ?? null },
       token
     );
     set((s) => ({

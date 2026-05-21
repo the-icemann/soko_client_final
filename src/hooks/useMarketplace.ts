@@ -2,6 +2,7 @@
  * TanStack Query hooks for the marketplace.
  *
  * useListings  — filtered list page (server-side filter, client-side sort)
+ * useRecentListings — latest N listings for the home page (no filter store)
  * useListing   — single listing by slug (detail page)
  * useFarmerListings — all active listings by a farmer
  * useMyListings     — authenticated farmer's own listings
@@ -57,6 +58,17 @@ export function useListings() {
     queryFn: () => fetchListings(params, token),
     staleTime: 1000 * 60 * 2, // 2 min — mirrors Redis TTL
     placeholderData: (prev) => prev, // no loading flash on filter change
+  });
+}
+
+// ── useRecentListings — home page preview (no filter-store side-effects) ───
+export function useRecentListings(limit = 4) {
+  const token = useAuthStore((s) => s.token);
+
+  return useQuery<Product[]>({
+    queryKey: [...listingKeys.all(), "recent", limit],
+    queryFn: () => fetchListings({ limit }, token),
+    staleTime: 1000 * 60 * 2,
   });
 }
 

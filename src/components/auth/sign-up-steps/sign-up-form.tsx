@@ -60,8 +60,10 @@ const SignUpForm = () => {
 
     const payload =
       role === "buyer"
-        ? { ...base, role: role as "buyer" | "both", interests }
-        : { ...base, role: role as "farmer" | "both", specialties };
+        ? { ...base, role: "buyer" as const, interests }
+        : role === "farmer"
+          ? { ...base, role: "farmer" as const, specialties }
+          : { ...base, role: "both" as const, specialties, interests };
     try {
       await register(payload);
       next(); // only advances on success
@@ -179,7 +181,7 @@ const SignUpForm = () => {
           />
           <FieldLabel htmlFor="terms-checkbox" className="text-muted-foreground">
             <p className="text-xs">
-              I agree to Shamba's{" "}
+              I agree to Soko's{" "}
               <span className="text-primary">Terms of Service, Privacy Policy</span>, and{" "}
               <span className="text-primary">Farmer Agreement.</span>
             </p>

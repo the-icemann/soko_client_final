@@ -7,7 +7,7 @@ export interface PricePrediction {
 }
 
 export interface Farmer {
-  id: number;
+  id: string | number;
   name: string;
   avatar: string;
   avatarUrl?: string;
@@ -19,6 +19,7 @@ export interface Farmer {
   online?: boolean;
   reviews?: number;
   price?: string;
+  matchScore?: number;
 }
 export interface MarketProduct {
   id: number;

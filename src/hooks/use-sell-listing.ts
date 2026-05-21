@@ -12,7 +12,7 @@ import { useSellStore } from "@/store/sell-store";
 
 import { listingKeys } from "./useMarketplace";
 
-const BASE_URL = import.meta.env.VITE_API_URL;
+const BASE_URL = import.meta.env.VITE_API_URL || "/";
 
 // ── Step 1: Create draft (JSON body) ──────────────────────────────────────────
 
