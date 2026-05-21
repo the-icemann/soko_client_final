@@ -18,7 +18,10 @@ import { Route as AuthCompleteProfileRouteImport } from './routes/auth/complete-
 import { Route as appSellRouteImport } from './routes/(app)/sell'
 import { Route as appSearchRouteImport } from './routes/(app)/search'
 import { Route as appProfileRouteImport } from './routes/(app)/profile'
+<<<<<<< HEAD
 import { Route as appPricesRouteImport } from './routes/(app)/prices'
+=======
+>>>>>>> 44dc7db (🚀 paginate and format pages)
 import { Route as appMessagesRouteImport } from './routes/(app)/messages'
 import { Route as appMarketplaceRouteImport } from './routes/(app)/marketplace'
 import { Route as appHomeRouteImport } from './routes/(app)/home'
@@ -37,7 +40,10 @@ import { Route as appProfileAnalyticsRouteImport } from './routes/(app)/profile.
 import { Route as appMarketplaceIdRouteImport } from './routes/(app)/marketplace.$id'
 import { Route as appFarmersIdRouteImport } from './routes/(app)/farmers.$id'
 import { Route as appCheckoutConfirmationRouteImport } from './routes/(app)/checkout.confirmation'
+<<<<<<< HEAD
 import { Route as appBuyersIdRouteImport } from './routes/(app)/buyers.$id'
+=======
+>>>>>>> 44dc7db (🚀 paginate and format pages)
 import { Route as appBlogWriteRouteImport } from './routes/(app)/blog.write'
 import { Route as appBlogSlugRouteImport } from './routes/(app)/blog.$slug'
 
@@ -85,11 +91,14 @@ const appProfileRoute = appProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => appRouteRoute,
 } as any)
+<<<<<<< HEAD
 const appPricesRoute = appPricesRouteImport.update({
   id: '/prices',
   path: '/prices',
   getParentRoute: () => appRouteRoute,
 } as any)
+=======
+>>>>>>> 44dc7db (🚀 paginate and format pages)
 const appMessagesRoute = appMessagesRouteImport.update({
   id: '/messages',
   path: '/messages',
@@ -180,11 +189,14 @@ const appCheckoutConfirmationRoute = appCheckoutConfirmationRouteImport.update({
   path: '/confirmation',
   getParentRoute: () => appCheckoutRoute,
 } as any)
+<<<<<<< HEAD
 const appBuyersIdRoute = appBuyersIdRouteImport.update({
   id: '/buyers/$id',
   path: '/buyers/$id',
   getParentRoute: () => appRouteRoute,
 } as any)
+=======
+>>>>>>> 44dc7db (🚀 paginate and format pages)
 const appBlogWriteRoute = appBlogWriteRouteImport.update({
   id: '/write',
   path: '/write',
@@ -205,7 +217,10 @@ export interface FileRoutesByFullPath {
   '/home': typeof appHomeRoute
   '/marketplace': typeof appMarketplaceRouteWithChildren
   '/messages': typeof appMessagesRoute
+<<<<<<< HEAD
   '/prices': typeof appPricesRoute
+=======
+>>>>>>> 44dc7db (🚀 paginate and format pages)
   '/profile': typeof appProfileRouteWithChildren
   '/search': typeof appSearchRoute
   '/sell': typeof appSellRouteWithChildren
@@ -214,7 +229,10 @@ export interface FileRoutesByFullPath {
   '/auth/sign-up': typeof AuthSignUpRoute
   '/blog/$slug': typeof appBlogSlugRoute
   '/blog/write': typeof appBlogWriteRoute
+<<<<<<< HEAD
   '/buyers/$id': typeof appBuyersIdRoute
+=======
+>>>>>>> 44dc7db (🚀 paginate and format pages)
   '/checkout/confirmation': typeof appCheckoutConfirmationRoute
   '/farmers/$id': typeof appFarmersIdRoute
   '/marketplace/$id': typeof appMarketplaceIdRoute
@@ -234,14 +252,20 @@ export interface FileRoutesByTo {
   '/cart': typeof appCartRoute
   '/home': typeof appHomeRoute
   '/messages': typeof appMessagesRoute
+<<<<<<< HEAD
   '/prices': typeof appPricesRoute
+=======
+>>>>>>> 44dc7db (🚀 paginate and format pages)
   '/search': typeof appSearchRoute
   '/auth/complete-profile': typeof AuthCompleteProfileRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/blog/$slug': typeof appBlogSlugRoute
   '/blog/write': typeof appBlogWriteRoute
+<<<<<<< HEAD
   '/buyers/$id': typeof appBuyersIdRoute
+=======
+>>>>>>> 44dc7db (🚀 paginate and format pages)
   '/checkout/confirmation': typeof appCheckoutConfirmationRoute
   '/farmers/$id': typeof appFarmersIdRoute
   '/marketplace/$id': typeof appMarketplaceIdRoute
@@ -266,7 +290,10 @@ export interface FileRoutesById {
   '/(app)/home': typeof appHomeRoute
   '/(app)/marketplace': typeof appMarketplaceRouteWithChildren
   '/(app)/messages': typeof appMessagesRoute
+<<<<<<< HEAD
   '/(app)/prices': typeof appPricesRoute
+=======
+>>>>>>> 44dc7db (🚀 paginate and format pages)
   '/(app)/profile': typeof appProfileRouteWithChildren
   '/(app)/search': typeof appSearchRoute
   '/(app)/sell': typeof appSellRouteWithChildren
@@ -275,7 +302,10 @@ export interface FileRoutesById {
   '/auth/sign-up': typeof AuthSignUpRoute
   '/(app)/blog/$slug': typeof appBlogSlugRoute
   '/(app)/blog/write': typeof appBlogWriteRoute
+<<<<<<< HEAD
   '/(app)/buyers/$id': typeof appBuyersIdRoute
+=======
+>>>>>>> 44dc7db (🚀 paginate and format pages)
   '/(app)/checkout/confirmation': typeof appCheckoutConfirmationRoute
   '/(app)/farmers/$id': typeof appFarmersIdRoute
   '/(app)/marketplace/$id': typeof appMarketplaceIdRoute
@@ -300,7 +330,10 @@ export interface FileRouteTypes {
     | '/home'
     | '/marketplace'
     | '/messages'
+<<<<<<< HEAD
     | '/prices'
+=======
+>>>>>>> 44dc7db (🚀 paginate and format pages)
     | '/profile'
     | '/search'
     | '/sell'
@@ -309,7 +342,10 @@ export interface FileRouteTypes {
     | '/auth/sign-up'
     | '/blog/$slug'
     | '/blog/write'
+<<<<<<< HEAD
     | '/buyers/$id'
+=======
+>>>>>>> 44dc7db (🚀 paginate and format pages)
     | '/checkout/confirmation'
     | '/farmers/$id'
     | '/marketplace/$id'
@@ -329,14 +365,20 @@ export interface FileRouteTypes {
     | '/cart'
     | '/home'
     | '/messages'
+<<<<<<< HEAD
     | '/prices'
+=======
+>>>>>>> 44dc7db (🚀 paginate and format pages)
     | '/search'
     | '/auth/complete-profile'
     | '/auth/sign-in'
     | '/auth/sign-up'
     | '/blog/$slug'
     | '/blog/write'
+<<<<<<< HEAD
     | '/buyers/$id'
+=======
+>>>>>>> 44dc7db (🚀 paginate and format pages)
     | '/checkout/confirmation'
     | '/farmers/$id'
     | '/marketplace/$id'
@@ -360,7 +402,10 @@ export interface FileRouteTypes {
     | '/(app)/home'
     | '/(app)/marketplace'
     | '/(app)/messages'
+<<<<<<< HEAD
     | '/(app)/prices'
+=======
+>>>>>>> 44dc7db (🚀 paginate and format pages)
     | '/(app)/profile'
     | '/(app)/search'
     | '/(app)/sell'
@@ -369,7 +414,10 @@ export interface FileRouteTypes {
     | '/auth/sign-up'
     | '/(app)/blog/$slug'
     | '/(app)/blog/write'
+<<<<<<< HEAD
     | '/(app)/buyers/$id'
+=======
+>>>>>>> 44dc7db (🚀 paginate and format pages)
     | '/(app)/checkout/confirmation'
     | '/(app)/farmers/$id'
     | '/(app)/marketplace/$id'
@@ -459,6 +507,7 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appProfileRouteImport
       parentRoute: typeof appRouteRoute
     }
+<<<<<<< HEAD
     '/(app)/prices': {
       id: '/(app)/prices'
       path: '/prices'
@@ -466,6 +515,8 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appPricesRouteImport
       parentRoute: typeof appRouteRoute
     }
+=======
+>>>>>>> 44dc7db (🚀 paginate and format pages)
     '/(app)/messages': {
       id: '/(app)/messages'
       path: '/messages'
@@ -592,6 +643,7 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appCheckoutConfirmationRouteImport
       parentRoute: typeof appCheckoutRoute
     }
+<<<<<<< HEAD
     '/(app)/buyers/$id': {
       id: '/(app)/buyers/$id'
       path: '/buyers/$id'
@@ -599,6 +651,8 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appBuyersIdRouteImport
       parentRoute: typeof appRouteRoute
     }
+=======
+>>>>>>> 44dc7db (🚀 paginate and format pages)
     '/(app)/blog/write': {
       id: '/(app)/blog/write'
       path: '/write'
@@ -693,11 +747,17 @@ interface appRouteRouteChildren {
   appHomeRoute: typeof appHomeRoute
   appMarketplaceRoute: typeof appMarketplaceRouteWithChildren
   appMessagesRoute: typeof appMessagesRoute
+<<<<<<< HEAD
   appPricesRoute: typeof appPricesRoute
   appProfileRoute: typeof appProfileRouteWithChildren
   appSearchRoute: typeof appSearchRoute
   appSellRoute: typeof appSellRouteWithChildren
   appBuyersIdRoute: typeof appBuyersIdRoute
+=======
+  appProfileRoute: typeof appProfileRouteWithChildren
+  appSearchRoute: typeof appSearchRoute
+  appSellRoute: typeof appSellRouteWithChildren
+>>>>>>> 44dc7db (🚀 paginate and format pages)
   appFarmersIdRoute: typeof appFarmersIdRoute
   appUserNotificationsRoute: typeof appUserNotificationsRoute
 }
