@@ -28,7 +28,7 @@ export function MessageInput() {
 
   return (
     <TooltipProvider>
-      <div className="px-4 py-3 border-t border-border bg-background sm:mb-14 sm:py-6">
+      <div className="px-4 py-3 border-t border-border bg-background">
         <div className="flex items-end gap-2">
           {/* Attach */}
           <div className="shrink-0 pb-1">

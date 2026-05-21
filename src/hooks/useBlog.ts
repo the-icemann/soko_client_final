@@ -10,6 +10,7 @@ import { Post } from "@/types";
 export const blogKeys = {
   all: () => ["posts"] as const,
   list: (category: string, page: number) => ["posts", "list", category, page] as const,
+  recent: (limit: number) => ["posts", "recent", limit] as const,
   search: (term: string) => ["posts", "search", term] as const,
   featured: () => ["posts", "featured"] as const,
 };
@@ -106,5 +107,16 @@ export function useFeaturedPost() {
       return first ?? null;
     },
     staleTime: 1000 * 60 * 5,
+  });
+}
+
+// ── useRecentPosts — home page preview (no blog-store side-effects) ───────────
+export function useRecentPosts(limit = 4) {
+  const token = useAuthStore((s) => s.token);
+
+  return useQuery<Post[]>({
+    queryKey: blogKeys.recent(limit),
+    queryFn: () => fetchPosts({ limit }, token),
+    staleTime: 1000 * 60 * 2,
   });
 }

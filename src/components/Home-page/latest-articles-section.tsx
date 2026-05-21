@@ -6,13 +6,12 @@ import { Post } from "@/types";
 import { BlogCard } from "../common/blog-card";
 import { Button } from "../ui/button";
 
-export const LatestArticlesSection = ({
-  blogs,
-  isLoading,
-}: {
+interface LatestArticlesSectionProps {
   blogs: Post[];
   isLoading?: boolean;
-}) => (
+}
+
+export const LatestArticlesSection = ({ blogs, isLoading }: LatestArticlesSectionProps) => (
   <div>
     <div className="mb-3 flex items-center justify-between">
       <h3 className="text-[13px] font-bold text-foreground">📝 Latest Articles</h3>
