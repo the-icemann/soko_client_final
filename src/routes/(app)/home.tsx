@@ -7,38 +7,29 @@ import Categories from "@/components/Home-page/categories";
 import { FreshListingsSection } from "@/components/Home-page/fresh-listing-section";
 import { LatestArticlesSection } from "@/components/Home-page/latest-articles-section";
 import StickyHeader from "@/components/Home-page/sticky-header";
-import { products } from "@/constants/data/products";
-import { posts } from "@/constants/dummy-data";
+import { useRecentListings } from "@/hooks/useMarketplace";
+import { useRecentPosts } from "@/hooks/useBlog";
 
 export const Route = createFileRoute("/(app)/home")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  const { data: listings = [], isLoading: listingsLoading } = useRecentListings(4);
+  const { data: posts = [], isLoading: postsLoading } = useRecentPosts(4);
+
   return (
     <div className="pb-24 min-h-screen bg-background ">
-      {/* Sticky Header */}
       <StickyHeader />
 
       <div className="flex flex-col gap-7 px-4 pt-5 no-scrollbar ">
-        {/* AI Banner */}
         <AiBanner />
-
-        {/* Categories */}
         <Categories />
-
-        {/* ai - price - predictions */}
         <PricePrediction />
-
-        {/* ai - farmer- recommendations */}
-
         <AIMatchedFarmersSection />
 
-        {/* Fresh listing section */}
-        <FreshListingsSection products={products} />
-
-        {/* latest blog section */}
-        <LatestArticlesSection blogs={posts} />
+        <FreshListingsSection products={listings} isLoading={listingsLoading} />
+        <LatestArticlesSection blogs={posts} isLoading={postsLoading} />
       </div>
     </div>
   );
