@@ -35,7 +35,7 @@ function RouteComponent() {
      * This gives the panel a fixed height so the inner ScrollAreas scroll properly
      * instead of the whole page growing to fit.
      */
-    <div className="flex h-[calc(100vh-4rem)] overflow-hidden">
+    <div className="flex h-[calc(100vh-8rem)] md:h-[calc(100vh-4rem)] overflow-hidden">
       {/* ── Sidebar ──────────────────────────────────────────────── */}
       <aside
         className={cn(
