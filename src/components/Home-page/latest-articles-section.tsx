@@ -3,8 +3,8 @@ import { Link } from "@tanstack/react-router";
 import { Post } from "@/types";
 
 import { BlogCard } from "../common/blog-card";
-import { Skeleton } from "../ui/skeleton";
 import { Button } from "../ui/button";
+import { Skeleton } from "../ui/skeleton";
 
 interface LatestArticlesSectionProps {
   blogs: Post[];

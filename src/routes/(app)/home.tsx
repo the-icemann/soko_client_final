@@ -7,8 +7,8 @@ import Categories from "@/components/Home-page/categories";
 import { FreshListingsSection } from "@/components/Home-page/fresh-listing-section";
 import { LatestArticlesSection } from "@/components/Home-page/latest-articles-section";
 import StickyHeader from "@/components/Home-page/sticky-header";
-import { useRecentListings } from "@/hooks/useMarketplace";
 import { useRecentPosts } from "@/hooks/useBlog";
+import { useRecentListings } from "@/hooks/useMarketplace";
 
 export const Route = createFileRoute("/(app)/home")({
   component: RouteComponent,

@@ -3,8 +3,8 @@ import { Link } from "@tanstack/react-router";
 import { Product } from "@/types";
 
 import { ProductCard } from "../common/product-card";
-import { Skeleton } from "../ui/skeleton";
 import { Button } from "../ui/button";
+import { Skeleton } from "../ui/skeleton";
 
 interface FreshListingsSectionProps {
   products: Product[];
