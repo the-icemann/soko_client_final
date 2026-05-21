@@ -5,8 +5,8 @@ import { ArrowLeft, Badge, ShoppingBag } from "lucide-react";
 import CartItemFull from "@/components/cart/cart-item-full";
 import { OrderSummaryPanel } from "@/components/cart/order-summary-panel";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useCartStore } from "@/store/cart-store";
 import { useAuthStore } from "@/store/auth-store";
+import { useCartStore } from "@/store/cart-store";
 
 export const Route = createFileRoute("/(app)/cart")({
   beforeLoad: () => {
