@@ -94,7 +94,7 @@ export const useAuthStore = create<AuthStore>()(
 
       //Google Auth
       handleGoogleLogin: () => {
-        window.location.href = `${import.meta.env.VITE_API_URL}auth/google/login`;
+        window.location.href = 'https://soko-ug.com/auth/google/login';
       },
 
       //Settings Update
