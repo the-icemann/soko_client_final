@@ -2,10 +2,11 @@ import { useNavigate } from "@tanstack/react-router";
 import { Download } from "lucide-react";
 import { useState, useSyncExternalStore } from "react";
 
+import { usePWAInstall } from "@/hooks/use-pwa-install";
+
 import { Button } from "../ui/button";
 import { Icon } from "./icon";
 import { Logo } from "./logo";
-import { usePWAInstall } from "@/hooks/use-pwa-install";
 
 interface NavbarProps {
   onSignIn?: () => void;
