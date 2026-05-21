@@ -1,11 +1,20 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Plus } from "lucide-react";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { MarketplaceFilters } from "@/components/market-place/MarketplaceFilters";
 import { MarketplaceGrid } from "@/components/market-place/MarketplaceGrid";
 import { ApiError } from "@/api/api";
 import { Button } from "@/components/ui/button";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import { useListings } from "@/hooks/useMarketplace";
 import { useAuthStore } from "@/store/auth-store";
 import { useMarketplaceStore } from "@/store/marketplace-store";
@@ -14,12 +23,20 @@ export const Route = createFileRoute("/(app)/marketplace/")({
   component: RouteComponent,
 });
 
+const PAGE_SIZE = 20;
+
 function RouteComponent() {
   const navigate = useNavigate();
 
   const { data: listings = [], isLoading, error, refetch, isRefetching } = useListings();
   const { isAuthenticated, user } = useAuthStore();
-  const { sort, viewMode } = useMarketplaceStore();
+  const { sort, viewMode, activeCategory, search, district } = useMarketplaceStore();
+
+  const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    setPage(1);
+  }, [activeCategory, search, district, sort]);
 
   const sorted = useMemo(() => {
     if (sort === "price-asc") return [...listings].sort((a, b) => a.price - b.price);
@@ -27,6 +44,10 @@ function RouteComponent() {
     if (sort === "rating") return [...listings].sort((a, b) => b.rating - a.rating);
     return listings;
   }, [listings, sort]);
+
+  const totalPages = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE));
+  const safePage = Math.min(page, totalPages);
+  const paginated = sorted.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
 
   // ── Error state ───────────────────────────────────────────────────────────
   if (error) {
@@ -80,6 +101,11 @@ function RouteComponent() {
           ) : (
             <>
               <span className="font-semibold text-foreground">{sorted.length}</span> results found
+              {sorted.length > PAGE_SIZE && (
+                <span className="ml-1">
+                  · page {safePage} of {totalPages}
+                </span>
+              )}
             </>
           )}
         </p>
@@ -91,7 +117,70 @@ function RouteComponent() {
         )}
       </div>
 
-      <MarketplaceGrid products={sorted} viewMode={viewMode} isLoading={isLoading} />
+      <MarketplaceGrid products={paginated} viewMode={viewMode} isLoading={isLoading} />
+
+      {!isLoading && totalPages > 1 && (
+        <div className="mt-8">
+          <PageControls page={safePage} totalPages={totalPages} onPageChange={setPage} />
+        </div>
+      )}
     </div>
   );
+}
+
+function PageControls({
+  page,
+  totalPages,
+  onPageChange,
+}: {
+  page: number;
+  totalPages: number;
+  onPageChange: (p: number) => void;
+}) {
+  const pages = buildPageRange(page, totalPages);
+
+  return (
+    <Pagination>
+      <PaginationContent>
+        <PaginationItem>
+          <PaginationPrevious onClick={() => onPageChange(page - 1)} disabled={page <= 1} />
+        </PaginationItem>
+
+        {pages.map((p, i) =>
+          p === "ellipsis" ? (
+            <PaginationItem key={`ellipsis-${i}`}>
+              <PaginationEllipsis />
+            </PaginationItem>
+          ) : (
+            <PaginationItem key={p}>
+              <PaginationLink isActive={p === page} onClick={() => onPageChange(p)}>
+                {p}
+              </PaginationLink>
+            </PaginationItem>
+          )
+        )}
+
+        <PaginationItem>
+          <PaginationNext onClick={() => onPageChange(page + 1)} disabled={page >= totalPages} />
+        </PaginationItem>
+      </PaginationContent>
+    </Pagination>
+  );
+}
+
+function buildPageRange(current: number, total: number): (number | "ellipsis")[] {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+
+  const range: (number | "ellipsis")[] = [1];
+
+  if (current > 3) range.push("ellipsis");
+
+  const start = Math.max(2, current - 1);
+  const end = Math.min(total - 1, current + 1);
+  for (let i = start; i <= end; i++) range.push(i);
+
+  if (current < total - 2) range.push("ellipsis");
+  range.push(total);
+
+  return range;
 }
