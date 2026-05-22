@@ -1,8 +1,5 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-
 import { useAuthStore } from "@/store/auth-store";
-import { useMessagesStore } from "@/store/useMessagesStore";
-import { AuthenticatedUser } from "@/types/profile";
 
 type CallbackSearch = {
   access_token?: string;
@@ -18,26 +15,14 @@ export const Route = createFileRoute("/auth/google/callback")({
   beforeLoad: async ({ search }) => {
     const { access_token, error } = search;
 
-    if (error) {
+    if (error) throw redirect({ to: "/auth/sign-in" });
+    if (!access_token) throw redirect({ to: "/auth/sign-in" });
+
+    try {
+      await useAuthStore.getState().loginWithToken(access_token);
+    } catch {
       throw redirect({ to: "/auth/sign-in" });
     }
-
-    if (!access_token) {
-      throw redirect({ to: "/auth/sign-in" });
-    }
-
-    const res = await fetch("/users/me", {
-      headers: { Authorization: `Bearer ${access_token}` },
-    });
-
-    if (!res.ok) {
-      throw redirect({ to: "/auth/sign-in" });
-    }
-
-    const user: AuthenticatedUser = await res.json();
-
-    useAuthStore.setState({ token: access_token, user });
-    useMessagesStore.getState().connectWS();
 
     throw redirect({ to: "/home" });
   },

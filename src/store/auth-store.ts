@@ -39,6 +39,7 @@ interface AuthStore {
   clearError: () => void;
   updateSettings: (patch: Partial<UserSettings>) => void;
   handleGoogleLogin: () => void;
+  loginWithToken: (token: string) => Promise<void>;
 
   //Helpers
   isFarmer: () => boolean;
@@ -94,7 +95,19 @@ export const useAuthStore = create<AuthStore>()(
 
       //Google Auth
       handleGoogleLogin: () => {
-        window.location.href = 'https://soko-ug.com/auth/google/login';
+        window.location.href = `${import.meta.env.VITE_API_URL}auth/google/login`;
+      },
+
+      loginWithToken: async (token: string) => {
+        set({ isLoading: true, error: null });
+        try {
+          const user = await api.get<AuthenticatedUser>("users/me", token);
+          set({ user, token, isLoading: false });
+          useMessagesStore.getState().connectWS();
+        } catch (err) {
+          set({ error: (err as Error).message, isLoading: false });
+          throw err;
+        }
       },
 
       //Settings Update

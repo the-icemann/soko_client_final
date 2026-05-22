@@ -100,7 +100,7 @@ export function CartDrawer() {
 
   return (
     <Sheet open={isDrawerOpen} onOpenChange={(open) => !open && closeDrawer()}>
-      <SheetContent side="right" className="w-full sm:w-[420px] p-0 flex flex-col">
+      <SheetContent side="right" className="w-full sm:w-105 p-0 flex flex-col">
         {/* Header */}
         <SheetHeader className="px-5 pt-5 pb-3 border-b border-border/50">
           <div className="flex items-center justify-between">

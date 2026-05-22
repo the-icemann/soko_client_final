@@ -32,7 +32,7 @@ export const LatestArticlesSection = ({ blogs, isLoading }: LatestArticlesSectio
         <p className="text-xs text-muted-foreground">Be the first to share farming insights</p>
       </div>
     ) : (
-      <div className="flex gap-2 overflow-x-auto no-scrollbar">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {isLoading
           ? Array.from({ length: 4 }).map((_, i) => (
               <Skeleton key={i} className="h-48 w-44 shrink-0 rounded-xl" />
