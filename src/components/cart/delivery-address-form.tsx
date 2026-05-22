@@ -120,9 +120,9 @@ export function DeliveryAddressForm({ onNext, onBack }: DeliveryAddressFormProps
             >
               <SelectValue placeholder="Select your district" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-card text-card-foreground">
               {UGANDA_DISTRICTS.map((d) => (
-                <SelectItem key={d} value={d}>
+                <SelectItem key={d} value={d} className="text-card-foreground">
                   {d}
                 </SelectItem>
               ))}

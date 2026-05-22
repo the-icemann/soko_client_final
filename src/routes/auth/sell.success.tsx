@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/store/auth-store";
 import { useSellStore } from "@/store/sell-store";
 
-export const Route = createFileRoute("/(app)/sell/success")({
+export const Route = createFileRoute("/auth/sell/success")({
   component: RouteComponent,
   validateSearch: (s: Record<string, unknown>) => ({
     listingId: (s.listingId as string) ?? "",
