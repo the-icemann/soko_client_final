@@ -82,9 +82,8 @@ function FallbackCard({ insight }: { insight: FarmerCropInsight }) {
             "{insight.listingName}" isn't in our models yet
           </p>
           <p className="text-xs text-muted-foreground leading-relaxed">
-            Our team has been notified and will add price intelligence for this crop soon.
-            Currently supported: maize, beans, potatoes, tomatoes, matoke, cassava, sorghum, and
-            millet.
+            Our team has been notified and will add price intelligence for this crop soon. Currently
+            supported: maize, beans, potatoes, tomatoes, matoke, cassava, sorghum, and millet.
           </p>
         </div>
         <div className="flex items-center gap-1.5 text-xs text-amber-700 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/40 px-3 py-1.5 rounded-full">
@@ -415,9 +414,7 @@ export function FarmerPricesView() {
       }
 
       // Fire-and-forget developer alert for unsupported crops (once per session)
-      const unsupported = cropsInput
-        .filter((c) => c.isFallback)
-        .map((c) => c.listingName);
+      const unsupported = cropsInput.filter((c) => c.isFallback).map((c) => c.listingName);
       if (unsupported.length > 0) {
         const alertKey = `soko-crop-alert-${unsupported.sort().join(",")}`;
         if (!sessionStorage.getItem(alertKey)) {
