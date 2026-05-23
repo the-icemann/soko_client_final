@@ -30,9 +30,9 @@ import { Route as appProfileIndexRouteImport } from './routes/(app)/profile.inde
 import { Route as appMarketplaceIndexRouteImport } from './routes/(app)/marketplace.index'
 import { Route as appCheckoutIndexRouteImport } from './routes/(app)/checkout.index'
 import { Route as appBlogIndexRouteImport } from './routes/(app)/blog.index'
+import { Route as AuthSellSuccessRouteImport } from './routes/auth/sell.success'
 import { Route as AuthGoogleCallbackRouteImport } from './routes/auth/google/callback'
 import { Route as appUserNotificationsRouteImport } from './routes/(app)/user.notifications'
-import { Route as appSellSuccessRouteImport } from './routes/(app)/sell.success'
 import { Route as appProfileAnalyticsRouteImport } from './routes/(app)/profile.analytics'
 import { Route as appMarketplaceIdRouteImport } from './routes/(app)/marketplace.$id'
 import { Route as appFarmersIdRouteImport } from './routes/(app)/farmers.$id'
@@ -145,6 +145,11 @@ const appBlogIndexRoute = appBlogIndexRouteImport.update({
   path: '/',
   getParentRoute: () => appBlogRoute,
 } as any)
+const AuthSellSuccessRoute = AuthSellSuccessRouteImport.update({
+  id: '/auth/sell/success',
+  path: '/auth/sell/success',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthGoogleCallbackRoute = AuthGoogleCallbackRouteImport.update({
   id: '/auth/google/callback',
   path: '/auth/google/callback',
@@ -154,11 +159,6 @@ const appUserNotificationsRoute = appUserNotificationsRouteImport.update({
   id: '/user/notifications',
   path: '/user/notifications',
   getParentRoute: () => appRouteRoute,
-} as any)
-const appSellSuccessRoute = appSellSuccessRouteImport.update({
-  id: '/success',
-  path: '/success',
-  getParentRoute: () => appSellRoute,
 } as any)
 const appProfileAnalyticsRoute = appProfileAnalyticsRouteImport.update({
   id: '/analytics',
@@ -219,9 +219,9 @@ export interface FileRoutesByFullPath {
   '/farmers/$id': typeof appFarmersIdRoute
   '/marketplace/$id': typeof appMarketplaceIdRoute
   '/profile/analytics': typeof appProfileAnalyticsRoute
-  '/sell/success': typeof appSellSuccessRoute
   '/user/notifications': typeof appUserNotificationsRoute
   '/auth/google/callback': typeof AuthGoogleCallbackRoute
+  '/auth/sell/success': typeof AuthSellSuccessRoute
   '/blog/': typeof appBlogIndexRoute
   '/checkout/': typeof appCheckoutIndexRoute
   '/marketplace/': typeof appMarketplaceIndexRoute
@@ -246,9 +246,9 @@ export interface FileRoutesByTo {
   '/farmers/$id': typeof appFarmersIdRoute
   '/marketplace/$id': typeof appMarketplaceIdRoute
   '/profile/analytics': typeof appProfileAnalyticsRoute
-  '/sell/success': typeof appSellSuccessRoute
   '/user/notifications': typeof appUserNotificationsRoute
   '/auth/google/callback': typeof AuthGoogleCallbackRoute
+  '/auth/sell/success': typeof AuthSellSuccessRoute
   '/blog': typeof appBlogIndexRoute
   '/checkout': typeof appCheckoutIndexRoute
   '/marketplace': typeof appMarketplaceIndexRoute
@@ -280,9 +280,9 @@ export interface FileRoutesById {
   '/(app)/farmers/$id': typeof appFarmersIdRoute
   '/(app)/marketplace/$id': typeof appMarketplaceIdRoute
   '/(app)/profile/analytics': typeof appProfileAnalyticsRoute
-  '/(app)/sell/success': typeof appSellSuccessRoute
   '/(app)/user/notifications': typeof appUserNotificationsRoute
   '/auth/google/callback': typeof AuthGoogleCallbackRoute
+  '/auth/sell/success': typeof AuthSellSuccessRoute
   '/(app)/blog/': typeof appBlogIndexRoute
   '/(app)/checkout/': typeof appCheckoutIndexRoute
   '/(app)/marketplace/': typeof appMarketplaceIndexRoute
@@ -314,9 +314,9 @@ export interface FileRouteTypes {
     | '/farmers/$id'
     | '/marketplace/$id'
     | '/profile/analytics'
-    | '/sell/success'
     | '/user/notifications'
     | '/auth/google/callback'
+    | '/auth/sell/success'
     | '/blog/'
     | '/checkout/'
     | '/marketplace/'
@@ -341,9 +341,9 @@ export interface FileRouteTypes {
     | '/farmers/$id'
     | '/marketplace/$id'
     | '/profile/analytics'
-    | '/sell/success'
     | '/user/notifications'
     | '/auth/google/callback'
+    | '/auth/sell/success'
     | '/blog'
     | '/checkout'
     | '/marketplace'
@@ -374,9 +374,9 @@ export interface FileRouteTypes {
     | '/(app)/farmers/$id'
     | '/(app)/marketplace/$id'
     | '/(app)/profile/analytics'
-    | '/(app)/sell/success'
     | '/(app)/user/notifications'
     | '/auth/google/callback'
+    | '/auth/sell/success'
     | '/(app)/blog/'
     | '/(app)/checkout/'
     | '/(app)/marketplace/'
@@ -392,6 +392,7 @@ export interface RootRouteChildren {
   AuthSignInRoute: typeof AuthSignInRoute
   AuthSignUpRoute: typeof AuthSignUpRoute
   AuthGoogleCallbackRoute: typeof AuthGoogleCallbackRoute
+  AuthSellSuccessRoute: typeof AuthSellSuccessRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -543,6 +544,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof appBlogIndexRouteImport
       parentRoute: typeof appBlogRoute
     }
+    '/auth/sell/success': {
+      id: '/auth/sell/success'
+      path: '/auth/sell/success'
+      fullPath: '/auth/sell/success'
+      preLoaderRoute: typeof AuthSellSuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth/google/callback': {
       id: '/auth/google/callback'
       path: '/auth/google/callback'
@@ -556,13 +564,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/user/notifications'
       preLoaderRoute: typeof appUserNotificationsRouteImport
       parentRoute: typeof appRouteRoute
-    }
-    '/(app)/sell/success': {
-      id: '/(app)/sell/success'
-      path: '/success'
-      fullPath: '/sell/success'
-      preLoaderRoute: typeof appSellSuccessRouteImport
-      parentRoute: typeof appSellRoute
     }
     '/(app)/profile/analytics': {
       id: '/(app)/profile/analytics'
@@ -674,12 +675,10 @@ const appProfileRouteWithChildren = appProfileRoute._addFileChildren(
 )
 
 interface appSellRouteChildren {
-  appSellSuccessRoute: typeof appSellSuccessRoute
   appSellIndexRoute: typeof appSellIndexRoute
 }
 
 const appSellRouteChildren: appSellRouteChildren = {
-  appSellSuccessRoute: appSellSuccessRoute,
   appSellIndexRoute: appSellIndexRoute,
 }
 
@@ -730,6 +729,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthSignInRoute: AuthSignInRoute,
   AuthSignUpRoute: AuthSignUpRoute,
   AuthGoogleCallbackRoute: AuthGoogleCallbackRoute,
+  AuthSellSuccessRoute: AuthSellSuccessRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
