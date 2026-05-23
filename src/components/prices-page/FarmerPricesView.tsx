@@ -72,17 +72,24 @@ function CropTabs({
 
 function FallbackCard({ insight }: { insight: FarmerCropInsight }) {
   return (
-    <Card className="border-dashed border-muted-foreground/30">
-      <CardContent className="flex flex-col items-center justify-center gap-3 py-10 text-center">
-        <div className="size-12 rounded-2xl bg-muted flex items-center justify-center">
-          <AlertTriangle className="size-5 text-muted-foreground" />
+    <Card className="border-dashed border-amber-300/50 dark:border-amber-700/40 bg-amber-50/40 dark:bg-amber-950/20">
+      <CardContent className="flex flex-col items-center justify-center gap-4 py-10 text-center">
+        <div className="size-14 rounded-2xl bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center">
+          <span className="text-2xl">🌱</span>
         </div>
-        <div>
-          <p className="text-sm font-semibold">No price model for "{insight.listingName}"</p>
-          <p className="text-xs text-muted-foreground mt-1 max-w-xs">
-            Our ML models cover: maize, beans, potatoes, tomatoes, matoke, cassava, sorghum, and
-            millet. Price intelligence for other crops is coming soon.
+        <div className="space-y-1.5 max-w-xs">
+          <p className="text-sm font-semibold text-foreground">
+            "{insight.listingName}" isn't in our models yet
           </p>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            Our team has been notified and will add price intelligence for this crop soon.
+            Currently supported: maize, beans, potatoes, tomatoes, matoke, cassava, sorghum, and
+            millet.
+          </p>
+        </div>
+        <div className="flex items-center gap-1.5 text-xs text-amber-700 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/40 px-3 py-1.5 rounded-full">
+          <BadgeCheck className="size-3" />
+          <span>We're working on it — check back soon</span>
         </div>
       </CardContent>
     </Card>
@@ -405,6 +412,20 @@ export function FarmerPricesView() {
       if (cropsInput.length === 0) {
         setListingsLoading(false);
         return;
+      }
+
+      // Fire-and-forget developer alert for unsupported crops (once per session)
+      const unsupported = cropsInput
+        .filter((c) => c.isFallback)
+        .map((c) => c.listingName);
+      if (unsupported.length > 0) {
+        const alertKey = `soko-crop-alert-${unsupported.sort().join(",")}`;
+        if (!sessionStorage.getItem(alertKey)) {
+          sessionStorage.setItem(alertKey, "1");
+          api
+            .post("auth/alert/unsupported-crop", { crops: unsupported, user_id: user.id }, token)
+            .catch(() => {});
+        }
       }
 
       const [lat, lng] = getDistrictCoords(user.district);
