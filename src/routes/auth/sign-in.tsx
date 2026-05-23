@@ -14,7 +14,18 @@ import { Ic } from "@/constants/crisp-svg";
 import { useAuthStore } from "@/store/auth-store";
 
 export const Route = createFileRoute("/auth/sign-in")({
-  beforeLoad: () => {
+  validateSearch: (search: Record<string, unknown>) => ({
+    access_token: search.access_token as string | undefined,
+  }),
+  beforeLoad: async ({ search }) => {
+    if (search.access_token) {
+      try {
+        await useAuthStore.getState().loginWithToken(search.access_token);
+      } catch {
+        // invalid token — fall through to show sign-in form
+      }
+      throw redirect({ to: "/home" });
+    }
     if (useAuthStore.getState().isAuthenticated()) throw redirect({ to: "/home" });
   },
   component: RouteComponent,
