@@ -1,4 +1,5 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
+
 import { useAuthStore } from "@/store/auth-store";
 
 type CallbackSearch = {
