@@ -173,7 +173,7 @@ export function useCreateListing() {
       resetDraft();
       // Bust marketplace cache so the new listing appears immediately
       qc.invalidateQueries({ queryKey: listingKeys.all() });
-      navigate({ to: "/sell/success", search: { listingId: data.id, slug: data.slug } });
+      navigate({ to: "/auth/sell/success", search: { listingId: data.id, slug: data.slug } });
     },
   });
 }
