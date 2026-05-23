@@ -14,7 +14,7 @@ import { Ic } from "@/constants/crisp-svg";
 import { useAuthStore } from "@/store/auth-store";
 
 export const Route = createFileRoute("/auth/sign-in")({
-  validateSearch: (search: Record<string, unknown>) => ({
+  validateSearch: (search: Record<string, unknown>): { access_token?: string } => ({
     access_token: search.access_token as string | undefined,
   }),
   beforeLoad: async ({ search }) => {
