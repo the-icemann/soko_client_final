@@ -1,17 +1,18 @@
 import { Link } from "@tanstack/react-router";
 
+import { Skeleton } from "@/components/ui/skeleton";
 import { Product } from "@/types";
 
 import { ProductCard } from "../common/product-card";
 import { Button } from "../ui/button";
-import { Skeleton } from "../ui/skeleton";
 
-interface FreshListingsSectionProps {
+export const FreshListingsSection = ({
+  products,
+  isLoading,
+}: {
   products: Product[];
   isLoading?: boolean;
-}
-
-export const FreshListingsSection = ({ products, isLoading }: FreshListingsSectionProps) => {
+}) => {
   return (
     <div>
       <div className="mb-3 flex items-center justify-between">
@@ -26,18 +27,21 @@ export const FreshListingsSection = ({ products, isLoading }: FreshListingsSecti
         </Button>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-        {isLoading
-          ? Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="space-y-2">
-                <Skeleton className="h-32 md:h-40 w-full rounded-xl" />
-                <Skeleton className="h-3 w-3/4 rounded" />
-                <Skeleton className="h-3 w-1/2 rounded" />
-                <Skeleton className="h-8 w-full rounded-lg" />
-              </div>
-            ))
-          : products.slice(0, 4).map((p) => <ProductCard key={p.id} product={p} />)}
-      </div>
+      {!isLoading && products.length === 0 ? (
+        <div className="flex flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed border-border py-10 text-center">
+          <span className="text-3xl">🌾</span>
+          <p className="text-sm font-medium text-muted-foreground">No listings right now</p>
+          <p className="text-xs text-muted-foreground">Check back soon for fresh produce</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+          {isLoading
+            ? Array.from({ length: 4 }).map((_, i) => (
+                <Skeleton key={i} className="h-56 rounded-xl" />
+              ))
+            : products.slice(0, 4).map((p) => <ProductCard key={p.id} product={p} />)}
+        </div>
+      )}
     </div>
   );
 };

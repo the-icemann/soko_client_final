@@ -10,11 +10,11 @@ import {
   MessageList,
   StylesheetProvider,
   useActiveConversation,
-  useUser,
   useWebchatContext,
   WebchatProvider,
 } from "@botpress/webchat";
-import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { useAuthStore } from "@/store/auth-store";
 
@@ -39,65 +39,131 @@ const headerConfig: Pick<
   botDescription: BOT_DESCRIPTION,
 };
 
-function SokoChatWidget() {
+function SokoChatWidget({ onNewChat }: { onNewChat: () => void }) {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
-  const { updateUser } = useUser();
   const { userCredentials } = useWebchatContext();
   const { messages, isTyping, sendMessage, uploadFile, participants, status, saveMessageFeedback } =
     useActiveConversation();
 
   const token = useAuthStore((s) => s.token);
-  const userId = useAuthStore((s) => s.user?.id);
-  const userRole = useAuthStore((s) => s.user?.role);
+
+  const sentLinkRef = useRef<string | null>(null);
+  const chatRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!updateUser) return;
-    if (token && userId && userRole) {
-      updateUser({
-        attributes: {
-          sokoToken: token,
-          sokoUserId: userId,
-          sokoRole: userRole,
-        },
-      }).catch(() => {});
-    }
-  }, [token, userId, userRole, updateUser]);
+    if (status !== "connected" || !token || !userCredentials?.userId) return;
+    const key = `${userCredentials.userId}:${token}`;
+    if (sentLinkRef.current === key) return;
+    sentLinkRef.current = key;
+
+    fetch("/auth/bot/link", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ botpress_user_id: userCredentials.userId }),
+    }).catch(() => {});
+  }, [status, token, userCredentials?.userId]);
 
   const richMessages = useMemo(
     () => enrichMessage(messages, participants, userCredentials?.userId ?? "", BOT_NAME),
     [messages, participants, userCredentials?.userId]
   );
 
+  useEffect(() => {
+    const el = chatRef.current;
+    if (!el) return;
+
+    // Botpress uses React's onMouseUp with window.open() — DOM property patches
+    // don't stop React's delegated handler. Instead, intercept mouseup at the
+    // document capture phase, which fires before React's root-container listener.
+    // Botpress stores the URL only in the React onMouseUp closure and calls
+    // window.open() directly — the <a> has no href. Intercept window.open
+    // for the lifetime of the chat widget and route same-origin URLs in-place.
+    const originalOpen = window.open.bind(window);
+    window.open = (url?: string | URL, target?: string, features?: string) => {
+      if (url) {
+        try {
+          const parsed = new URL(String(url), window.location.origin);
+          if (parsed.origin === window.location.origin) {
+            navigate({ to: parsed.pathname + parsed.search + parsed.hash });
+            setIsOpen(false);
+            return null as unknown as Window;
+          }
+        } catch (_e) {
+          // malformed URL — fall through to original
+        }
+      }
+      return originalOpen(url, target, features);
+    };
+
+    return () => {
+      window.open = originalOpen;
+    };
+  }, [navigate]);
+
   return (
     <>
-      <Container
-        connected={status === "connected"}
-        uploadFile={uploadFile}
-        style={{
-          width: "400px",
-          height: "600px",
-          display: isOpen ? "flex" : "none",
-          position: "fixed",
-          bottom: "90px",
-          right: "20px",
-          zIndex: 1000,
-        }}
-      >
-        <Header closeWindow={() => setIsOpen(false)} configuration={headerConfig} />
-        <MessageList
-          messages={richMessages}
-          isTyping={isTyping}
-          botName={BOT_NAME}
-          botDescription={BOT_DESCRIPTION}
-          addMessageFeedback={saveMessageFeedback}
-        />
-        <Composer
+      <div ref={chatRef}>
+        <Container
           connected={status === "connected"}
-          sendMessage={sendMessage}
           uploadFile={uploadFile}
-        />
-      </Container>
+          style={{
+            width: "400px",
+            height: "600px",
+            display: isOpen ? "flex" : "none",
+            position: "fixed",
+            bottom: "90px",
+            right: "20px",
+            zIndex: 1000,
+          }}
+        >
+          <Header closeWindow={() => setIsOpen(false)} configuration={headerConfig} />
+          <div
+            style={{
+              position: "absolute",
+              top: "125px",
+              left: "50%",
+              transform: "translateX(-50%)",
+              zIndex: 1001,
+            }}
+          >
+            <button
+              onClick={onNewChat}
+              style={{
+                padding: "6px 18px",
+                borderRadius: "20px",
+                border: "none",
+                background: "#00c471",
+                color: "#0b2618",
+                cursor: "pointer",
+                fontSize: "13px",
+                fontWeight: 600,
+                fontFamily: "Outfit, sans-serif",
+                boxShadow: "0 2px 8px rgba(0,196,113,0.3)",
+                whiteSpace: "nowrap",
+              }}
+            >
+              New Chat
+            </button>
+          </div>
+          <MessageList
+            messages={richMessages}
+            isTyping={isTyping}
+            botName={BOT_NAME}
+            botDescription={BOT_DESCRIPTION}
+            addMessageFeedback={saveMessageFeedback}
+          />
+          <Composer
+            connected={status === "connected"}
+            sendMessage={sendMessage}
+            uploadFile={uploadFile}
+          />
+        </Container>
+      </div>
       <Fab
         onClick={() => setIsOpen(!isOpen)}
         style={{
@@ -115,16 +181,23 @@ function SokoChatWidget() {
 
 export function SokoWebchat() {
   const userId = useAuthStore((s) => s.user?.id);
+  const [session, setSession] = useState(0);
 
   if (!clientId) return null;
 
-  const storageKey = userId ? `soko-v2-${userId}` : "soko-v2-anon";
+  const baseKey = userId ? `soko-v2-${userId}` : "soko-v2-anon";
+  const storageKey = session === 0 ? baseKey : `${baseKey}-s${session}`;
+
+  const newChat = () => {
+    localStorage.removeItem(storageKey);
+    setSession((s) => s + 1);
+  };
 
   return (
     <>
       <StylesheetProvider />
       <WebchatProvider key={storageKey} clientId={clientId} storageKey={storageKey}>
-        <SokoChatWidget />
+        <SokoChatWidget onNewChat={newChat} />
       </WebchatProvider>
     </>
   );

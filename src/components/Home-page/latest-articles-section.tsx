@@ -1,10 +1,10 @@
 import { Link } from "@tanstack/react-router";
 
+import { Skeleton } from "@/components/ui/skeleton";
 import { Post } from "@/types";
 
 import { BlogCard } from "../common/blog-card";
 import { Button } from "../ui/button";
-import { Skeleton } from "../ui/skeleton";
 
 interface LatestArticlesSectionProps {
   blogs: Post[];
@@ -25,17 +25,20 @@ export const LatestArticlesSection = ({ blogs, isLoading }: LatestArticlesSectio
       </Button>
     </div>
 
-    <div className="flex gap-2 overflow-x-auto no-scrollbar">
-      {isLoading
-        ? Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="shrink-0 w-52 space-y-2 mt-2">
-              <Skeleton className="h-36 w-full rounded-xl" />
-              <Skeleton className="h-3 w-5/6 rounded" />
-              <Skeleton className="h-3 w-3/4 rounded" />
-              <Skeleton className="h-3 w-1/2 rounded" />
-            </div>
-          ))
-        : blogs.slice(0, 4).map((b) => <BlogCard key={b.slug} post={b} />)}
-    </div>
+    {!isLoading && blogs.length === 0 ? (
+      <div className="flex flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed border-border py-10 text-center">
+        <span className="text-3xl">📭</span>
+        <p className="text-sm font-medium text-muted-foreground">No articles yet</p>
+        <p className="text-xs text-muted-foreground">Be the first to share farming insights</p>
+      </div>
+    ) : (
+      <div className="flex gap-2 overflow-x-auto no-scrollbar">
+        {isLoading
+          ? Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton key={i} className="h-48 w-44 shrink-0 rounded-xl" />
+            ))
+          : blogs.slice(0, 4).map((b) => <BlogCard key={b.slug} post={b} />)}
+      </div>
+    )}
   </div>
 );
