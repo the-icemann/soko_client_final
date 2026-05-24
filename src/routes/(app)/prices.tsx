@@ -5,7 +5,6 @@ import { BuyerPricesView } from "@/components/prices-page/BuyerPricesView";
 import { FarmerPricesView } from "@/components/prices-page/FarmerPricesView";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuthStore } from "@/store/auth-store";
-import { usePricesStore } from "@/store/usePricesStore";
 
 export const Route = createFileRoute("/(app)/prices")({
   beforeLoad: () => {
@@ -71,7 +70,7 @@ function PricesPage() {
       {isBoth ? (
         // Both roles — tabs
         <Tabs defaultValue="farmer" className="w-full">
-          <div className="px-4 pt-4 sticky top-[3.5rem] z-10 bg-muted/20 backdrop-blur pb-0">
+          <div className="px-4 pt-4 sticky top-14 z-10 bg-muted/20 backdrop-blur pb-0">
             <TabsList className="w-full">
               <TabsTrigger value="farmer" className="flex-1 gap-1.5">
                 <Leaf className="size-3.5" /> Farmer Analytics
