@@ -8,691 +8,697 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from "./routes/__root";
-import { Route as AboutRouteImport } from "./routes/about";
-import { Route as appRouteRouteImport } from "./routes/(app)/route";
-import { Route as IndexRouteImport } from "./routes/index";
-import { Route as AuthSignUpRouteImport } from "./routes/auth/sign-up";
-import { Route as AuthSignInRouteImport } from "./routes/auth/sign-in";
-import { Route as AuthCompleteProfileRouteImport } from "./routes/auth/complete-profile";
-import { Route as appSellRouteImport } from "./routes/(app)/sell";
-import { Route as appSearchRouteImport } from "./routes/(app)/search";
-import { Route as appProfileRouteImport } from "./routes/(app)/profile";
-import { Route as appPricesRouteImport } from "./routes/(app)/prices";
-import { Route as appMessagesRouteImport } from "./routes/(app)/messages";
-import { Route as appMarketplaceRouteImport } from "./routes/(app)/marketplace";
-import { Route as appHomeRouteImport } from "./routes/(app)/home";
-import { Route as appCheckoutRouteImport } from "./routes/(app)/checkout";
-import { Route as appCartRouteImport } from "./routes/(app)/cart";
-import { Route as appBlogRouteImport } from "./routes/(app)/blog";
-import { Route as appSellIndexRouteImport } from "./routes/(app)/sell.index";
-import { Route as appProfileIndexRouteImport } from "./routes/(app)/profile.index";
-import { Route as appMarketplaceIndexRouteImport } from "./routes/(app)/marketplace.index";
-import { Route as appCheckoutIndexRouteImport } from "./routes/(app)/checkout.index";
-import { Route as appBlogIndexRouteImport } from "./routes/(app)/blog.index";
-import { Route as AuthSellSuccessRouteImport } from "./routes/auth/sell.success";
-import { Route as AuthGoogleCallbackRouteImport } from "./routes/auth/google/callback";
-import { Route as appUserNotificationsRouteImport } from "./routes/(app)/user.notifications";
-import { Route as appProfileAnalyticsRouteImport } from "./routes/(app)/profile.analytics";
-import { Route as appMarketplaceIdRouteImport } from "./routes/(app)/marketplace.$id";
-import { Route as appFarmersIdRouteImport } from "./routes/(app)/farmers.$id";
-import { Route as appCheckoutConfirmationRouteImport } from "./routes/(app)/checkout.confirmation";
-import { Route as appBuyersIdRouteImport } from "./routes/(app)/buyers.$id";
-import { Route as appBlogWriteRouteImport } from "./routes/(app)/blog.write";
-import { Route as appBlogSlugRouteImport } from "./routes/(app)/blog.$slug";
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as appRouteRouteImport } from './routes/(app)/route'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthSignUpRouteImport } from './routes/auth/sign-up'
+import { Route as AuthSignInRouteImport } from './routes/auth/sign-in'
+import { Route as AuthCompleteProfileRouteImport } from './routes/auth/complete-profile'
+import { Route as appSellRouteImport } from './routes/(app)/sell'
+import { Route as appSearchRouteImport } from './routes/(app)/search'
+import { Route as appProfileRouteImport } from './routes/(app)/profile'
+import { Route as appPricesRouteImport } from './routes/(app)/prices'
+import { Route as appMessagesRouteImport } from './routes/(app)/messages'
+import { Route as appMarketplaceRouteImport } from './routes/(app)/marketplace'
+import { Route as appHomeRouteImport } from './routes/(app)/home'
+import { Route as appCheckoutRouteImport } from './routes/(app)/checkout'
+import { Route as appCartRouteImport } from './routes/(app)/cart'
+import { Route as appBlogRouteImport } from './routes/(app)/blog'
+import { Route as appSellIndexRouteImport } from './routes/(app)/sell.index'
+import { Route as appProfileIndexRouteImport } from './routes/(app)/profile.index'
+import { Route as appMarketplaceIndexRouteImport } from './routes/(app)/marketplace.index'
+import { Route as appCheckoutIndexRouteImport } from './routes/(app)/checkout.index'
+import { Route as appBlogIndexRouteImport } from './routes/(app)/blog.index'
+import { Route as AuthSellSuccessRouteImport } from './routes/auth/sell.success'
+import { Route as AuthGoogleCallbackRouteImport } from './routes/auth/google/callback'
+import { Route as appUserNotificationsRouteImport } from './routes/(app)/user.notifications'
+import { Route as appProfileAnalyticsRouteImport } from './routes/(app)/profile.analytics'
+import { Route as appMarketplaceIdRouteImport } from './routes/(app)/marketplace.$id'
+import { Route as appFarmersIdRouteImport } from './routes/(app)/farmers.$id'
+import { Route as appCheckoutConfirmationRouteImport } from './routes/(app)/checkout.confirmation'
+import { Route as appBuyersIdRouteImport } from './routes/(app)/buyers.$id'
+import { Route as appBlogWriteRouteImport } from './routes/(app)/blog.write'
+import { Route as appBlogSlugRouteImport } from './routes/(app)/blog.$slug'
 
 const AboutRoute = AboutRouteImport.update({
-  id: "/about",
-  path: "/about",
+  id: '/about',
+  path: '/about',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const appRouteRoute = appRouteRouteImport.update({
-  id: "/(app)",
+  id: '/(app)',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const IndexRoute = IndexRouteImport.update({
-  id: "/",
-  path: "/",
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const AuthSignUpRoute = AuthSignUpRouteImport.update({
-  id: "/auth/sign-up",
-  path: "/auth/sign-up",
+  id: '/auth/sign-up',
+  path: '/auth/sign-up',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const AuthSignInRoute = AuthSignInRouteImport.update({
-  id: "/auth/sign-in",
-  path: "/auth/sign-in",
+  id: '/auth/sign-in',
+  path: '/auth/sign-in',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const AuthCompleteProfileRoute = AuthCompleteProfileRouteImport.update({
-  id: "/auth/complete-profile",
-  path: "/auth/complete-profile",
+  id: '/auth/complete-profile',
+  path: '/auth/complete-profile',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const appSellRoute = appSellRouteImport.update({
-  id: "/sell",
-  path: "/sell",
+  id: '/sell',
+  path: '/sell',
   getParentRoute: () => appRouteRoute,
-} as any);
+} as any)
 const appSearchRoute = appSearchRouteImport.update({
-  id: "/search",
-  path: "/search",
+  id: '/search',
+  path: '/search',
   getParentRoute: () => appRouteRoute,
-} as any);
+} as any)
 const appProfileRoute = appProfileRouteImport.update({
-  id: "/profile",
-  path: "/profile",
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => appRouteRoute,
-} as any);
+} as any)
 const appPricesRoute = appPricesRouteImport.update({
-  id: "/prices",
-  path: "/prices",
+  id: '/prices',
+  path: '/prices',
   getParentRoute: () => appRouteRoute,
-} as any);
+} as any)
 const appMessagesRoute = appMessagesRouteImport.update({
-  id: "/messages",
-  path: "/messages",
+  id: '/messages',
+  path: '/messages',
   getParentRoute: () => appRouteRoute,
-} as any);
+} as any)
 const appMarketplaceRoute = appMarketplaceRouteImport.update({
-  id: "/marketplace",
-  path: "/marketplace",
+  id: '/marketplace',
+  path: '/marketplace',
   getParentRoute: () => appRouteRoute,
-} as any);
+} as any)
 const appHomeRoute = appHomeRouteImport.update({
-  id: "/home",
-  path: "/home",
+  id: '/home',
+  path: '/home',
   getParentRoute: () => appRouteRoute,
-} as any);
+} as any)
 const appCheckoutRoute = appCheckoutRouteImport.update({
-  id: "/checkout",
-  path: "/checkout",
+  id: '/checkout',
+  path: '/checkout',
   getParentRoute: () => appRouteRoute,
-} as any);
+} as any)
 const appCartRoute = appCartRouteImport.update({
-  id: "/cart",
-  path: "/cart",
+  id: '/cart',
+  path: '/cart',
   getParentRoute: () => appRouteRoute,
-} as any);
+} as any)
 const appBlogRoute = appBlogRouteImport.update({
-  id: "/blog",
-  path: "/blog",
+  id: '/blog',
+  path: '/blog',
   getParentRoute: () => appRouteRoute,
-} as any);
+} as any)
 const appSellIndexRoute = appSellIndexRouteImport.update({
-  id: "/",
-  path: "/",
+  id: '/',
+  path: '/',
   getParentRoute: () => appSellRoute,
-} as any);
+} as any)
 const appProfileIndexRoute = appProfileIndexRouteImport.update({
-  id: "/",
-  path: "/",
+  id: '/',
+  path: '/',
   getParentRoute: () => appProfileRoute,
-} as any);
+} as any)
 const appMarketplaceIndexRoute = appMarketplaceIndexRouteImport.update({
-  id: "/",
-  path: "/",
+  id: '/',
+  path: '/',
   getParentRoute: () => appMarketplaceRoute,
-} as any);
+} as any)
 const appCheckoutIndexRoute = appCheckoutIndexRouteImport.update({
-  id: "/",
-  path: "/",
+  id: '/',
+  path: '/',
   getParentRoute: () => appCheckoutRoute,
-} as any);
+} as any)
 const appBlogIndexRoute = appBlogIndexRouteImport.update({
-  id: "/",
-  path: "/",
+  id: '/',
+  path: '/',
   getParentRoute: () => appBlogRoute,
-} as any);
+} as any)
 const AuthSellSuccessRoute = AuthSellSuccessRouteImport.update({
-  id: "/auth/sell/success",
-  path: "/auth/sell/success",
+  id: '/auth/sell/success',
+  path: '/auth/sell/success',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const AuthGoogleCallbackRoute = AuthGoogleCallbackRouteImport.update({
-  id: "/auth/google/callback",
-  path: "/auth/google/callback",
+  id: '/auth/google/callback',
+  path: '/auth/google/callback',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const appUserNotificationsRoute = appUserNotificationsRouteImport.update({
-  id: "/user/notifications",
-  path: "/user/notifications",
+  id: '/user/notifications',
+  path: '/user/notifications',
   getParentRoute: () => appRouteRoute,
-} as any);
+} as any)
 const appProfileAnalyticsRoute = appProfileAnalyticsRouteImport.update({
-  id: "/analytics",
-  path: "/analytics",
+  id: '/analytics',
+  path: '/analytics',
   getParentRoute: () => appProfileRoute,
-} as any);
+} as any)
 const appMarketplaceIdRoute = appMarketplaceIdRouteImport.update({
-  id: "/$id",
-  path: "/$id",
+  id: '/$id',
+  path: '/$id',
   getParentRoute: () => appMarketplaceRoute,
-} as any);
+} as any)
 const appFarmersIdRoute = appFarmersIdRouteImport.update({
-  id: "/farmers/$id",
-  path: "/farmers/$id",
+  id: '/farmers/$id',
+  path: '/farmers/$id',
   getParentRoute: () => appRouteRoute,
-} as any);
+} as any)
 const appCheckoutConfirmationRoute = appCheckoutConfirmationRouteImport.update({
-  id: "/confirmation",
-  path: "/confirmation",
+  id: '/confirmation',
+  path: '/confirmation',
   getParentRoute: () => appCheckoutRoute,
-} as any);
+} as any)
 const appBuyersIdRoute = appBuyersIdRouteImport.update({
-  id: "/buyers/$id",
-  path: "/buyers/$id",
+  id: '/buyers/$id',
+  path: '/buyers/$id',
   getParentRoute: () => appRouteRoute,
-} as any);
+} as any)
 const appBlogWriteRoute = appBlogWriteRouteImport.update({
-  id: "/write",
-  path: "/write",
+  id: '/write',
+  path: '/write',
   getParentRoute: () => appBlogRoute,
-} as any);
+} as any)
 const appBlogSlugRoute = appBlogSlugRouteImport.update({
-  id: "/$slug",
-  path: "/$slug",
+  id: '/$slug',
+  path: '/$slug',
   getParentRoute: () => appBlogRoute,
-} as any);
+} as any)
 
 export interface FileRoutesByFullPath {
-  "/": typeof IndexRoute;
-  "/about": typeof AboutRoute;
-  "/blog": typeof appBlogRouteWithChildren;
-  "/cart": typeof appCartRoute;
-  "/checkout": typeof appCheckoutRouteWithChildren;
-  "/home": typeof appHomeRoute;
-  "/marketplace": typeof appMarketplaceRouteWithChildren;
-  "/messages": typeof appMessagesRoute;
-  "/prices": typeof appPricesRoute;
-  "/profile": typeof appProfileRouteWithChildren;
-  "/search": typeof appSearchRoute;
-  "/sell": typeof appSellRouteWithChildren;
-  "/auth/complete-profile": typeof AuthCompleteProfileRoute;
-  "/auth/sign-in": typeof AuthSignInRoute;
-  "/auth/sign-up": typeof AuthSignUpRoute;
-  "/blog/$slug": typeof appBlogSlugRoute;
-  "/blog/write": typeof appBlogWriteRoute;
-  "/buyers/$id": typeof appBuyersIdRoute;
-  "/checkout/confirmation": typeof appCheckoutConfirmationRoute;
-  "/farmers/$id": typeof appFarmersIdRoute;
-  "/marketplace/$id": typeof appMarketplaceIdRoute;
-  "/profile/analytics": typeof appProfileAnalyticsRoute;
-  "/user/notifications": typeof appUserNotificationsRoute;
-  "/auth/google/callback": typeof AuthGoogleCallbackRoute;
-  "/auth/sell/success": typeof AuthSellSuccessRoute;
-  "/blog/": typeof appBlogIndexRoute;
-  "/checkout/": typeof appCheckoutIndexRoute;
-  "/marketplace/": typeof appMarketplaceIndexRoute;
-  "/profile/": typeof appProfileIndexRoute;
-  "/sell/": typeof appSellIndexRoute;
+  '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/blog': typeof appBlogRouteWithChildren
+  '/cart': typeof appCartRoute
+  '/checkout': typeof appCheckoutRouteWithChildren
+  '/home': typeof appHomeRoute
+  '/marketplace': typeof appMarketplaceRouteWithChildren
+  '/messages': typeof appMessagesRoute
+  '/prices': typeof appPricesRoute
+  '/profile': typeof appProfileRouteWithChildren
+  '/search': typeof appSearchRoute
+  '/sell': typeof appSellRouteWithChildren
+  '/auth/complete-profile': typeof AuthCompleteProfileRoute
+  '/auth/sign-in': typeof AuthSignInRoute
+  '/auth/sign-up': typeof AuthSignUpRoute
+  '/blog/$slug': typeof appBlogSlugRoute
+  '/blog/write': typeof appBlogWriteRoute
+  '/buyers/$id': typeof appBuyersIdRoute
+  '/checkout/confirmation': typeof appCheckoutConfirmationRoute
+  '/farmers/$id': typeof appFarmersIdRoute
+  '/marketplace/$id': typeof appMarketplaceIdRoute
+  '/profile/analytics': typeof appProfileAnalyticsRoute
+  '/user/notifications': typeof appUserNotificationsRoute
+  '/auth/google/callback': typeof AuthGoogleCallbackRoute
+  '/auth/sell/success': typeof AuthSellSuccessRoute
+  '/blog/': typeof appBlogIndexRoute
+  '/checkout/': typeof appCheckoutIndexRoute
+  '/marketplace/': typeof appMarketplaceIndexRoute
+  '/profile/': typeof appProfileIndexRoute
+  '/sell/': typeof appSellIndexRoute
 }
 export interface FileRoutesByTo {
-  "/": typeof IndexRoute;
-  "/about": typeof AboutRoute;
-  "/cart": typeof appCartRoute;
-  "/home": typeof appHomeRoute;
-  "/messages": typeof appMessagesRoute;
-  "/prices": typeof appPricesRoute;
-  "/search": typeof appSearchRoute;
-  "/auth/complete-profile": typeof AuthCompleteProfileRoute;
-  "/auth/sign-in": typeof AuthSignInRoute;
-  "/auth/sign-up": typeof AuthSignUpRoute;
-  "/blog/$slug": typeof appBlogSlugRoute;
-  "/blog/write": typeof appBlogWriteRoute;
-  "/buyers/$id": typeof appBuyersIdRoute;
-  "/checkout/confirmation": typeof appCheckoutConfirmationRoute;
-  "/farmers/$id": typeof appFarmersIdRoute;
-  "/marketplace/$id": typeof appMarketplaceIdRoute;
-  "/profile/analytics": typeof appProfileAnalyticsRoute;
-  "/user/notifications": typeof appUserNotificationsRoute;
-  "/auth/google/callback": typeof AuthGoogleCallbackRoute;
-  "/auth/sell/success": typeof AuthSellSuccessRoute;
-  "/blog": typeof appBlogIndexRoute;
-  "/checkout": typeof appCheckoutIndexRoute;
-  "/marketplace": typeof appMarketplaceIndexRoute;
-  "/profile": typeof appProfileIndexRoute;
-  "/sell": typeof appSellIndexRoute;
+  '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/cart': typeof appCartRoute
+  '/home': typeof appHomeRoute
+  '/messages': typeof appMessagesRoute
+  '/prices': typeof appPricesRoute
+  '/search': typeof appSearchRoute
+  '/auth/complete-profile': typeof AuthCompleteProfileRoute
+  '/auth/sign-in': typeof AuthSignInRoute
+  '/auth/sign-up': typeof AuthSignUpRoute
+  '/blog/$slug': typeof appBlogSlugRoute
+  '/blog/write': typeof appBlogWriteRoute
+  '/buyers/$id': typeof appBuyersIdRoute
+  '/checkout/confirmation': typeof appCheckoutConfirmationRoute
+  '/farmers/$id': typeof appFarmersIdRoute
+  '/marketplace/$id': typeof appMarketplaceIdRoute
+  '/profile/analytics': typeof appProfileAnalyticsRoute
+  '/user/notifications': typeof appUserNotificationsRoute
+  '/auth/google/callback': typeof AuthGoogleCallbackRoute
+  '/auth/sell/success': typeof AuthSellSuccessRoute
+  '/blog': typeof appBlogIndexRoute
+  '/checkout': typeof appCheckoutIndexRoute
+  '/marketplace': typeof appMarketplaceIndexRoute
+  '/profile': typeof appProfileIndexRoute
+  '/sell': typeof appSellIndexRoute
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport;
-  "/": typeof IndexRoute;
-  "/(app)": typeof appRouteRouteWithChildren;
-  "/about": typeof AboutRoute;
-  "/(app)/blog": typeof appBlogRouteWithChildren;
-  "/(app)/cart": typeof appCartRoute;
-  "/(app)/checkout": typeof appCheckoutRouteWithChildren;
-  "/(app)/home": typeof appHomeRoute;
-  "/(app)/marketplace": typeof appMarketplaceRouteWithChildren;
-  "/(app)/messages": typeof appMessagesRoute;
-  "/(app)/prices": typeof appPricesRoute;
-  "/(app)/profile": typeof appProfileRouteWithChildren;
-  "/(app)/search": typeof appSearchRoute;
-  "/(app)/sell": typeof appSellRouteWithChildren;
-  "/auth/complete-profile": typeof AuthCompleteProfileRoute;
-  "/auth/sign-in": typeof AuthSignInRoute;
-  "/auth/sign-up": typeof AuthSignUpRoute;
-  "/(app)/blog/$slug": typeof appBlogSlugRoute;
-  "/(app)/blog/write": typeof appBlogWriteRoute;
-  "/(app)/buyers/$id": typeof appBuyersIdRoute;
-  "/(app)/checkout/confirmation": typeof appCheckoutConfirmationRoute;
-  "/(app)/farmers/$id": typeof appFarmersIdRoute;
-  "/(app)/marketplace/$id": typeof appMarketplaceIdRoute;
-  "/(app)/profile/analytics": typeof appProfileAnalyticsRoute;
-  "/(app)/user/notifications": typeof appUserNotificationsRoute;
-  "/auth/google/callback": typeof AuthGoogleCallbackRoute;
-  "/auth/sell/success": typeof AuthSellSuccessRoute;
-  "/(app)/blog/": typeof appBlogIndexRoute;
-  "/(app)/checkout/": typeof appCheckoutIndexRoute;
-  "/(app)/marketplace/": typeof appMarketplaceIndexRoute;
-  "/(app)/profile/": typeof appProfileIndexRoute;
-  "/(app)/sell/": typeof appSellIndexRoute;
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/(app)': typeof appRouteRouteWithChildren
+  '/about': typeof AboutRoute
+  '/(app)/blog': typeof appBlogRouteWithChildren
+  '/(app)/cart': typeof appCartRoute
+  '/(app)/checkout': typeof appCheckoutRouteWithChildren
+  '/(app)/home': typeof appHomeRoute
+  '/(app)/marketplace': typeof appMarketplaceRouteWithChildren
+  '/(app)/messages': typeof appMessagesRoute
+  '/(app)/prices': typeof appPricesRoute
+  '/(app)/profile': typeof appProfileRouteWithChildren
+  '/(app)/search': typeof appSearchRoute
+  '/(app)/sell': typeof appSellRouteWithChildren
+  '/auth/complete-profile': typeof AuthCompleteProfileRoute
+  '/auth/sign-in': typeof AuthSignInRoute
+  '/auth/sign-up': typeof AuthSignUpRoute
+  '/(app)/blog/$slug': typeof appBlogSlugRoute
+  '/(app)/blog/write': typeof appBlogWriteRoute
+  '/(app)/buyers/$id': typeof appBuyersIdRoute
+  '/(app)/checkout/confirmation': typeof appCheckoutConfirmationRoute
+  '/(app)/farmers/$id': typeof appFarmersIdRoute
+  '/(app)/marketplace/$id': typeof appMarketplaceIdRoute
+  '/(app)/profile/analytics': typeof appProfileAnalyticsRoute
+  '/(app)/user/notifications': typeof appUserNotificationsRoute
+  '/auth/google/callback': typeof AuthGoogleCallbackRoute
+  '/auth/sell/success': typeof AuthSellSuccessRoute
+  '/(app)/blog/': typeof appBlogIndexRoute
+  '/(app)/checkout/': typeof appCheckoutIndexRoute
+  '/(app)/marketplace/': typeof appMarketplaceIndexRoute
+  '/(app)/profile/': typeof appProfileIndexRoute
+  '/(app)/sell/': typeof appSellIndexRoute
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath;
+  fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | "/"
-    | "/about"
-    | "/blog"
-    | "/cart"
-    | "/checkout"
-    | "/home"
-    | "/marketplace"
-    | "/messages"
-    | "/prices"
-    | "/profile"
-    | "/search"
-    | "/sell"
-    | "/auth/complete-profile"
-    | "/auth/sign-in"
-    | "/auth/sign-up"
-    | "/blog/$slug"
-    | "/blog/write"
-    | "/buyers/$id"
-    | "/checkout/confirmation"
-    | "/farmers/$id"
-    | "/marketplace/$id"
-    | "/profile/analytics"
-    | "/user/notifications"
-    | "/auth/google/callback"
-    | "/auth/sell/success"
-    | "/blog/"
-    | "/checkout/"
-    | "/marketplace/"
-    | "/profile/"
-    | "/sell/";
-  fileRoutesByTo: FileRoutesByTo;
+    | '/'
+    | '/about'
+    | '/blog'
+    | '/cart'
+    | '/checkout'
+    | '/home'
+    | '/marketplace'
+    | '/messages'
+    | '/prices'
+    | '/profile'
+    | '/search'
+    | '/sell'
+    | '/auth/complete-profile'
+    | '/auth/sign-in'
+    | '/auth/sign-up'
+    | '/blog/$slug'
+    | '/blog/write'
+    | '/buyers/$id'
+    | '/checkout/confirmation'
+    | '/farmers/$id'
+    | '/marketplace/$id'
+    | '/profile/analytics'
+    | '/user/notifications'
+    | '/auth/google/callback'
+    | '/auth/sell/success'
+    | '/blog/'
+    | '/checkout/'
+    | '/marketplace/'
+    | '/profile/'
+    | '/sell/'
+  fileRoutesByTo: FileRoutesByTo
   to:
-    | "/"
-    | "/about"
-    | "/cart"
-    | "/home"
-    | "/messages"
-    | "/prices"
-    | "/search"
-    | "/auth/complete-profile"
-    | "/auth/sign-in"
-    | "/auth/sign-up"
-    | "/blog/$slug"
-    | "/blog/write"
-    | "/buyers/$id"
-    | "/checkout/confirmation"
-    | "/farmers/$id"
-    | "/marketplace/$id"
-    | "/profile/analytics"
-    | "/user/notifications"
-    | "/auth/google/callback"
-    | "/auth/sell/success"
-    | "/blog"
-    | "/checkout"
-    | "/marketplace"
-    | "/profile"
-    | "/sell";
+    | '/'
+    | '/about'
+    | '/cart'
+    | '/home'
+    | '/messages'
+    | '/prices'
+    | '/search'
+    | '/auth/complete-profile'
+    | '/auth/sign-in'
+    | '/auth/sign-up'
+    | '/blog/$slug'
+    | '/blog/write'
+    | '/buyers/$id'
+    | '/checkout/confirmation'
+    | '/farmers/$id'
+    | '/marketplace/$id'
+    | '/profile/analytics'
+    | '/user/notifications'
+    | '/auth/google/callback'
+    | '/auth/sell/success'
+    | '/blog'
+    | '/checkout'
+    | '/marketplace'
+    | '/profile'
+    | '/sell'
   id:
-    | "__root__"
-    | "/"
-    | "/(app)"
-    | "/about"
-    | "/(app)/blog"
-    | "/(app)/cart"
-    | "/(app)/checkout"
-    | "/(app)/home"
-    | "/(app)/marketplace"
-    | "/(app)/messages"
-    | "/(app)/prices"
-    | "/(app)/profile"
-    | "/(app)/search"
-    | "/(app)/sell"
-    | "/auth/complete-profile"
-    | "/auth/sign-in"
-    | "/auth/sign-up"
-    | "/(app)/blog/$slug"
-    | "/(app)/blog/write"
-    | "/(app)/buyers/$id"
-    | "/(app)/checkout/confirmation"
-    | "/(app)/farmers/$id"
-    | "/(app)/marketplace/$id"
-    | "/(app)/profile/analytics"
-    | "/(app)/user/notifications"
-    | "/auth/google/callback"
-    | "/auth/sell/success"
-    | "/(app)/blog/"
-    | "/(app)/checkout/"
-    | "/(app)/marketplace/"
-    | "/(app)/profile/"
-    | "/(app)/sell/";
-  fileRoutesById: FileRoutesById;
+    | '__root__'
+    | '/'
+    | '/(app)'
+    | '/about'
+    | '/(app)/blog'
+    | '/(app)/cart'
+    | '/(app)/checkout'
+    | '/(app)/home'
+    | '/(app)/marketplace'
+    | '/(app)/messages'
+    | '/(app)/prices'
+    | '/(app)/profile'
+    | '/(app)/search'
+    | '/(app)/sell'
+    | '/auth/complete-profile'
+    | '/auth/sign-in'
+    | '/auth/sign-up'
+    | '/(app)/blog/$slug'
+    | '/(app)/blog/write'
+    | '/(app)/buyers/$id'
+    | '/(app)/checkout/confirmation'
+    | '/(app)/farmers/$id'
+    | '/(app)/marketplace/$id'
+    | '/(app)/profile/analytics'
+    | '/(app)/user/notifications'
+    | '/auth/google/callback'
+    | '/auth/sell/success'
+    | '/(app)/blog/'
+    | '/(app)/checkout/'
+    | '/(app)/marketplace/'
+    | '/(app)/profile/'
+    | '/(app)/sell/'
+  fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute;
-  appRouteRoute: typeof appRouteRouteWithChildren;
-  AboutRoute: typeof AboutRoute;
-  AuthCompleteProfileRoute: typeof AuthCompleteProfileRoute;
-  AuthSignInRoute: typeof AuthSignInRoute;
-  AuthSignUpRoute: typeof AuthSignUpRoute;
-  AuthGoogleCallbackRoute: typeof AuthGoogleCallbackRoute;
-  AuthSellSuccessRoute: typeof AuthSellSuccessRoute;
+  IndexRoute: typeof IndexRoute
+  appRouteRoute: typeof appRouteRouteWithChildren
+  AboutRoute: typeof AboutRoute
+  AuthCompleteProfileRoute: typeof AuthCompleteProfileRoute
+  AuthSignInRoute: typeof AuthSignInRoute
+  AuthSignUpRoute: typeof AuthSignUpRoute
+  AuthGoogleCallbackRoute: typeof AuthGoogleCallbackRoute
+  AuthSellSuccessRoute: typeof AuthSellSuccessRoute
 }
 
-declare module "@tanstack/react-router" {
+declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    "/about": {
-      id: "/about";
-      path: "/about";
-      fullPath: "/about";
-      preLoaderRoute: typeof AboutRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/(app)": {
-      id: "/(app)";
-      path: "";
-      fullPath: "";
-      preLoaderRoute: typeof appRouteRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/": {
-      id: "/";
-      path: "/";
-      fullPath: "/";
-      preLoaderRoute: typeof IndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/auth/sign-up": {
-      id: "/auth/sign-up";
-      path: "/auth/sign-up";
-      fullPath: "/auth/sign-up";
-      preLoaderRoute: typeof AuthSignUpRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/auth/sign-in": {
-      id: "/auth/sign-in";
-      path: "/auth/sign-in";
-      fullPath: "/auth/sign-in";
-      preLoaderRoute: typeof AuthSignInRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/auth/complete-profile": {
-      id: "/auth/complete-profile";
-      path: "/auth/complete-profile";
-      fullPath: "/auth/complete-profile";
-      preLoaderRoute: typeof AuthCompleteProfileRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/(app)/sell": {
-      id: "/(app)/sell";
-      path: "/sell";
-      fullPath: "/sell";
-      preLoaderRoute: typeof appSellRouteImport;
-      parentRoute: typeof appRouteRoute;
-    };
-    "/(app)/search": {
-      id: "/(app)/search";
-      path: "/search";
-      fullPath: "/search";
-      preLoaderRoute: typeof appSearchRouteImport;
-      parentRoute: typeof appRouteRoute;
-    };
-    "/(app)/profile": {
-      id: "/(app)/profile";
-      path: "/profile";
-      fullPath: "/profile";
-      preLoaderRoute: typeof appProfileRouteImport;
-      parentRoute: typeof appRouteRoute;
-    };
-    "/(app)/prices": {
-      id: "/(app)/prices";
-      path: "/prices";
-      fullPath: "/prices";
-      preLoaderRoute: typeof appPricesRouteImport;
-      parentRoute: typeof appRouteRoute;
-    };
-    "/(app)/messages": {
-      id: "/(app)/messages";
-      path: "/messages";
-      fullPath: "/messages";
-      preLoaderRoute: typeof appMessagesRouteImport;
-      parentRoute: typeof appRouteRoute;
-    };
-    "/(app)/marketplace": {
-      id: "/(app)/marketplace";
-      path: "/marketplace";
-      fullPath: "/marketplace";
-      preLoaderRoute: typeof appMarketplaceRouteImport;
-      parentRoute: typeof appRouteRoute;
-    };
-    "/(app)/home": {
-      id: "/(app)/home";
-      path: "/home";
-      fullPath: "/home";
-      preLoaderRoute: typeof appHomeRouteImport;
-      parentRoute: typeof appRouteRoute;
-    };
-    "/(app)/checkout": {
-      id: "/(app)/checkout";
-      path: "/checkout";
-      fullPath: "/checkout";
-      preLoaderRoute: typeof appCheckoutRouteImport;
-      parentRoute: typeof appRouteRoute;
-    };
-    "/(app)/cart": {
-      id: "/(app)/cart";
-      path: "/cart";
-      fullPath: "/cart";
-      preLoaderRoute: typeof appCartRouteImport;
-      parentRoute: typeof appRouteRoute;
-    };
-    "/(app)/blog": {
-      id: "/(app)/blog";
-      path: "/blog";
-      fullPath: "/blog";
-      preLoaderRoute: typeof appBlogRouteImport;
-      parentRoute: typeof appRouteRoute;
-    };
-    "/(app)/sell/": {
-      id: "/(app)/sell/";
-      path: "/";
-      fullPath: "/sell/";
-      preLoaderRoute: typeof appSellIndexRouteImport;
-      parentRoute: typeof appSellRoute;
-    };
-    "/(app)/profile/": {
-      id: "/(app)/profile/";
-      path: "/";
-      fullPath: "/profile/";
-      preLoaderRoute: typeof appProfileIndexRouteImport;
-      parentRoute: typeof appProfileRoute;
-    };
-    "/(app)/marketplace/": {
-      id: "/(app)/marketplace/";
-      path: "/";
-      fullPath: "/marketplace/";
-      preLoaderRoute: typeof appMarketplaceIndexRouteImport;
-      parentRoute: typeof appMarketplaceRoute;
-    };
-    "/(app)/checkout/": {
-      id: "/(app)/checkout/";
-      path: "/";
-      fullPath: "/checkout/";
-      preLoaderRoute: typeof appCheckoutIndexRouteImport;
-      parentRoute: typeof appCheckoutRoute;
-    };
-    "/(app)/blog/": {
-      id: "/(app)/blog/";
-      path: "/";
-      fullPath: "/blog/";
-      preLoaderRoute: typeof appBlogIndexRouteImport;
-      parentRoute: typeof appBlogRoute;
-    };
-    "/auth/sell/success": {
-      id: "/auth/sell/success";
-      path: "/auth/sell/success";
-      fullPath: "/auth/sell/success";
-      preLoaderRoute: typeof AuthSellSuccessRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/auth/google/callback": {
-      id: "/auth/google/callback";
-      path: "/auth/google/callback";
-      fullPath: "/auth/google/callback";
-      preLoaderRoute: typeof AuthGoogleCallbackRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/(app)/user/notifications": {
-      id: "/(app)/user/notifications";
-      path: "/user/notifications";
-      fullPath: "/user/notifications";
-      preLoaderRoute: typeof appUserNotificationsRouteImport;
-      parentRoute: typeof appRouteRoute;
-    };
-    "/(app)/profile/analytics": {
-      id: "/(app)/profile/analytics";
-      path: "/analytics";
-      fullPath: "/profile/analytics";
-      preLoaderRoute: typeof appProfileAnalyticsRouteImport;
-      parentRoute: typeof appProfileRoute;
-    };
-    "/(app)/marketplace/$id": {
-      id: "/(app)/marketplace/$id";
-      path: "/$id";
-      fullPath: "/marketplace/$id";
-      preLoaderRoute: typeof appMarketplaceIdRouteImport;
-      parentRoute: typeof appMarketplaceRoute;
-    };
-    "/(app)/farmers/$id": {
-      id: "/(app)/farmers/$id";
-      path: "/farmers/$id";
-      fullPath: "/farmers/$id";
-      preLoaderRoute: typeof appFarmersIdRouteImport;
-      parentRoute: typeof appRouteRoute;
-    };
-    "/(app)/checkout/confirmation": {
-      id: "/(app)/checkout/confirmation";
-      path: "/confirmation";
-      fullPath: "/checkout/confirmation";
-      preLoaderRoute: typeof appCheckoutConfirmationRouteImport;
-      parentRoute: typeof appCheckoutRoute;
-    };
-    "/(app)/buyers/$id": {
-      id: "/(app)/buyers/$id";
-      path: "/buyers/$id";
-      fullPath: "/buyers/$id";
-      preLoaderRoute: typeof appBuyersIdRouteImport;
-      parentRoute: typeof appRouteRoute;
-    };
-    "/(app)/blog/write": {
-      id: "/(app)/blog/write";
-      path: "/write";
-      fullPath: "/blog/write";
-      preLoaderRoute: typeof appBlogWriteRouteImport;
-      parentRoute: typeof appBlogRoute;
-    };
-    "/(app)/blog/$slug": {
-      id: "/(app)/blog/$slug";
-      path: "/$slug";
-      fullPath: "/blog/$slug";
-      preLoaderRoute: typeof appBlogSlugRouteImport;
-      parentRoute: typeof appBlogRoute;
-    };
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(app)': {
+      id: '/(app)'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof appRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/sign-up': {
+      id: '/auth/sign-up'
+      path: '/auth/sign-up'
+      fullPath: '/auth/sign-up'
+      preLoaderRoute: typeof AuthSignUpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/sign-in': {
+      id: '/auth/sign-in'
+      path: '/auth/sign-in'
+      fullPath: '/auth/sign-in'
+      preLoaderRoute: typeof AuthSignInRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/complete-profile': {
+      id: '/auth/complete-profile'
+      path: '/auth/complete-profile'
+      fullPath: '/auth/complete-profile'
+      preLoaderRoute: typeof AuthCompleteProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(app)/sell': {
+      id: '/(app)/sell'
+      path: '/sell'
+      fullPath: '/sell'
+      preLoaderRoute: typeof appSellRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/search': {
+      id: '/(app)/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof appSearchRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/profile': {
+      id: '/(app)/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof appProfileRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/prices': {
+      id: '/(app)/prices'
+      path: '/prices'
+      fullPath: '/prices'
+      preLoaderRoute: typeof appPricesRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/messages': {
+      id: '/(app)/messages'
+      path: '/messages'
+      fullPath: '/messages'
+      preLoaderRoute: typeof appMessagesRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/marketplace': {
+      id: '/(app)/marketplace'
+      path: '/marketplace'
+      fullPath: '/marketplace'
+      preLoaderRoute: typeof appMarketplaceRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/home': {
+      id: '/(app)/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof appHomeRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/checkout': {
+      id: '/(app)/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof appCheckoutRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/cart': {
+      id: '/(app)/cart'
+      path: '/cart'
+      fullPath: '/cart'
+      preLoaderRoute: typeof appCartRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/blog': {
+      id: '/(app)/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof appBlogRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/sell/': {
+      id: '/(app)/sell/'
+      path: '/'
+      fullPath: '/sell/'
+      preLoaderRoute: typeof appSellIndexRouteImport
+      parentRoute: typeof appSellRoute
+    }
+    '/(app)/profile/': {
+      id: '/(app)/profile/'
+      path: '/'
+      fullPath: '/profile/'
+      preLoaderRoute: typeof appProfileIndexRouteImport
+      parentRoute: typeof appProfileRoute
+    }
+    '/(app)/marketplace/': {
+      id: '/(app)/marketplace/'
+      path: '/'
+      fullPath: '/marketplace/'
+      preLoaderRoute: typeof appMarketplaceIndexRouteImport
+      parentRoute: typeof appMarketplaceRoute
+    }
+    '/(app)/checkout/': {
+      id: '/(app)/checkout/'
+      path: '/'
+      fullPath: '/checkout/'
+      preLoaderRoute: typeof appCheckoutIndexRouteImport
+      parentRoute: typeof appCheckoutRoute
+    }
+    '/(app)/blog/': {
+      id: '/(app)/blog/'
+      path: '/'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof appBlogIndexRouteImport
+      parentRoute: typeof appBlogRoute
+    }
+    '/auth/sell/success': {
+      id: '/auth/sell/success'
+      path: '/auth/sell/success'
+      fullPath: '/auth/sell/success'
+      preLoaderRoute: typeof AuthSellSuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/google/callback': {
+      id: '/auth/google/callback'
+      path: '/auth/google/callback'
+      fullPath: '/auth/google/callback'
+      preLoaderRoute: typeof AuthGoogleCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(app)/user/notifications': {
+      id: '/(app)/user/notifications'
+      path: '/user/notifications'
+      fullPath: '/user/notifications'
+      preLoaderRoute: typeof appUserNotificationsRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/profile/analytics': {
+      id: '/(app)/profile/analytics'
+      path: '/analytics'
+      fullPath: '/profile/analytics'
+      preLoaderRoute: typeof appProfileAnalyticsRouteImport
+      parentRoute: typeof appProfileRoute
+    }
+    '/(app)/marketplace/$id': {
+      id: '/(app)/marketplace/$id'
+      path: '/$id'
+      fullPath: '/marketplace/$id'
+      preLoaderRoute: typeof appMarketplaceIdRouteImport
+      parentRoute: typeof appMarketplaceRoute
+    }
+    '/(app)/farmers/$id': {
+      id: '/(app)/farmers/$id'
+      path: '/farmers/$id'
+      fullPath: '/farmers/$id'
+      preLoaderRoute: typeof appFarmersIdRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/checkout/confirmation': {
+      id: '/(app)/checkout/confirmation'
+      path: '/confirmation'
+      fullPath: '/checkout/confirmation'
+      preLoaderRoute: typeof appCheckoutConfirmationRouteImport
+      parentRoute: typeof appCheckoutRoute
+    }
+    '/(app)/buyers/$id': {
+      id: '/(app)/buyers/$id'
+      path: '/buyers/$id'
+      fullPath: '/buyers/$id'
+      preLoaderRoute: typeof appBuyersIdRouteImport
+      parentRoute: typeof appRouteRoute
+    }
+    '/(app)/blog/write': {
+      id: '/(app)/blog/write'
+      path: '/write'
+      fullPath: '/blog/write'
+      preLoaderRoute: typeof appBlogWriteRouteImport
+      parentRoute: typeof appBlogRoute
+    }
+    '/(app)/blog/$slug': {
+      id: '/(app)/blog/$slug'
+      path: '/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof appBlogSlugRouteImport
+      parentRoute: typeof appBlogRoute
+    }
   }
 }
 
 interface appBlogRouteChildren {
-  appBlogSlugRoute: typeof appBlogSlugRoute;
-  appBlogWriteRoute: typeof appBlogWriteRoute;
-  appBlogIndexRoute: typeof appBlogIndexRoute;
+  appBlogSlugRoute: typeof appBlogSlugRoute
+  appBlogWriteRoute: typeof appBlogWriteRoute
+  appBlogIndexRoute: typeof appBlogIndexRoute
 }
 
 const appBlogRouteChildren: appBlogRouteChildren = {
   appBlogSlugRoute: appBlogSlugRoute,
   appBlogWriteRoute: appBlogWriteRoute,
   appBlogIndexRoute: appBlogIndexRoute,
-};
+}
 
-const appBlogRouteWithChildren = appBlogRoute._addFileChildren(appBlogRouteChildren);
+const appBlogRouteWithChildren =
+  appBlogRoute._addFileChildren(appBlogRouteChildren)
 
 interface appCheckoutRouteChildren {
-  appCheckoutConfirmationRoute: typeof appCheckoutConfirmationRoute;
-  appCheckoutIndexRoute: typeof appCheckoutIndexRoute;
+  appCheckoutConfirmationRoute: typeof appCheckoutConfirmationRoute
+  appCheckoutIndexRoute: typeof appCheckoutIndexRoute
 }
 
 const appCheckoutRouteChildren: appCheckoutRouteChildren = {
   appCheckoutConfirmationRoute: appCheckoutConfirmationRoute,
   appCheckoutIndexRoute: appCheckoutIndexRoute,
-};
+}
 
-const appCheckoutRouteWithChildren = appCheckoutRoute._addFileChildren(appCheckoutRouteChildren);
+const appCheckoutRouteWithChildren = appCheckoutRoute._addFileChildren(
+  appCheckoutRouteChildren,
+)
 
 interface appMarketplaceRouteChildren {
-  appMarketplaceIdRoute: typeof appMarketplaceIdRoute;
-  appMarketplaceIndexRoute: typeof appMarketplaceIndexRoute;
+  appMarketplaceIdRoute: typeof appMarketplaceIdRoute
+  appMarketplaceIndexRoute: typeof appMarketplaceIndexRoute
 }
 
 const appMarketplaceRouteChildren: appMarketplaceRouteChildren = {
   appMarketplaceIdRoute: appMarketplaceIdRoute,
   appMarketplaceIndexRoute: appMarketplaceIndexRoute,
-};
+}
 
 const appMarketplaceRouteWithChildren = appMarketplaceRoute._addFileChildren(
-  appMarketplaceRouteChildren
-);
+  appMarketplaceRouteChildren,
+)
 
 interface appProfileRouteChildren {
-  appProfileAnalyticsRoute: typeof appProfileAnalyticsRoute;
-  appProfileIndexRoute: typeof appProfileIndexRoute;
+  appProfileAnalyticsRoute: typeof appProfileAnalyticsRoute
+  appProfileIndexRoute: typeof appProfileIndexRoute
 }
 
 const appProfileRouteChildren: appProfileRouteChildren = {
   appProfileAnalyticsRoute: appProfileAnalyticsRoute,
   appProfileIndexRoute: appProfileIndexRoute,
-};
+}
 
-const appProfileRouteWithChildren = appProfileRoute._addFileChildren(appProfileRouteChildren);
+const appProfileRouteWithChildren = appProfileRoute._addFileChildren(
+  appProfileRouteChildren,
+)
 
 interface appSellRouteChildren {
-  appSellIndexRoute: typeof appSellIndexRoute;
+  appSellIndexRoute: typeof appSellIndexRoute
 }
 
 const appSellRouteChildren: appSellRouteChildren = {
   appSellIndexRoute: appSellIndexRoute,
-};
+}
 
-const appSellRouteWithChildren = appSellRoute._addFileChildren(appSellRouteChildren);
+const appSellRouteWithChildren =
+  appSellRoute._addFileChildren(appSellRouteChildren)
 
 interface appRouteRouteChildren {
-  appBlogRoute: typeof appBlogRouteWithChildren;
-  appCartRoute: typeof appCartRoute;
-  appCheckoutRoute: typeof appCheckoutRouteWithChildren;
-  appHomeRoute: typeof appHomeRoute;
-  appMarketplaceRoute: typeof appMarketplaceRouteWithChildren;
-  appMessagesRoute: typeof appMessagesRoute;
-  appPricesRoute: typeof appPricesRoute;
-  appProfileRoute: typeof appProfileRouteWithChildren;
-  appSearchRoute: typeof appSearchRoute;
-  appSellRoute: typeof appSellRouteWithChildren;
-  appBuyersIdRoute: typeof appBuyersIdRoute;
-  appFarmersIdRoute: typeof appFarmersIdRoute;
-  appUserNotificationsRoute: typeof appUserNotificationsRoute;
+  appBlogRoute: typeof appBlogRouteWithChildren
+  appCartRoute: typeof appCartRoute
+  appCheckoutRoute: typeof appCheckoutRouteWithChildren
+  appHomeRoute: typeof appHomeRoute
+  appMarketplaceRoute: typeof appMarketplaceRouteWithChildren
+  appMessagesRoute: typeof appMessagesRoute
+  appPricesRoute: typeof appPricesRoute
+  appProfileRoute: typeof appProfileRouteWithChildren
+  appSearchRoute: typeof appSearchRoute
+  appSellRoute: typeof appSellRouteWithChildren
+  appBuyersIdRoute: typeof appBuyersIdRoute
+  appFarmersIdRoute: typeof appFarmersIdRoute
+  appUserNotificationsRoute: typeof appUserNotificationsRoute
 }
 
 const appRouteRouteChildren: appRouteRouteChildren = {
@@ -709,9 +715,11 @@ const appRouteRouteChildren: appRouteRouteChildren = {
   appBuyersIdRoute: appBuyersIdRoute,
   appFarmersIdRoute: appFarmersIdRoute,
   appUserNotificationsRoute: appUserNotificationsRoute,
-};
+}
 
-const appRouteRouteWithChildren = appRouteRoute._addFileChildren(appRouteRouteChildren);
+const appRouteRouteWithChildren = appRouteRoute._addFileChildren(
+  appRouteRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -722,7 +730,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthSignUpRoute: AuthSignUpRoute,
   AuthGoogleCallbackRoute: AuthGoogleCallbackRoute,
   AuthSellSuccessRoute: AuthSellSuccessRoute,
-};
+}
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>();
+  ._addFileTypes<FileRouteTypes>()
