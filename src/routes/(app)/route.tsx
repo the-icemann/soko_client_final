@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { Download, Home, HomeIcon, MessageCircle, Search, ShoppingBag, User } from "lucide-react";
+import { BarChart2, Download, Home, HomeIcon, MessageCircle, Search, ShoppingBag, User } from "lucide-react";
 import { lazy, Suspense, useEffect } from "react";
 
 import { CartDrawer } from "@/components/cart/cart-drawer";
@@ -56,6 +56,11 @@ function RouteComponent() {
       href: "/profile",
       icon: <User className="size-5" />,
       badge: unreadNotifications,
+    },
+    {
+      label: "Prices",
+      href: "/prices",
+      icon: <BarChart2 className="size-5" />,
     },
     // Injected only when the app is installable
     ...(canInstall
