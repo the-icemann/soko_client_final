@@ -1,4 +1,9 @@
-const BASE_URL = import.meta.env.VITE_API_URL;
+// Strip any trailing slash so we never produce double-slash URLs when an
+// endpoint already starts with "/" (e.g. "/auth/complete-profile").
+// VITE_API_URL may or may not have a trailing slash depending on how the
+// GitHub Actions variable was set — we normalise both sides here.
+const _RAW_BASE = import.meta.env.VITE_API_URL ?? "";
+const BASE_URL = _RAW_BASE.replace(/\/$/, "");
 
 type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
@@ -29,7 +34,10 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  const res = await fetch(`${BASE_URL}${endpoint}`, {
+  // Ensure exactly one slash between base and endpoint regardless of whether
+  // the endpoint has a leading slash or not.
+  const normalizedEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+  const res = await fetch(`${BASE_URL}${normalizedEndpoint}`, {
     method,
     headers,
     credentials: "include",
