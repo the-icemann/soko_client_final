@@ -1,5 +1,14 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { BarChart2, Download, Home, HomeIcon, MessageCircle, Search, ShoppingBag, User } from "lucide-react";
+import {
+  BarChart2,
+  Download,
+  Home,
+  HomeIcon,
+  MessageCircle,
+  Search,
+  ShoppingBag,
+  User,
+} from "lucide-react";
 import { lazy, Suspense, useEffect } from "react";
 
 import { CartDrawer } from "@/components/cart/cart-drawer";
