@@ -43,6 +43,18 @@ function SokoChatWidget({ onNewChat }: { onNewChat: () => void }) {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
+  // Track whether we're on a small screen so we can reposition the widget
+  // above the bottom nav (which is visible on screens narrower than md/768px).
+  const [isMobile, setIsMobile] = useState(
+    () => typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches
+  );
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
   const { userCredentials } = useWebchatContext();
   const { messages, isTyping, sendMessage, uploadFile, participants, status, saveMessageFeedback } =
     useActiveConversation();
@@ -112,12 +124,15 @@ function SokoChatWidget({ onNewChat }: { onNewChat: () => void }) {
           connected={status === "connected"}
           uploadFile={uploadFile}
           style={{
-            width: "400px",
-            height: "600px",
+            // On mobile: span almost full viewport width and scale height so
+            // the widget fits between the top nav (4rem) and the bottom nav +
+            // FAB stack (bottom nav ≈ 4rem + FAB 64px + gaps ≈ 152px total).
+            width: isMobile ? "calc(100vw - 16px)" : "400px",
+            height: isMobile ? "calc(100dvh - 220px)" : "600px",
             display: isOpen ? "flex" : "none",
             position: "fixed",
-            bottom: "90px",
-            right: "20px",
+            bottom: isMobile ? "152px" : "90px",
+            right: "8px",
             zIndex: 1000,
           }}
         >
@@ -168,7 +183,9 @@ function SokoChatWidget({ onNewChat }: { onNewChat: () => void }) {
         onClick={() => setIsOpen(!isOpen)}
         style={{
           position: "fixed",
-          bottom: "20px",
+          // On mobile lift the FAB above the bottom nav (≈4rem/64px) + a gap.
+          // On desktop the bottom nav is hidden so 20px is fine.
+          bottom: isMobile ? "80px" : "20px",
           right: "20px",
           zIndex: 1000,
           width: "64px",
