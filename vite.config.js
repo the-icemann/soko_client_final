@@ -36,8 +36,16 @@ export default defineConfig({
 
         runtimeCaching: [
           {
+            // Auth endpoints — never cache; always go straight to the network.
+            // Caching auth responses (including the GET /auth/complete-profile
+            // that CloudFront turns into a 200/HTML) causes the SW to serve stale
+            // HTML for subsequent POST requests, breaking Google signup completion.
+            urlPattern: /^\/auth(\/.*)?$/i,
+            handler: "NetworkOnly",
+          },
+          {
             // Backend API — Network first, 10 s timeout, 24 h stale cache
-            urlPattern: /^\/(listings|orders|payments|auth|users|posts)(\/.*)?$/i,
+            urlPattern: /^\/(listings|orders|payments|users|posts)(\/.*)?$/i,
             handler: "NetworkFirst",
             options: {
               cacheName: "soko-api",

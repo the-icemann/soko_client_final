@@ -11,12 +11,10 @@ export const panel = (
         farming revolution.
       </span>
     </h2>
-
     {/* Subtext */}
     <p className="text-sm leading-[1.8] mb-8" style={{ color: "rgba(255,255,255,.5)" }}>
       Free to join. No hidden fees. Start selling or buying agricultural produce in minutes.
     </p>
-
     {/* Checklist */}
     <div className="flex flex-col gap-4">
       {[
