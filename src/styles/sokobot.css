@@ -1,54 +1,55 @@
 /* ── SokoBot webchat theme ─────────────────────────────────────────────────
-   Overrides @botpress/webchat defaults with Shamba brand colours.
-   Imported once in soko-webchat.tsx via StylesheetProvider or a plain import.
+   Uses the app's own CSS custom properties (oklch palette + Shamba tokens)
+   so the chat automatically follows light / dark mode.
 ──────────────────────────────────────────────────────────────────────────── */
 
-/* ── 1. Remap Botpress primary scale → Shamba emerald ── */
+/* ── 1. Botpress primary scale → app primary (emerald) ── */
 .bpFont {
-  --bpPrimary-1: #f3fdf8;
-  --bpPrimary-50: #e6fbf2; /* --shamba-emerald-soft */
-  --bpPrimary-100: #ccf2df;
-  --bpPrimary-200: #99e5bf;
-  --bpPrimary-300: #66daa3;
-  --bpPrimary-400: #33cf87;
-  --bpPrimary-500: #00c471; /* --shamba-emerald */
-  --bpPrimary-600: #00a35d;
-  --bpPrimary-700: #007a45;
-  --bpPrimary-800: #005a33;
-  --bpPrimary-900: #003d23;
-  --bpPrimary-950: #0b2618; /* --shamba-forest */
+  /* Primary scale maps to --primary / --shamba-emerald */
+  --bpPrimary-1:   var(--shamba-emerald-soft);
+  --bpPrimary-50:  var(--shamba-emerald-soft);
+  --bpPrimary-100: oklch(from var(--primary) calc(l + 0.25) c h);
+  --bpPrimary-200: oklch(from var(--primary) calc(l + 0.18) c h);
+  --bpPrimary-300: oklch(from var(--primary) calc(l + 0.10) c h);
+  --bpPrimary-400: oklch(from var(--primary) calc(l + 0.04) c h);
+  --bpPrimary-500: var(--primary);
+  --bpPrimary-600: oklch(from var(--primary) calc(l - 0.05) c h);
+  --bpPrimary-700: oklch(from var(--primary) calc(l - 0.12) c h);
+  --bpPrimary-800: oklch(from var(--primary) calc(l - 0.20) c h);
+  --bpPrimary-900: oklch(from var(--primary) calc(l - 0.28) c h);
+  --bpPrimary-950: var(--shamba-forest);
 
-  /* ── Remap gray scale → Shamba cream/forest neutrals ── */
-  --bpGray-1: #fdfcfa;
-  --bpGray-50: #f7f4ee; /* --shamba-cream */
-  --bpGray-100: #ede8df; /* --shamba-cream-dark */
-  --bpGray-200: #e7e2d9; /* --shamba-border */
-  --bpGray-300: #d4cfc8;
-  --bpGray-400: #a09890;
-  --bpGray-500: #78716c; /* --shamba-muted */
-  --bpGray-600: #5a534e;
-  --bpGray-700: #3d3733;
-  --bpGray-800: #292524; /* --shamba-ink */
-  --bpGray-900: #153d26; /* --shamba-forest-mid */
-  --bpGray-950: #0b2618; /* --shamba-forest */
+  /* Gray scale maps to app's neutral tokens */
+  --bpGray-1:   var(--background);
+  --bpGray-50:  var(--muted);
+  --bpGray-100: var(--secondary);
+  --bpGray-200: var(--border);
+  --bpGray-300: var(--input);
+  --bpGray-400: var(--muted-foreground);
+  --bpGray-500: var(--muted-foreground);
+  --bpGray-600: var(--secondary-foreground);
+  --bpGray-700: var(--foreground);
+  --bpGray-800: var(--foreground);
+  --bpGray-900: var(--sidebar);
+  --bpGray-950: var(--sidebar);
 
-  /* ── Border radius → match app (0.625rem base) ── */
-  --bpRadius-sm: 4px;
-  --bpRadius-md: 8px;
-  --bpRadius-lg: 10px;
-  --bpRadius-xl: 14px;
+  /* Border radius */
+  --bpRadius-sm: var(--radius-sm);
+  --bpRadius-md: var(--radius-md);
+  --bpRadius-lg: var(--radius-lg);
+  --bpRadius-xl: var(--radius-xl);
 
-  /* ── Font ── */
-  font-family: "Outfit", "Geist Variable", sans-serif !important;
+  /* Font */
+  font-family: var(--font-body, "Outfit", sans-serif) !important;
 }
 
-/* ── 2. FAB (floating action button) ── */
+/* ── 2. FAB ── */
 .bpFabContainer {
-  background: #00c471 !important;
+  background: var(--primary) !important;
   box-shadow:
-    0 4px 24px rgba(0, 196, 113, 0.35),
-    0 2px 8px rgba(11, 38, 24, 0.2) !important;
-  border: 2px solid rgba(255, 255, 255, 0.15) !important;
+    0 4px 24px color-mix(in oklch, var(--primary) 35%, transparent),
+    0 2px 8px color-mix(in oklch, var(--shamba-forest) 20%, transparent) !important;
+  border: 2px solid color-mix(in oklch, white 15%, transparent) !important;
   transition:
     background 0.2s ease,
     transform 0.2s ease,
@@ -56,11 +57,11 @@
 }
 
 .bpFabContainer:hover {
-  background: #00a35d !important;
+  background: oklch(from var(--primary) calc(l - 0.05) c h) !important;
   transform: scale(1.06) !important;
   box-shadow:
-    0 6px 32px rgba(0, 196, 113, 0.45),
-    0 2px 10px rgba(11, 38, 24, 0.25) !important;
+    0 6px 32px color-mix(in oklch, var(--primary) 45%, transparent),
+    0 2px 10px color-mix(in oklch, var(--shamba-forest) 25%, transparent) !important;
 }
 
 .bpFabContainer:active {
@@ -68,24 +69,27 @@
 }
 
 .bpFabIcon {
-  color: #0b2618 !important;
+  color: var(--primary-foreground) !important;
 }
 
 /* ── 3. Chat container ── */
 .bpContainer {
-  border-radius: 16px !important;
+  border-radius: var(--radius-xl) !important;
   box-shadow:
-    0 20px 60px rgba(11, 38, 24, 0.18),
-    0 4px 16px rgba(11, 38, 24, 0.1) !important;
-  border: 1px solid #e7e2d9 !important;
+    0 20px 60px color-mix(in oklch, var(--shamba-forest) 18%, transparent),
+    0 4px 16px color-mix(in oklch, var(--shamba-forest) 10%, transparent) !important;
+  border: 1px solid var(--border) !important;
   overflow: hidden !important;
-  font-family: "Outfit", "Geist Variable", sans-serif !important;
+  font-family: var(--font-body, "Outfit", sans-serif) !important;
+  /* Picks up the page's background so it matches light / dark */
+  background: var(--card) !important;
+  color: var(--card-foreground) !important;
 }
 
 /* ── 4. Header ── */
 .bpHeaderContainer {
-  background: #0b2618 !important;
-  border-bottom: 1px solid rgba(0, 196, 113, 0.2) !important;
+  background: var(--sidebar) !important;
+  border-bottom: 1px solid color-mix(in oklch, var(--primary) 20%, transparent) !important;
   padding: 14px 16px !important;
 }
 
@@ -94,104 +98,102 @@
 }
 
 .bpHeaderContentAvatarContainer {
-  background: #00c471 !important;
+  background: var(--primary) !important;
   border-radius: 50% !important;
   width: 36px !important;
   height: 36px !important;
 }
 
 .bpHeaderContentAvatarFallback {
-  color: #0b2618 !important;
+  color: var(--primary-foreground) !important;
   font-weight: 700 !important;
   font-size: 14px !important;
 }
 
-/* Bot name — force full white so it's legible on forest bg */
+/* All header text → sidebar-foreground */
 .bpHeaderContainer * {
-  color: #f7f4ee !important;
+  color: var(--sidebar-foreground) !important;
 }
 
-/* Description / status — slightly dimmed */
 .bpHeaderContentDescription,
 .bpHeaderContainer [class*="description"],
 .bpHeaderContainer [class*="subtitle"] {
-  color: rgba(247, 244, 238, 0.7) !important;
+  color: color-mix(in oklch, var(--sidebar-foreground) 70%, transparent) !important;
   font-size: 12px !important;
 }
 
-/* Action icons in header (close, etc.) */
 .bpHeaderContentActionsIcons svg {
-  color: rgba(247, 244, 238, 0.7) !important;
+  color: color-mix(in oklch, var(--sidebar-foreground) 70%, transparent) !important;
 }
 .bpHeaderContentActionsIcons svg:hover {
-  color: #f7f4ee !important;
+  color: var(--sidebar-foreground) !important;
 }
 
 /* ── 5. Message list background ── */
 [class*="bpMessageList"],
 [class*="bpScrollable"] {
-  background: #f7f4ee !important;
+  background: var(--background) !important;
 }
 
 /* ── 6. Bot message bubbles ── */
 [class*="bpMessage"][class*="bot"] [class*="bubble"],
 [class*="bpBubble"][class*="bot"] {
-  background: #ffffff !important;
-  border: 1px solid #e7e2d9 !important;
-  color: #292524 !important;
-  border-radius: 4px 14px 14px 14px !important;
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--card-foreground) !important;
+  border-radius: var(--radius-sm) var(--radius-xl) var(--radius-xl) var(--radius-xl) !important;
 }
 
 /* ── 7. User message bubbles ── */
 [class*="bpMessage"][class*="user"] [class*="bubble"],
 [class*="bpBubble"][class*="user"] {
-  background: #00c471 !important;
-  color: #0b2618 !important;
-  border-radius: 14px 4px 14px 14px !important;
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+  border-radius: var(--radius-xl) var(--radius-sm) var(--radius-xl) var(--radius-xl) !important;
   font-weight: 500 !important;
 }
 
-/* ── 8. Composer (input area) ── */
+/* ── 8. Composer ── */
 .bpComposerContainer {
-  background: #ffffff !important;
-  border-top: 1px solid #e7e2d9 !important;
+  background: var(--card) !important;
+  border-top: 1px solid var(--border) !important;
   padding: 10px 12px !important;
 }
 
 .bpComposerInputContainer {
-  background: #f7f4ee !important;
-  border: 1.5px solid #e7e2d9 !important;
-  border-radius: 10px !important;
+  background: var(--muted) !important;
+  border: 1.5px solid var(--input) !important;
+  border-radius: var(--radius-lg) !important;
   transition: border-color 0.15s ease !important;
 }
 
 .bpComposerInputContainer:focus-within {
-  border-color: #00c471 !important;
-  box-shadow: 0 0 0 3px rgba(0, 196, 113, 0.12) !important;
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--ring) 12%, transparent) !important;
 }
 
 .bpComposerInput {
-  color: #292524 !important;
-  font-family: "Outfit", sans-serif !important;
+  color: var(--foreground) !important;
+  font-family: var(--font-body, "Outfit", sans-serif) !important;
   font-size: 14px !important;
 }
 
 .bpComposerInput::placeholder {
-  color: #a09890 !important;
+  color: var(--muted-foreground) !important;
 }
 
 /* ── 9. Send button ── */
 .bpComposerSendButton {
-  background: #00c471 !important;
-  color: #0b2618 !important;
-  border-radius: 8px !important;
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+  border-radius: var(--radius-md) !important;
   transition:
     background 0.15s ease,
     transform 0.1s ease !important;
 }
 
 .bpComposerSendButton:hover {
-  background: #00a35d !important;
+  background: oklch(from var(--primary) calc(l - 0.05) c h) !important;
 }
 
 .bpComposerSendButton:active {
@@ -201,17 +203,33 @@
 /* ── 10. Typing indicator dots ── */
 [class*="bpTyping"] span,
 [class*="typing"] span {
-  background: #00c471 !important;
+  background: var(--primary) !important;
 }
 
 /* ── 11. Timestamp / metadata text ── */
 [class*="bpTimestamp"],
 [class*="timestamp"] {
-  color: #a09890 !important;
+  color: var(--muted-foreground) !important;
   font-size: 11px !important;
 }
 
-/* ── 12. Scrollbar ── */
+/* ── 12. Quick-reply / choice buttons ── */
+[class*="bpChoice"],
+[class*="bpQuickReply"] {
+  border: 1.5px solid var(--primary) !important;
+  color: var(--primary) !important;
+  border-radius: var(--radius-lg) !important;
+  background: transparent !important;
+  transition: background 0.15s ease, color 0.15s ease !important;
+}
+
+[class*="bpChoice"]:hover,
+[class*="bpQuickReply"]:hover {
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+}
+
+/* ── 13. Scrollbar ── */
 .bpContainer ::-webkit-scrollbar {
   width: 4px;
 }
@@ -219,9 +237,237 @@
   background: transparent;
 }
 .bpContainer ::-webkit-scrollbar-thumb {
-  background: #d4cfc8;
+  background: var(--border);
   border-radius: 4px;
 }
 .bpContainer ::-webkit-scrollbar-thumb:hover {
-  background: #a09890;
+  background: var(--muted-foreground);
+}
+
+/* ── 14. Dark mode overrides ──────────────────────────────────────────────
+   Botpress has internal color rules that win over CSS variable inheritance
+   in dark mode. These selectors forcibly restore readable text on dark bg.
+──────────────────────────────────────────────────────────────────────────── */
+
+/* Container & message list */
+.dark .bpContainer {
+  background: var(--card) !important;
+  border-color: var(--border) !important;
+}
+
+.dark [class*="bpMessageList"],
+.dark [class*="bpScrollable"] {
+  background: var(--background) !important;
+}
+
+/* ── Bot bubbles: slightly elevated surface with bright text ── */
+.dark [class*="bpMessage"][class*="bot"] [class*="bubble"],
+.dark [class*="bpBubble"][class*="bot"] {
+  background: oklch(0.22 0.03 150) !important;
+  border-color: var(--border) !important;
+  color: oklch(0.94 0.01 120) !important;
+}
+
+/* All text nodes inside bot bubbles — catch any nested spans */
+.dark [class*="bpMessage"][class*="bot"] [class*="bubble"] *,
+.dark [class*="bpBubble"][class*="bot"] * {
+  color: oklch(0.94 0.01 120) !important;
+}
+
+/* ── Bot name & description in the empty-state header ── */
+.dark [class*="bpMessageList"] [class*="title"],
+.dark [class*="bpMessageList"] [class*="description"],
+.dark [class*="bpMessageList"] [class*="botName"],
+.dark [class*="bpMessageList"] h1,
+.dark [class*="bpMessageList"] h2,
+.dark [class*="bpMessageList"] p {
+  color: oklch(0.94 0.01 120) !important;
+}
+
+/* ── "Today", "Delivered", and all timestamp/status labels ── */
+.dark [class*="bpTimestamp"],
+.dark [class*="timestamp"],
+.dark [class*="bpMessageStatus"],
+.dark [class*="bpDivider"],
+.dark [class*="bpDivider"] * {
+  color: oklch(0.56 0.02 150) !important;
+}
+
+/* ── Composer ── */
+.dark .bpComposerContainer {
+  background: var(--card) !important;
+  border-top-color: var(--border) !important;
+}
+
+.dark .bpComposerInputContainer {
+  background: oklch(0.2 0.025 150) !important;
+  border-color: var(--input) !important;
+}
+
+.dark .bpComposerInput,
+.dark .bpComposerInput * {
+  color: oklch(0.94 0.01 120) !important;
+}
+
+.dark .bpComposerInput::placeholder {
+  color: oklch(0.56 0.02 150) !important;
+}
+
+/* ── Like/dislike feedback icons ── */
+.dark [class*="bpFeedback"] svg,
+.dark [class*="bpMessageFeedback"] svg {
+  color: oklch(0.56 0.02 150) !important;
+}
+.dark [class*="bpFeedback"] svg:hover,
+.dark [class*="bpMessageFeedback"] svg:hover {
+  color: var(--primary) !important;
+}
+
+/* ── 15. Dark mode — user bubble ─────────────────────────────────────────
+   In dark mode the bright emerald bubble is too harsh. Use a deeper teal
+   that stays on-brand but feels at home on a dark background.
+──────────────────────────────────────────────────────────────────────────── */
+.dark [class*="bpMessage"][class*="user"] [class*="bubble"],
+.dark [class*="bpBubble"][class*="user"] {
+  background: oklch(0.35 0.12 150) !important; /* deep muted emerald */
+  color: oklch(0.94 0.01 120) !important;       /* near-white text */
+}
+
+.dark [class*="bpMessage"][class*="user"] [class*="bubble"] *,
+.dark [class*="bpBubble"][class*="user"] * {
+  color: oklch(0.94 0.01 120) !important;
+}
+
+/* ── 16. Dark mode — stronger user bubble specificity ────────────────────
+   Use attribute + class combos to beat Botpress's internal specificity.
+──────────────────────────────────────────────────────────────────────────── */
+.dark .bpContainer [class*="bpMessage"][class*="user"] [class*="bubble"],
+.dark .bpContainer [class*="bpBubble"][class*="user"],
+.dark .bpContainer [class*="userMessage"] [class*="bubble"],
+.dark .bpContainer [class*="userMessage"][class*="bubble"] {
+  background: oklch(0.28 0.10 150) !important; /* darker deep green */
+  color: oklch(0.94 0.01 120) !important;
+}
+
+.dark .bpContainer [class*="bpMessage"][class*="user"] [class*="bubble"] *,
+.dark .bpContainer [class*="bpBubble"][class*="user"] *,
+.dark .bpContainer [class*="userMessage"] [class*="bubble"] * {
+  color: oklch(0.94 0.01 120) !important;
+}
+
+/* ── 17. Links inside bot bubbles ────────────────────────────────────────
+   Override browser default blue with brand emerald in both modes.
+──────────────────────────────────────────────────────────────────────────── */
+.bpContainer [class*="bpMessage"][class*="bot"] [class*="bubble"] a,
+.bpContainer [class*="bpBubble"][class*="bot"] a {
+  color: var(--primary) !important;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in oklch, var(--primary) 40%, transparent) !important;
+}
+
+.bpContainer [class*="bpMessage"][class*="bot"] [class*="bubble"] a:hover,
+.bpContainer [class*="bpBubble"][class*="bot"] a:hover {
+  color: oklch(from var(--primary) calc(l + 0.08) c h) !important;
+  text-decoration-color: var(--primary) !important;
+}
+
+.dark .bpContainer [class*="bpMessage"][class*="bot"] [class*="bubble"] a,
+.dark .bpContainer [class*="bpBubble"][class*="bot"] a {
+  color: var(--primary) !important;
+}
+
+/* ── 18. Nuclear dark user bubble — universal override ───────────────────
+   Targets every possible element that could be a user bubble background.
+──────────────────────────────────────────────────────────────────────────── */
+.dark .bpContainer * [style*="background"] {
+  /* can't override inline styles this way — see note below */
+}
+
+/* Target by bg color value that Botpress hardcodes for user bubbles */
+.dark .bpFont [class*="user"] {
+  background: oklch(0.28 0.10 150) !important;
+  color: oklch(0.94 0.01 120) !important;
+}
+
+.dark .bpFont [class*="user"] * {
+  color: oklch(0.94 0.01 120) !important;
+}
+
+/* Catch-all: any element inside the chat with the emerald bg in dark mode */
+.dark .bpContainer [class*="Message"][class*="ser"],
+.dark .bpContainer [class*="message"][class*="ser"],
+.dark .bpContainer [class*="Bubble"][class*="ser"],
+.dark .bpContainer [class*="bubble"][class*="ser"] {
+  background: oklch(0.28 0.10 150) !important;
+  color: oklch(0.94 0.01 120) !important;
+}
+
+/* ── 19. Exact class fix — bpMessageBlocksBubble (user) ─────────────────
+   DevTools confirmed Botpress sets oklch(0.87 0.2 150) inline on this
+   class. Target it directly with maximum specificity.
+──────────────────────────────────────────────────────────────────────────── */
+.dark .bpMessageBlocksBubble {
+  background: oklch(0.28 0.10 150) !important;
+  color: oklch(0.94 0.01 120) !important;
+}
+
+.dark .bpMessageBlocksBubble * {
+  color: oklch(0.94 0.01 120) !important;
+}
+
+/* ── 20. Dark mode — distinguish bot bubble from user bubble ─────────────
+   Bot bubble → dark neutral card surface (not green)
+   User bubble → deep emerald (already set in section 19)
+──────────────────────────────────────────────────────────────────────────── */
+.dark .bpMessageBlocksBubble:not([class*="user"]) {
+  background: oklch(0.20 0.02 150) !important; /* dark neutral, matches --card */
+  color: oklch(0.94 0.01 120) !important;
+  border: 1px solid oklch(0.26 0.04 150) !important;
+}
+
+/* The user bubble wrapper sits on the right — Botpress also adds a parent
+   with "outgoing"/"sent"/"right" in the class. Override bot-side via the
+   avatar/left-side parent instead. */
+.dark [class*="outgoing"] .bpMessageBlocksBubble,
+.dark [class*="sent"] .bpMessageBlocksBubble,
+.dark [class*="right"] .bpMessageBlocksBubble {
+  background: oklch(0.28 0.10 150) !important;
+  color: oklch(0.94 0.01 120) !important;
+  border: none !important;
+}
+
+.dark [class*="incoming"] .bpMessageBlocksBubble,
+.dark [class*="received"] .bpMessageBlocksBubble,
+.dark [class*="left"] .bpMessageBlocksBubble {
+  background: oklch(0.20 0.02 150) !important;
+  color: oklch(0.94 0.01 120) !important;
+  border: 1px solid oklch(0.26 0.04 150) !important;
+}
+
+/* ── 21. Definitive bubble split via data-direction attribute ─────────────
+   DevTools confirmed: user = data-direction="outgoing"
+                       bot  = data-direction="incoming"
+──────────────────────────────────────────────────────────────────────────── */
+
+/* Remove the old catch-all that made both the same color */
+/* USER bubble — deep emerald */
+.dark .bpMessageBlocksBubble[data-direction="outgoing"] {
+  background: oklch(0.28 0.10 150) !important;
+  color: oklch(0.94 0.01 120) !important;
+  border: none !important;
+}
+
+.dark .bpMessageBlocksBubble[data-direction="outgoing"] * {
+  color: oklch(0.94 0.01 120) !important;
+}
+
+/* BOT bubble — dark neutral card */
+.dark .bpMessageBlocksBubble[data-direction="incoming"] {
+  background: oklch(0.20 0.02 150) !important;
+  color: oklch(0.94 0.01 120) !important;
+  border: 1px solid oklch(0.26 0.04 150) !important;
+}
+
+.dark .bpMessageBlocksBubble[data-direction="incoming"] * {
+  color: oklch(0.94 0.01 120) !important;
 }
