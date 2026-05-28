@@ -14,7 +14,7 @@ import {
   WebchatProvider,
 } from "@botpress/webchat";
 import { useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState, useCallback } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { useAuthStore } from "@/store/auth-store";
 
