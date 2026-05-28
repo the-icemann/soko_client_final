@@ -159,7 +159,7 @@ export function CartDrawer() {
               </div>
             </div>
 
-            <Link to="/" onClick={closeDrawer} className="block">
+            <Link to="/checkout" onClick={closeDrawer} className="block">
               <Button className="w-full h-11 font-semibold rounded-xl gap-2 shadow-sm">
                 Proceed to Checkout →
               </Button>
