@@ -261,7 +261,7 @@ export interface DeliveryAddress {
 
 // ─── Payment Method ───────────────────────────────────────────────────────────
 
-export type PaymentMethodType = "mobile_money" | "cash_on_delivery" | "bank_transfer";
+export type PaymentMethodType = "pesapal" | "mobile_money" | "cash_on_delivery" | "bank_transfer";
 
 export interface PaymentMethod {
   type: PaymentMethodType;

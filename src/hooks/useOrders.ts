@@ -57,13 +57,10 @@ export function useCheckout() {
       qc.invalidateQueries({ queryKey: orderKeys.all() });
 
       if (data.paymentUrl) {
-        // Online payment — redirect to PesaPal
-        // PesaPal will call back to /orders/{id}?status=success|pending|error
         window.location.href = data.paymentUrl;
       } else {
-        // COD — go straight to confirmation
         setStep("confirmation");
-        navigate({ to: `/orders/${data.id}` });
+        navigate({ to: "/checkout/confirmation", search: { orderId: data.id, status: "success" } });
       }
     },
   });
