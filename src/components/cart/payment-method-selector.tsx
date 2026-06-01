@@ -118,10 +118,8 @@ export function PaymentMethodSelector({ onBack }: PaymentMethodSelectorProps) {
       <div className="space-y-3">
         {/* PesaPal */}
         <OptionCard
-          selected={selectedType === "mobile_money" && !provider}
-          onClick={() => {
-            setSelectedType("mobile_money");
-          }}
+          selected={selectedType === "pesapal"}
+          onClick={() => setSelectedType("pesapal")}
           icon={<CreditCard size={20} />}
           title="PesaPal"
           description="Pay securely via card, mobile money or bank"
