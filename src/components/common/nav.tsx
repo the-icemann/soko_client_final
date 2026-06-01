@@ -28,10 +28,6 @@ import { useCartStore } from "@/store/cart-store";
 
 import { Logo } from "../landing-page/logo";
 
-interface NavbarProps {
-  cartCount?: number;
-}
-
 interface NavLink {
   to: string;
   label: string;
@@ -68,24 +64,26 @@ function DesktopNavLink({ link }: { link: NavLink }) {
 
 function MobileNavLink({ link, onNavigate }: { link: NavLink; onNavigate: () => void }) {
   return (
-    <Link
-      to={link.to}
-      onClick={onNavigate}
-      activeProps={{
-        className: "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400",
-      }}
-      inactiveProps={{ className: "text-foreground hover:bg-muted" }}
-      className="flex items-center gap-3 px-4 py-3 rounded-xl text-[15px] font-medium transition-colors w-full"
-    >
-      {({ isActive }) => (
-        <>
-          <span className={isActive ? "text-emerald-600" : "text-muted-foreground"}>
-            {link.icon}
-          </span>
-          {link.label}
-        </>
-      )}
-    </Link>
+    <div onClick={onNavigate}>
+      <Link
+        to={link.to}
+        onClick={onNavigate}
+        activeProps={{
+          className: "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400",
+        }}
+        inactiveProps={{ className: "text-foreground hover:bg-muted" }}
+        className="flex items-center gap-3 px-4 py-3 rounded-xl text-[15px] font-medium transition-colors w-full"
+      >
+        {({ isActive }) => (
+          <>
+            <span className={isActive ? "text-emerald-600" : "text-muted-foreground"}>
+              {link.icon}
+            </span>
+            {link.label}
+          </>
+        )}
+      </Link>
+    </div>
   );
 }
 
@@ -283,7 +281,7 @@ export default function Navbar() {
                       </div>
                     </Link>
                   ) : (
-                    <Link to="/auth/sign-in">
+                    <Link to="/auth/sign-in" onClick={() => setSheetOpen(false)}>
                       <Avatar className="w-7.5 h-7.5 ring-2 ring-primary">
                         <AvatarFallback className="text-xs font-bold">
                           <User />
@@ -291,16 +289,17 @@ export default function Navbar() {
                       </Avatar>
                     </Link>
                   )}
-
-                  <Link to="/sell" onClick={() => setSheetOpen(false)}>
-                    <Button
-                      size="sm"
-                      className="rounded-xl bg-primary hover:bg-primary/60 font-semibold shadow-sm h-10 px-8"
-                    >
-                      <Plus size={15} strokeWidth={2.5} />
-                      Sell
-                    </Button>
-                  </Link>
+                  {(user?.role === "both" || user?.role === "farmer") && (
+                    <Link to="/sell" onClick={() => setSheetOpen(false)}>
+                      <Button
+                        size="sm"
+                        className="rounded-xl bg-primary hover:bg-primary/60 font-semibold shadow-sm h-10 px-8"
+                      >
+                        <Plus size={15} strokeWidth={2.5} />
+                        Sell
+                      </Button>
+                    </Link>
+                  )}
                 </div>
               </div>
             </SheetContent>
