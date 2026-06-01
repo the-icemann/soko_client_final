@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import { useCartStore } from "@/store/cart-store";
 import { CartItem } from "@/types";
 
-// ─── Single cart item row ─────────────────────────────────────────────────────
+// ─── Single cart item row
 
 function CartItemRow({ item }: { item: CartItem }) {
   const { updateQuantity, removeItem, toggleSelected } = useCartStore();
@@ -97,6 +97,7 @@ function CartItemRow({ item }: { item: CartItem }) {
 export function CartDrawer() {
   const { items, isDrawerOpen, closeDrawer, getSummary, selectAll } = useCartStore();
   const summary = getSummary();
+  const navigate = useNavigate();
 
   return (
     <Sheet open={isDrawerOpen} onOpenChange={(open) => !open && closeDrawer()}>
@@ -111,9 +112,9 @@ export function CartDrawer() {
                 <Badge className="text-[10px] h-5 px-1.5 rounded-full">{summary.itemCount}</Badge>
               )}
             </SheetTitle>
-            <button onClick={closeDrawer} className="text-muted-foreground hover:text-foreground">
+            {/* <button onClick={closeDrawer} className="text-muted-foreground hover:text-foreground">
               <X size={18} />
-            </button>
+            </button> */}
           </div>
         </SheetHeader>
 
@@ -159,11 +160,16 @@ export function CartDrawer() {
               </div>
             </div>
 
-            <Link to="/checkout" onClick={closeDrawer} className="block">
-              <Button className="w-full h-11 font-semibold rounded-xl gap-2 shadow-sm">
-                Proceed to Checkout →
-              </Button>
-            </Link>
+            <Button
+              className="w-full h-11 font-semibold rounded-xl gap-2 shadow-sm"
+              onClick={() => {
+                closeDrawer();
+                setTimeout(() => navigate({ to: "/checkout" }), 150);
+              }}
+            >
+              Proceed to Checkout →
+            </Button>
+            {/* </Link> */}
           </div>
         )}
       </SheetContent>
